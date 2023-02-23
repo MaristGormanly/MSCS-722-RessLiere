@@ -30,13 +30,9 @@ class GameViewController: UIViewController {
             view.showsNodeCount = true
         }
     }
-
+    //sets what modes are supported in terms of phone direction
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
+        return .portrait
     }
 
     override var prefersStatusBarHidden: Bool {
