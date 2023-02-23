@@ -7,6 +7,7 @@
 
 import SpriteKit
 import GameplayKit
+import CoreMotion
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -29,6 +30,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let alienCategory:UInt32 = 0x1 << 1
     let photonTorpedoCategory:UInt32 = 0x1 << 0
     
+    //motion mangaer
+    let motionManger = CMMotionManager()
+    var xAcceleration:CGFloat = 0
+    
+    
+    
+    //
+    //
+    //
     override func didMove(to view: SKView) {
         //initlize startfield
         starfield = SKEmitterNode(fileNamed: "Starfield")
@@ -59,6 +69,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //sets physics rules for contact
         //TODO: contact delegate will be defined
         self.physicsWorld.contactDelegate = self
+        
         
         
         //set the score label inital
