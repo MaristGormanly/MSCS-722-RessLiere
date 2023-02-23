@@ -19,14 +19,27 @@ class GameScene: SKScene {
         starfield = SKEmitterNode(fileNamed: "Starfield")
         
         //initlize postion for starfield
-        //add later to detect for device
-        starfield.position = CGPoint(x:0, y: 1472)
+        //TODO: add later to detect for device for placing start field
+        starfield.position = CGPoint(x:0, y: 1400)
         //skip 10 seconds into animation
         starfield.advanceSimulationTime(10)
         //add starfield to screen
         self.addChild(starfield)
         //send starfield to back of screen
         starfield.zPosition = -1
+        
+        //create a player
+        player = SKSpriteNode(imageNamed: "shuttle")
+        
+        
+        let centerX = view.frame.midX
+        let centerY = view.frame.midY
+        //set player intial postiion
+        player.position = CGPoint(x: centerX, y: centerY)
+        
+        //add player to screen
+        self.addChild(player)
+        
         
         
         
