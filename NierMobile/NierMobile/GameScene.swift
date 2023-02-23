@@ -40,7 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let centerX = view.frame.midX
         let centerY = view.frame.midY
         //set player intial postiion
-        player.position = CGPoint(x: self.frame.size.width / 2, y: player.size.height / 2 + 20)
+        player.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.height * 0.08)
         
         //add player to screen
         self.addChild(player)
@@ -55,10 +55,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //set the score label inital
         scoreLabel = SKLabelNode(text: "Score - 0")
         //TODO: add as ratio of screen rather than hard coded
-        scoreLabel.position = CGPoint(x:self.frame.width / 2, y: self.frame.height - 100)
-        print(view.frame.maxY)
-        print(self.frame.size.height - 50)
-       print(-1*player.size.height/2 - 500)
+        scoreLabel.position = CGPoint(x:self.frame.width / 2, y: self.frame.height * 0.90)
+    
         //http://iosfonts.com/
         scoreLabel.fontName = "Avenir-BlackOblique"
         scoreLabel.fontSize = 48
