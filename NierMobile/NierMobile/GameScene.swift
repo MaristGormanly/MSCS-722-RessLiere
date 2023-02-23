@@ -92,7 +92,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
                 self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
-                self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
+               // self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
             }
         }
        
@@ -222,16 +222,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func didSimulatePhysics() {
-        
+     
         player.position.x += xAcceleration * 50
         player.position.y += yAcceleration * 50
         
-        if player.position.x < -20 {
-            player.position = CGPoint(x: self.size.width + 20, y: player.position.y)
-        }else if player.position.x > self.size.width + 20 {
-            player.position = CGPoint(x: -20, y: player.position.y)
+        //stops player from going past walls of screeen
+        if player.position.x > self.frame.width * 0.85 {
+            player.position = CGPoint(x:self.frame.width * 0.85, y: player.position.y)
+        }
+        else if player.position.x < self.frame.width * 0.15{
+            player.position = CGPoint(x: self.frame.width * 0.15, y: player.position.y)
         }
         
+       
     }
  
         
