@@ -33,6 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //motion mangaer
     let motionManger = CMMotionManager()
     var xAcceleration:CGFloat = 0
+    var yAcceleration:CGFloat = 0
     
     
     
@@ -85,9 +86,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(scoreLabel)
         
         gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
+        
+        motionManger.accelerometerUpdateInterval = 0.2
+        motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
+            if let accelerometerData = data {
+                let acceleration = accelerometerData.acceleration
+                self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
+                self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
+            }
+        }
        
     }
     
+    
+    //
+    //
+    //
     @objc func addAlien () {
         //generates a random element from possible alien array
         possibleAliens = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possibleAliens) as! [String]
@@ -125,11 +139,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                
     }
     
+    
+    //
+    //when screen touched missile is fired
+    //
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         fireTorpedo()
     }
     
     
+    
+    //
+    //collision detected on torpedo
+    //
     func fireTorpedo() {
         self.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
         
@@ -174,7 +196,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & alienCategory) != 0 {
-           torpedoDidCollideWithAlien(torpedoNode: firstBody.node as! SKSpriteNode, alienNode: secondBody.node as! SKSpriteNode)
+            torpedoDidCollideWithAlien(torpedoNode: firstBody.node as! SKSpriteNode, alienNode: secondBody.node as! SKSpriteNode)
         }
         
     }
@@ -197,6 +219,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         score += 5
         
+    }
+    
+    override func didSimulatePhysics() {
+        
+        player.position.x += xAcceleration * 50
+        player.position.y += yAcceleration * 50
+        
+        if player.position.x < -20 {
+            player.position = CGPoint(x: self.size.width + 20, y: player.position.y)
+        }else if player.position.x > self.size.width + 20 {
+            player.position = CGPoint(x: -20, y: player.position.y)
+        }
         
     }
  
