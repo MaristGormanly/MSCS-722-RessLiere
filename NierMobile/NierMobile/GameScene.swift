@@ -127,10 +127,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //create a player
         player = SKSpriteNode(imageNamed: "spaceship2")
         player.setScale(0.2)
+        player.zRotation = -1*CGFloat.pi / 2.0
         
        
         //set player intial postiion
-        player.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.height * 0.08)
+        player.position = CGPoint(x: self.frame.size.width * 0.08, y: self.frame.height / 2)
         
         //add player to screen
         self.addChild(player)
@@ -161,7 +162,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
-                self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
+               // self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
                self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
             }
         }
@@ -225,6 +226,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
           }
         // Position to rotate towards
         let targetPosition = touch.location(in: self)
+        //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
         let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
 
         fireTorpedo(target: torpedoTarget)
