@@ -23,6 +23,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     var gameTimer:Timer!
+    var torpedoTimer:Timer!
     
     //POSSIBLE targets
     var possibleAliens = ["alien","alien2","alien3"]
@@ -107,11 +108,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //
-        //spawning
+        //spawning enemy timer
         //
         gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
         
-        motionManger.accelerometerUpdateInterval = 0.2
+        //torpedo firing on timer
+        torpedoTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(fireTorpedo), userInfo: nil, repeats: true)
+        
+        //updates 5 times per second
+        motionManger.accelerometerUpdateInterval = 0.1
         motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
@@ -137,7 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         possibleAliens = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possibleAliens) as! [String]
         
         let alien = SKSpriteNode(imageNamed: possibleAliens[0])
-        
+        //TODO: adjust spawning
         //generates lowest x and y value
         let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: 414)
         let position = CGFloat(randomPosition.nextInt())
@@ -182,8 +187,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //collision detected on torpedo
     //
-    func fireTorpedo() {
-        self.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
+    @objc func fireTorpedo() {
+        
+        self.run(SKAction.playSoundFileNamed("torpedo-quiet.mp3", waitForCompletion: false))
         
         let torpedoNode = SKSpriteNode(imageNamed: "torpedo")
         torpedoNode.position = player.position
