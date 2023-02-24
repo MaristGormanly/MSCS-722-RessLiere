@@ -8,6 +8,7 @@
 import SpriteKit
 import GameplayKit
 import CoreMotion
+import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -35,12 +36,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var xAcceleration:CGFloat = 0
     var yAcceleration:CGFloat = 0
     
-    
+    //music
+    var backgroundMusic: SKAudioNode!
     
     //
     //
     //
     override func didMove(to view: SKView) {
+        
+        //start music
+        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
+        }
+        
         //initlize startfield
         starfield = SKEmitterNode(fileNamed: "Starfield")
         
@@ -55,8 +65,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         starfield.zPosition = -1
         
         //create a player
-        player = SKSpriteNode(imageNamed: "shuttle")
-        
+        player = SKSpriteNode(imageNamed: "spaceship2")
+        player.setScale(0.2)
         
        
         //set player intial postiion
@@ -96,6 +106,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
        
+    }
+    
+    //when scene changes remove backround music
+    override func willMove(from view: SKView) {
+    
+        backgroundMusic?.removeFromParent()
     }
     
     
