@@ -240,7 +240,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didSimulatePhysics() {
      
         player.position.x += xAcceleration * 50
-        player.position.y += yAcceleration * 50
+        player.position.y += yAcceleration * 75
         
         //stops player from going past walls of screeen
         if player.position.x > self.frame.width * 0.85 {
@@ -249,7 +249,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if player.position.x < self.frame.width * 0.15{
             player.position = CGPoint(x: self.frame.width * 0.15, y: player.position.y)
         }
-        
+        if player.position.y > self.frame.height * 0.9 {
+            player.position = CGPoint(x:player.position.x, y:self.frame.height * 0.9)
+        }
+        else if player.position.y < self.frame.height * 0.1{
+            player.position = CGPoint(x: player.position.x, y: self.frame.height * 0.1)
+        }
        
     }
  
