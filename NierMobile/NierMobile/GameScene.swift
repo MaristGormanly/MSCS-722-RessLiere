@@ -44,6 +44,26 @@ extension CGPoint {
   }
 }
 
+func pointAtDistanceFromPoint(origin: CGPoint,target:CGPoint, distance: CGFloat) -> CGPoint {
+    let x1 = origin.x
+    let y1 = origin.y
+    
+    let x2 = target.x
+    let y2 = target.y
+    
+    let slope = (y2 - y1) / (x2 - x1)
+    //calculate slope
+    
+    
+    
+    let x3 = x1 + sqrt(pow(distance, 2) / (1 + pow(slope, 2)))
+     let y3 = y1 + slope * (x2 - x1)
+    
+  
+    return CGPoint(x: x3, y: y3)
+}
+
+
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -205,7 +225,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
           }
         // Position to rotate towards
         let targetPosition = touch.location(in: self)
-        fireTorpedo(target: targetPosition)
+        let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
+
+        fireTorpedo(target: torpedoTarget)
 
      
         let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
@@ -240,7 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(torpedoNode)
         
         let animationDuration:TimeInterval = 0.5
-        
+       
         
         var actionArray = [SKAction]()
         
