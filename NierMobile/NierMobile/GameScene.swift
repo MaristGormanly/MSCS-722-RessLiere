@@ -43,14 +43,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //
     override func didMove(to view: SKView) {
-        
+        //
         //start music
+        //
         if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
             backgroundMusic = SKAudioNode(url: musicURL)
             backgroundMusic.autoplayLooped = true
             addChild(backgroundMusic)
         }
         
+        //
+        //starfield
+        //
         //initlize startfield
         starfield = SKEmitterNode(fileNamed: "Starfield")
         
@@ -64,14 +68,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //send starfield to back of screen
         starfield.zPosition = -1
         
+        //
+        //player
+        //
+        
         //create a player
         player = SKSpriteNode(imageNamed: "spaceship2")
         player.setScale(0.2)
         
-       
         //set player intial postiion
         player.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.height * 0.08)
         
+        player.zRotation = -.pi / 2
         //add player to screen
         self.addChild(player)
         
@@ -81,7 +89,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //TODO: contact delegate will be defined
         self.physicsWorld.contactDelegate = self
         
-        
+        //
+        //Score Board
+        //
         
         //set the score label inital
         scoreLabel = SKLabelNode(text: "Score - 0")
@@ -95,6 +105,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         score = 0
         self.addChild(scoreLabel)
         
+        
+        //
+        //spawning
+        //
         gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
         
         motionManger.accelerometerUpdateInterval = 0.2
@@ -190,7 +204,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         var actionArray = [SKAction]()
         
-        actionArray.append(SKAction.move(to: CGPoint(x: player.position.x, y: self.frame.size.height + 10), duration: animationDuration))
+        actionArray.append(SKAction.move(to: CGPoint(x: self.frame.size.width + 10, y:player.position.y ), duration: animationDuration))
         actionArray.append(SKAction.removeFromParent())
         
         torpedoNode.run(SKAction.sequence(actionArray))
