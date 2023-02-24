@@ -102,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
                 self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
-               // self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
+                self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
             }
         }
        
