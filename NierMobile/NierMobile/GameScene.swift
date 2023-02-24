@@ -102,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
                 self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
-               // self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
+               self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
             }
         }
        
@@ -249,6 +249,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if player.position.x < self.frame.width * 0.15{
             player.position = CGPoint(x: self.frame.width * 0.15, y: player.position.y)
         }
+        if player.position.y > self.frame.height * 0.9 {
+                    player.position = CGPoint(x:player.position.x, y:self.frame.height * 0.9)
+                }
+                else if player.position.y < self.frame.height * 0.1{
+                    player.position = CGPoint(x: player.position.x, y: self.frame.height * 0.1)
+                }
         
        
     }
