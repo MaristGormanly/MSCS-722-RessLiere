@@ -15,14 +15,14 @@
 		BA9FA12C29A7B3F4001B8E5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA12A29A7B3F4001B8E5A /* Main.storyboard */; };
 		BA9FA12E29A7B3F7001B8E5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA12D29A7B3F7001B8E5A /* Assets.xcassets */; };
 		BA9FA13129A7B3F7001B8E5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA12F29A7B3F7001B8E5A /* LaunchScreen.storyboard */; };
-		BA9FA13829A7B54E001B8E5A /* MyParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA13729A7B54D001B8E5A /* MyParticle.sks */; };
 		BA9FA16529A83C71001B8E5A /* torpedo.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA16429A83C71001B8E5A /* torpedo.mp3 */; };
 		BA9FA16929A83D53001B8E5A /* explosion.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA16629A83D52001B8E5A /* explosion.mp3 */; };
 		BA9FA16B29A83D53001B8E5A /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA16829A83D53001B8E5A /* Explosion.sks */; };
 		BA9FA16F29A84634001B8E5A /* Starfield.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA16E29A84634001B8E5A /* Starfield.sks */; };
-		BA9FA17329A8477E001B8E5A /* BlackSpark.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA17229A8477E001B8E5A /* BlackSpark.sks */; };
 		BA9FA17729A91B8B001B8E5A /* spaceship2.png in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA17629A91B8B001B8E5A /* spaceship2.png */; };
 		BA9FA17929A92210001B8E5A /* hacking-dimension.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */; };
+		BA9FA18229ABB936001B8E5A /* HomeScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA18129ABB936001B8E5A /* HomeScene.sks */; };
+		BA9FA18429ABB958001B8E5A /* HomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA18329ABB958001B8E5A /* HomeScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,14 +35,14 @@
 		BA9FA12B29A7B3F4001B8E5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BA9FA12D29A7B3F7001B8E5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA9FA13029A7B3F7001B8E5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		BA9FA13729A7B54D001B8E5A /* MyParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MyParticle.sks; sourceTree = "<group>"; };
 		BA9FA16429A83C71001B8E5A /* torpedo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = torpedo.mp3; sourceTree = "<group>"; };
 		BA9FA16629A83D52001B8E5A /* explosion.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = explosion.mp3; sourceTree = "<group>"; };
 		BA9FA16829A83D53001B8E5A /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
 		BA9FA16E29A84634001B8E5A /* Starfield.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Starfield.sks; sourceTree = "<group>"; };
-		BA9FA17229A8477E001B8E5A /* BlackSpark.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BlackSpark.sks; sourceTree = "<group>"; };
 		BA9FA17629A91B8B001B8E5A /* spaceship2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spaceship2.png; sourceTree = "<group>"; };
 		BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "hacking-dimension.mp3"; sourceTree = "<group>"; };
+		BA9FA18129ABB936001B8E5A /* HomeScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HomeScene.sks; sourceTree = "<group>"; };
+		BA9FA18329ABB958001B8E5A /* HomeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,9 +84,9 @@
 				BA9FA12A29A7B3F4001B8E5A /* Main.storyboard */,
 				BA9FA12D29A7B3F7001B8E5A /* Assets.xcassets */,
 				BA9FA17629A91B8B001B8E5A /* spaceship2.png */,
-				BA9FA13729A7B54D001B8E5A /* MyParticle.sks */,
 				BA9FA12F29A7B3F7001B8E5A /* LaunchScreen.storyboard */,
-				BA9FA17229A8477E001B8E5A /* BlackSpark.sks */,
+				BA9FA18129ABB936001B8E5A /* HomeScene.sks */,
+				BA9FA18329ABB958001B8E5A /* HomeScene.swift */,
 			);
 			path = NierMobile;
 			sourceTree = "<group>";
@@ -178,16 +178,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA9FA12C29A7B3F4001B8E5A /* Main.storyboard in Resources */,
-				BA9FA13829A7B54E001B8E5A /* MyParticle.sks in Resources */,
 				BA9FA17929A92210001B8E5A /* hacking-dimension.mp3 in Resources */,
 				BA9FA16F29A84634001B8E5A /* Starfield.sks in Resources */,
 				BA9FA17729A91B8B001B8E5A /* spaceship2.png in Resources */,
 				BA9FA12329A7B3F4001B8E5A /* GameScene.sks in Resources */,
 				BA9FA12E29A7B3F7001B8E5A /* Assets.xcassets in Resources */,
 				BA9FA16929A83D53001B8E5A /* explosion.mp3 in Resources */,
+				BA9FA18229ABB936001B8E5A /* HomeScene.sks in Resources */,
 				BA9FA13129A7B3F7001B8E5A /* LaunchScreen.storyboard in Resources */,
 				BA9FA16B29A83D53001B8E5A /* Explosion.sks in Resources */,
-				BA9FA17329A8477E001B8E5A /* BlackSpark.sks in Resources */,
 				BA9FA16529A83C71001B8E5A /* torpedo.mp3 in Resources */,
 				BA9FA12529A7B3F4001B8E5A /* Actions.sks in Resources */,
 			);
@@ -201,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA9FA12729A7B3F4001B8E5A /* GameScene.swift in Sources */,
+				BA9FA18429ABB958001B8E5A /* HomeScene.swift in Sources */,
 				BA9FA12929A7B3F4001B8E5A /* GameViewController.swift in Sources */,
 				BA9FA12129A7B3F4001B8E5A /* AppDelegate.swift in Sources */,
 			);

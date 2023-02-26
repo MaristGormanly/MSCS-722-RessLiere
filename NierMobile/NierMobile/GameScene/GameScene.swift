@@ -5,6 +5,8 @@
 //  Created by Kyle Ress-Liere on 2/23/23.
 //
 
+
+//TODO: ADD TIMER AND CHANGE COLOR WHEN LOW AND PLAY SOUNDS EFFECT
 import SpriteKit
 import GameplayKit
 import CoreMotion
