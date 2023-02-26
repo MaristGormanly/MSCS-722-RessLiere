@@ -229,12 +229,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
         let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
 
-        fireTorpedo(target: torpedoTarget)
-
-     
+        //rotate player to where going to shoot
         let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
         currentRotation = angle + 180
         player.zRotation = currentRotation
+        
+        
+        fireTorpedo(target: torpedoTarget)
+
+     
+    
 
        
 
