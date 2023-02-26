@@ -10,6 +10,61 @@ import GameplayKit
 import CoreMotion
 import AVFoundation
 
+func +(left: CGPoint, right: CGPoint) -> CGPoint {
+  return CGPoint(x: left.x + right.x, y: left.y + right.y)
+}
+
+func -(left: CGPoint, right: CGPoint) -> CGPoint {
+  return CGPoint(x: left.x - right.x, y: left.y - right.y)
+}
+
+func *(point: CGPoint, scalar: CGFloat) -> CGPoint {
+  return CGPoint(x: point.x * scalar, y: point.y * scalar)
+}
+
+func /(point: CGPoint, scalar: CGFloat) -> CGPoint {
+  return CGPoint(x: point.x / scalar, y: point.y / scalar)
+}
+
+
+
+#if !(arch(x86_64) || arch(arm64))
+  func sqrt(a: CGFloat) -> CGFloat {
+    return CGFloat(sqrtf(Float(a)))
+  }
+#endif
+
+extension CGPoint {
+  func length() -> CGFloat {
+    return sqrt(x*x + y*y)
+  }
+  
+  func normalized() -> CGPoint {
+    return self / length()
+  }
+}
+
+func pointAtDistanceFromPoint(origin: CGPoint,target:CGPoint, distance: CGFloat) -> CGPoint {
+    let x1 = origin.x
+    let y1 = origin.y
+    
+    let x2 = target.x
+    let y2 = target.y
+    
+    let slope = (y2 - y1) / (x2 - x1)
+    //calculate slope
+    
+    
+    
+    let x3 = x1 + sqrt(pow(distance, 2) / (1 + pow(slope, 2)))
+     let y3 = y1 + slope * (x2 - x1)
+    
+  
+    return CGPoint(x: x3, y: y3)
+}
+
+
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //PROPTERTIES
@@ -39,6 +94,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //music
     var backgroundMusic: SKAudioNode!
     
+    
+    //player
+    var currentRotation: CGFloat = 0
+
+    
     //
     //
     //
@@ -67,10 +127,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //create a player
         player = SKSpriteNode(imageNamed: "spaceship2")
         player.setScale(0.2)
+        player.zRotation = -1*CGFloat.pi / 2.0
         
        
         //set player intial postiion
-        player.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.height * 0.08)
+        player.position = CGPoint(x: self.frame.size.width * 0.08, y: self.frame.height / 2)
         
         //add player to screen
         self.addChild(player)
@@ -101,8 +162,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
-                self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
-               // self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
+               // self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
+               self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
             }
         }
        
@@ -160,7 +221,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //when screen touched missile is fired
     //
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        fireTorpedo()
+        guard let touch = touches.first else {
+            return
+          }
+        // Position to rotate towards
+        let targetPosition = touch.location(in: self)
+        //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
+        let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
+
+        //rotate player to where going to shoot
+        let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
+        currentRotation = angle + 180
+        player.zRotation = currentRotation
+        
+        
+        fireTorpedo(target: torpedoTarget)
+
+     
+    
+
+       
+
+
     }
     
     
@@ -168,7 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //collision detected on torpedo
     //
-    func fireTorpedo() {
+    func fireTorpedo(target:CGPoint) {
         self.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
         
         let torpedoNode = SKSpriteNode(imageNamed: "torpedo")
@@ -185,12 +267,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(torpedoNode)
         
-        let animationDuration:TimeInterval = 0.3
-        
+        let animationDuration:TimeInterval = 0.5
+       
         
         var actionArray = [SKAction]()
         
-        actionArray.append(SKAction.move(to: CGPoint(x: player.position.x, y: self.frame.size.height + 10), duration: animationDuration))
+        actionArray.append(SKAction.move(to: CGPoint(x: target.x  , y: target.y ), duration: animationDuration))
         actionArray.append(SKAction.removeFromParent())
         
         torpedoNode.run(SKAction.sequence(actionArray))
@@ -249,6 +331,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if player.position.x < self.frame.width * 0.15{
             player.position = CGPoint(x: self.frame.width * 0.15, y: player.position.y)
         }
+        if player.position.y > self.frame.height * 0.9 {
+                    player.position = CGPoint(x:player.position.x, y:self.frame.height * 0.9)
+                }
+                else if player.position.y < self.frame.height * 0.1{
+                    player.position = CGPoint(x: player.position.x, y: self.frame.height * 0.1)
+                }
         
        
     }
