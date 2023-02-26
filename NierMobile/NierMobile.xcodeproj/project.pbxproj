@@ -75,15 +75,11 @@
 		BA9FA11F29A7B3F3001B8E5A /* NierMobile */ = {
 			isa = PBXGroup;
 			children = (
-				BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */,
-				BA9FA16E29A84634001B8E5A /* Starfield.sks */,
-				BA9FA16429A83C71001B8E5A /* torpedo.mp3 */,
-				BA9FA16629A83D52001B8E5A /* explosion.mp3 */,
-				BA9FA16829A83D53001B8E5A /* Explosion.sks */,
+				BA9FA17D29ABB80A001B8E5A /* Sounds */,
+				BA9FA17E29ABB818001B8E5A /* Effects */,
 				BA9FA12029A7B3F4001B8E5A /* AppDelegate.swift */,
-				BA9FA12229A7B3F4001B8E5A /* GameScene.sks */,
+				BA9FA17C29ABB7BB001B8E5A /* GameScene */,
 				BA9FA12429A7B3F4001B8E5A /* Actions.sks */,
-				BA9FA12629A7B3F4001B8E5A /* GameScene.swift */,
 				BA9FA12829A7B3F4001B8E5A /* GameViewController.swift */,
 				BA9FA12A29A7B3F4001B8E5A /* Main.storyboard */,
 				BA9FA12D29A7B3F7001B8E5A /* Assets.xcassets */,
@@ -93,6 +89,34 @@
 				BA9FA17229A8477E001B8E5A /* BlackSpark.sks */,
 			);
 			path = NierMobile;
+			sourceTree = "<group>";
+		};
+		BA9FA17C29ABB7BB001B8E5A /* GameScene */ = {
+			isa = PBXGroup;
+			children = (
+				BA9FA12229A7B3F4001B8E5A /* GameScene.sks */,
+				BA9FA12629A7B3F4001B8E5A /* GameScene.swift */,
+			);
+			path = GameScene;
+			sourceTree = "<group>";
+		};
+		BA9FA17D29ABB80A001B8E5A /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */,
+				BA9FA16429A83C71001B8E5A /* torpedo.mp3 */,
+				BA9FA16629A83D52001B8E5A /* explosion.mp3 */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		BA9FA17E29ABB818001B8E5A /* Effects */ = {
+			isa = PBXGroup;
+			children = (
+				BA9FA16E29A84634001B8E5A /* Starfield.sks */,
+				BA9FA16829A83D53001B8E5A /* Explosion.sks */,
+			);
+			path = Effects;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
