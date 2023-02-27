@@ -172,6 +172,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         quitGameButton.position = CGPoint(x:self.frame.width / 2, y:self.frame.height / 2)
         quitGameButton.name = "quitGameButton"
         
+        //makes it the highest z value in the scene
+        let highestZPosition = 5
+        quitGameButton.zPosition = 5
+        
         
         
         
