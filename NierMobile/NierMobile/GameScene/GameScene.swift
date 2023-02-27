@@ -97,10 +97,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameTimer:Timer!
     
     //POSSIBLE targets
-    var possibleAliens = ["alien","alien2","alien3"]
+    var possiblerobots = ["robot","robot2","robot3"]
     
-    //TODO: bitwise defines each alien and projectile
-    let alienCategory:UInt32 = 0x1 << 1
+    //TODO: bitwise defines each robot and projectile
+    let robotCategory:UInt32 = 0x1 << 1
     let photonTorpedoCategory:UInt32 = 0x1 << 0
     
     //motion mangaer
@@ -189,7 +189,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         score = 0
         worldNode.addChild(scoreLabel)
         
-        gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
+        gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
         
         motionManger.accelerometerUpdateInterval = 0.2
         motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
@@ -212,39 +212,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //
     //
-    @objc func addAlien () {
-        //generates a random element from possible alien array
-        possibleAliens = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possibleAliens) as! [String]
+    @objc func addrobot () {
+        //generates a random element from possible robot array
+        possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
         
-        let alien = SKSpriteNode(imageNamed: possibleAliens[0])
+        let robot = SKSpriteNode(imageNamed: possiblerobots[0])
         
         //generates lowest x and y value
         let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: 414)
         let position = CGFloat(randomPosition.nextInt())
         
-        alien.position = CGPoint(x:position, y:self.frame.size.height + alien.size.height)
-        
-        //sets size of the spawned alien
-        alien.physicsBody = SKPhysicsBody(rectangleOf: alien.size)
+        robot.position = CGPoint(x:position, y:self.frame.size.height + robot.size.height)
+        robot.size = CGSize(width: 100, height: 100)
+        //sets size of the spawned robot
+        robot.physicsBody = SKPhysicsBody(rectangleOf: robot.size)
         //TODO:explore what this means
-        alien.physicsBody?.isDynamic = true
+        robot.physicsBody?.isDynamic = true
         
-        //calculates when alien is hit
-        alien.physicsBody?.categoryBitMask = alienCategory
-        alien.physicsBody?.contactTestBitMask = photonTorpedoCategory
-        alien.physicsBody?.collisionBitMask = 0
+        //calculates when robot is hit
+        robot.physicsBody?.categoryBitMask = robotCategory
+        robot.physicsBody?.contactTestBitMask = photonTorpedoCategory
+        robot.physicsBody?.collisionBitMask = 0
         
-        worldNode.addChild(alien)
+        worldNode.addChild(robot)
         
         let animationDuration:TimeInterval = 6
         
         var actionArray = [SKAction]()
         
         
-        actionArray.append(SKAction.move(to: CGPoint(x: position, y: -alien.size.height), duration: animationDuration))
+        actionArray.append(SKAction.move(to: CGPoint(x: position, y: -robot.size.height), duration: animationDuration))
         actionArray.append(SKAction.removeFromParent())
         
-        alien.run(SKAction.sequence(actionArray))
+        robot.run(SKAction.sequence(actionArray))
         
                                
     }
@@ -299,7 +299,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else {
                 // Unpause the game
                 self.view?.isPaused = false
-                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
+                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
                 backgroundMusic.run(SKAction.play())
             }
             
@@ -322,7 +322,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         torpedoNode.physicsBody?.isDynamic = true
         
         torpedoNode.physicsBody?.categoryBitMask = photonTorpedoCategory
-        torpedoNode.physicsBody?.contactTestBitMask = alienCategory
+        torpedoNode.physicsBody?.contactTestBitMask = robotCategory
         torpedoNode.physicsBody?.collisionBitMask = 0
         torpedoNode.physicsBody?.usesPreciseCollisionDetection = true
         
@@ -354,22 +354,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             secondBody = contact.bodyA
         }
         
-        if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & alienCategory) != 0 {
-            torpedoDidCollideWithAlien(torpedoNode: firstBody.node as! SKSpriteNode, alienNode: secondBody.node as! SKSpriteNode)
+        if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & robotCategory) != 0 {
+            torpedoDidCollideWithrobot(torpedoNode: firstBody.node as! SKSpriteNode, robotNode: secondBody.node as! SKSpriteNode)
         }
         
     }
     
-    func torpedoDidCollideWithAlien (torpedoNode:SKSpriteNode, alienNode:SKSpriteNode) {
+    func torpedoDidCollideWithrobot (torpedoNode:SKSpriteNode, robotNode:SKSpriteNode) {
     
         let explosion = SKEmitterNode(fileNamed: "Explosion")!
-        explosion.position = alienNode.position
+        explosion.position = robotNode.position
         worldNode.addChild(explosion)
         
         worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
         
         torpedoNode.removeFromParent()
-        alienNode.removeFromParent()
+        robotNode.removeFromParent()
         
         
         worldNode.run(SKAction.wait(forDuration: 2)) {
