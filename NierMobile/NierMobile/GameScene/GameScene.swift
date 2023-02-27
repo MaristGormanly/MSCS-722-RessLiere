@@ -5,6 +5,8 @@
 //  Created by Kyle Ress-Liere on 2/23/23.
 //
 
+
+//TODO: ADD TIMER AND CHANGE COLOR WHEN LOW AND PLAY SOUNDS EFFECT
 import SpriteKit
 import GameplayKit
 import CoreMotion
@@ -68,6 +70,11 @@ func pointAtDistanceFromPoint(origin: CGPoint,target:CGPoint, distance: CGFloat)
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //PROPTERTIES
+    //seperate gameNode from scene
+    let worldNode = SKNode()
+    
+    
+    
     // ! is optional meaning value does not have be defined right away
     var player:SKSpriteNode!
     var starfield:SKEmitterNode!
@@ -97,13 +104,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //player
     var currentRotation: CGFloat = 0
-
     
+    //intialize pause button
+    var pauseGameButton:SKSpriteNode!
+    var gamePause = false
     //
     //
     //
     override func didMove(to view: SKView) {
         
+        addChild(worldNode)
+       
         //start music
         if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
             backgroundMusic = SKAudioNode(url: musicURL)
@@ -120,7 +131,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //skip 10 seconds into animation
         starfield.advanceSimulationTime(10)
         //add starfield to screen
-        self.addChild(starfield)
+        worldNode.addChild(starfield)
         //send starfield to back of screen
         starfield.zPosition = -1
         
@@ -129,12 +140,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.setScale(0.2)
         player.zRotation = -1*CGFloat.pi / 2.0
         
-       
         //set player intial postiion
         player.position = CGPoint(x: self.frame.size.width * 0.08, y: self.frame.height / 2)
-        
         //add player to screen
-        self.addChild(player)
+        worldNode.addChild(player)
+        
+        //set pause button
+        
+        pauseGameButton = SKSpriteNode(imageNamed: "pause-game")
+        
+        pauseGameButton.name = "pauseGameButton"
+        pauseGameButton.zRotation = -1*CGFloat.pi / 2.0
+        pauseGameButton.setScale(1)
+        pauseGameButton.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.08)
+        
+        self.addChild(pauseGameButton)
+        
+       
         
         //set physics for scene zero gravity
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
@@ -146,15 +168,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //set the score label inital
         scoreLabel = SKLabelNode(text: "Score - 0")
+        scoreLabel.zRotation = -1*CGFloat.pi / 2.0
         //TODO: add as ratio of screen rather than hard coded
-        scoreLabel.position = CGPoint(x:self.frame.width / 2, y: self.frame.height * 0.90)
+        scoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height * 0.90)
     
         //http://iosfonts.com/
         scoreLabel.fontName = "Avenir-BlackOblique"
         scoreLabel.fontSize = 48
         scoreLabel.fontColor = UIColor.white
         score = 0
-        self.addChild(scoreLabel)
+        worldNode.addChild(scoreLabel)
         
         gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
         
@@ -201,7 +224,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         alien.physicsBody?.contactTestBitMask = photonTorpedoCategory
         alien.physicsBody?.collisionBitMask = 0
         
-        self.addChild(alien)
+        worldNode.addChild(alien)
         
         let animationDuration:TimeInterval = 6
         
@@ -223,26 +246,54 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else {
             return
-          }
-        // Position to rotate towards
-        let targetPosition = touch.location(in: self)
-        //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
-        let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
-
-        //rotate player to where going to shoot
-        let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
-        currentRotation = angle + 180
-        player.zRotation = currentRotation
+        }
+        
+        guard let touchLocation = touches.first?.location(in: self) else { return }
+        
+        // Find the node at the touch location
+        let touchedNode = self.atPoint(touchLocation)
+        
+        // Check if the touched node is the node you're interested in
+        if touchedNode.name == "pauseGameButton" {
+            pauseButtonHandler()
+        }
+        else if gamePause != true{
+            print(gamePause)
+            // Position to rotate towards
+            let targetPosition = touch.location(in: self)
+            //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
+            let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
+            
+            //rotate player to where going to shoot
+            let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
+            currentRotation = angle + 180
+            player.zRotation = currentRotation
+            
+            
+            fireTorpedo(target: torpedoTarget)
+        }
         
         
-        fireTorpedo(target: torpedoTarget)
-
-     
-    
-
-       
-
-
+        
+        //TODO: clean up the logic here
+        //handles game pausing
+        func pauseButtonHandler(){
+            
+            isPaused = !isPaused
+            gamePause = isPaused
+            if isPaused {
+                // Pause the game
+                worldNode.isPaused = true
+                gameTimer.invalidate()
+                backgroundMusic.run(SKAction.pause())
+            } else {
+                // Unpause the game
+                self.view?.isPaused = false
+                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
+                backgroundMusic.run(SKAction.play())
+            }
+            
+        }
     }
     
     
@@ -251,7 +302,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //collision detected on torpedo
     //
     func fireTorpedo(target:CGPoint) {
-        self.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
+        worldNode.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
         
         let torpedoNode = SKSpriteNode(imageNamed: "torpedo")
         torpedoNode.position = player.position
@@ -265,7 +316,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         torpedoNode.physicsBody?.collisionBitMask = 0
         torpedoNode.physicsBody?.usesPreciseCollisionDetection = true
         
-        self.addChild(torpedoNode)
+        worldNode.addChild(torpedoNode)
         
         let animationDuration:TimeInterval = 0.5
        
@@ -303,15 +354,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
         let explosion = SKEmitterNode(fileNamed: "Explosion")!
         explosion.position = alienNode.position
-        self.addChild(explosion)
+        worldNode.addChild(explosion)
         
-        self.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
+        worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
         
         torpedoNode.removeFromParent()
         alienNode.removeFromParent()
         
         
-        self.run(SKAction.wait(forDuration: 2)) {
+        worldNode.run(SKAction.wait(forDuration: 2)) {
             explosion.removeFromParent()
         }
         
