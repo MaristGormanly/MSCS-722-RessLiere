@@ -99,13 +99,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //player
     var currentRotation: CGFloat = 0
+    
+    //intialize pause button
+    var pauseGameButton:SKSpriteNode!
 
     
     //
     //
     //
     override func didMove(to view: SKView) {
-        
+       
         //start music
         if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
             backgroundMusic = SKAudioNode(url: musicURL)
@@ -131,12 +134,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.setScale(0.2)
         player.zRotation = -1*CGFloat.pi / 2.0
         
-       
         //set player intial postiion
         player.position = CGPoint(x: self.frame.size.width * 0.08, y: self.frame.height / 2)
-        
         //add player to screen
         self.addChild(player)
+        
+        //set pause button
+        pauseGameButton = SKSpriteNode(imageNamed: "pause-game")
+        pauseGameButton.zRotation = -1*CGFloat.pi / 2.0
+        pauseGameButton.setScale(1)
+        pauseGameButton.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.08)
+        
+        self.addChild(pauseGameButton)
+        
+        
+       
+       
+        
+       
         
         //set physics for scene zero gravity
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
@@ -226,6 +241,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard let touch = touches.first else {
             return
           }
+        
+        
         // Position to rotate towards
         let targetPosition = touch.location(in: self)
         //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
