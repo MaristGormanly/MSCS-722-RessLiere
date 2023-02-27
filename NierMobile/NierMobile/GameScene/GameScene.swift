@@ -12,6 +12,16 @@ import GameplayKit
 import CoreMotion
 import AVFoundation
 
+
+//REFERENCE
+//MOHAWK ROBOT
+//https://foozlecc.itch.io/mohawk-robot
+//UFO ROBOT SPRITE https://opengameart.org/content/ufo-enemy-game-character
+// CUTE ROBOT SPRITE https://www.youtube.com/watch?v=w_-Hed4r5PE
+///
+///HELPER FUNCTIONS FROM https://www.kodeco.com/71-spritekit-tutorial-for-beginners shooting projectiles section
+///
+
 func +(left: CGPoint, right: CGPoint) -> CGPoint {
   return CGPoint(x: left.x + right.x, y: left.y + right.y)
 }
@@ -258,7 +268,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             pauseButtonHandler()
         }
         else if gamePause != true{
-            print(gamePause)
+            
             // Position to rotate towards
             let targetPosition = touch.location(in: self)
             //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
