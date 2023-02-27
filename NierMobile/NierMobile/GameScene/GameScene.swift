@@ -147,10 +147,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(pauseGameButton)
         
-        
-       
-       
-        
        
         
         //set physics for scene zero gravity
@@ -163,8 +159,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //set the score label inital
         scoreLabel = SKLabelNode(text: "Score - 0")
+        scoreLabel.zRotation = -1*CGFloat.pi / 2.0
         //TODO: add as ratio of screen rather than hard coded
-        scoreLabel.position = CGPoint(x:self.frame.width / 2, y: self.frame.height * 0.90)
+        scoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height * 0.90)
     
         //http://iosfonts.com/
         scoreLabel.fontName = "Avenir-BlackOblique"
