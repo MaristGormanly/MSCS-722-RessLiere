@@ -118,6 +118,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //intialize pause button
     var pauseGameButton:SKSpriteNode!
     var gamePause = false
+    var quitGameButton:SKSpriteNode!
     //
     //
     //
@@ -165,6 +166,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseGameButton.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.08)
         
         self.addChild(pauseGameButton)
+        
+        quitGameButton = SKSpriteNode(imageNamed:"quit-game")
+        quitGameButton.zRotation = -1*CGFloat.pi / 2.0
+        quitGameButton.position = CGPoint(x:self.frame.width / 2, y:self.frame.height / 2)
+        quitGameButton.name = "quitGameButton"
+        
+        
+        
         
        
         
@@ -267,6 +276,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if touchedNode.name == "pauseGameButton" {
             pauseButtonHandler()
         }
+        else if touchedNode.name == "quitGameButton"{
+            let homeScene = HomeScene(fileNamed: "HomeScene")
+                            homeScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
+            
+        }
         else if gamePause != true{
             
             // Position to rotate towards
@@ -296,9 +311,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 worldNode.isPaused = true
                 gameTimer.invalidate()
                 backgroundMusic.run(SKAction.pause())
+                worldNode.addChild(quitGameButton)
+                
             } else {
                 // Unpause the game
                 self.view?.isPaused = false
+                quitGameButton.removeFromParent()
                 gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
                 backgroundMusic.run(SKAction.play())
             }
