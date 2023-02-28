@@ -455,13 +455,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
                    (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
                     // Play a sound effect or explosion animation
-                    
+            
                     // Decrement player health or trigger a game over
                     
                     // Remove the robot from the scene
                     if let robotNode = firstBody.node as? SKSpriteNode {
+                        playExplosion(spriteNode: robotNode)
                         robotNode.removeFromParent()
                     } else if let robotNode = secondBody.node as? SKSpriteNode {
+                        playExplosion(spriteNode: robotNode)
                         robotNode.removeFromParent()
                     }
                 }
@@ -469,20 +471,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func torpedoDidCollideWithrobot (torpedoNode:SKSpriteNode, robotNode:SKSpriteNode) {
     
-        let explosion = SKEmitterNode(fileNamed: "Explosion")!
-        explosion.position = robotNode.position
-        worldNode.addChild(explosion)
-        
-        worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
+        playExplosion(spriteNode: robotNode)
         
         torpedoNode.removeFromParent()
         robotNode.removeFromParent()
         
         
-        worldNode.run(SKAction.wait(forDuration: 2)) {
-            explosion.removeFromParent()
-        }
-        
+       
         score += 5
         
     }
@@ -508,7 +503,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
        
     }
- 
+    
+    //tale a sprite and creates a explosion on its position
+    func playExplosion(spriteNode:SKSpriteNode){
+        let explosion = SKEmitterNode(fileNamed: "Explosion")!
+        explosion.position = spriteNode.position
+        worldNode.addChild(explosion)
+        
+        worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
+        
+        worldNode.run(SKAction.wait(forDuration: 2)) {
+            explosion.removeFromParent()
+        }
+        
+    }
         
     
     
