@@ -113,7 +113,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = "Score: \(score)"
         }
     }
+    
+    //game timer
     var gameTimer:Timer!
+    var spawnInterval: TimeInterval = 0.75
+    let timeIntervalDecrement: TimeInterval = 0.01
     
     //POSSIBLE targets
     var possiblerobots = ["robot","robot2","robot3"]
@@ -169,7 +173,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
        initScore()
         
-        gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
+        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
+        
         
         //haddle motion
         handleMotion()
@@ -249,7 +254,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel = SKLabelNode(text: "Score - 0")
         scoreLabel.zRotation = -1*CGFloat.pi / 2.0
         //TODO: add as ratio of screen rather than hard coded
-        scoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height * 0.90)
+        scoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height / 2)
     
         //http://iosfonts.com/
         scoreLabel.fontName = "Avenir-BlackOblique"
@@ -284,6 +289,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //
     @objc func addrobot () {
+        //increase spawning rate over time
+        spawnInterval -= timeIntervalDecrement
+            if spawnInterval < 0.1 {
+                spawnInterval = 0.1
+            }
+        gameTimer.invalidate()
+        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
+
+        print(spawnInterval)
         //generates a random element from possible robot array
         possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
         
