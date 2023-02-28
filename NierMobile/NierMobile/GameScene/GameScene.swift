@@ -153,6 +153,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var pauseGameButton:SKSpriteNode!
     var gamePause = false
     var quitGameButton:SKSpriteNode!
+    
+    //gameover intializeing
+    var gameOverButton:SKSpriteNode!
+    var gameOver = false
    
     
     //called when scene is presented in view for first time
@@ -225,6 +229,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      
         
     }
+   
     
     func initPauseScreen(){
         //set pause button
@@ -527,13 +532,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func handlePlayerDamage(){
-        if(playerLives > 0){
+        if(playerLives > 1){
             playerLivesList[playerLives-1].removeFromParent()
             playerLives -= 1
         }
         else{
+            playerLivesList[playerLives-1].removeFromParent()
             print("Gameover")
+            handleGameOver()
         }
+    }
+    
+    //TODO: worry about pause screen not freezing
+    func handleGameOver(){
+        scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
+        pauseGameButton.removeFromParent()
+        isPaused = !isPaused
+        gameOver = isPaused
+        worldNode.isPaused = true
+        gameTimer.invalidate()
+        backgroundMusic.run(SKAction.pause())
+        worldNode.addChild(quitGameButton)
+        
+        
     }
     
     func torpedoDidCollideWithrobot (torpedoNode:SKSpriteNode, robotNode:SKSpriteNode) {
