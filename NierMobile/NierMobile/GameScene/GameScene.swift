@@ -417,31 +417,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         
-        
-        //TODO: clean up the logic here
-        //handles game pausing
-        func pauseButtonHandler(){
-            
-            isPaused = !isPaused
-            gamePause = isPaused
-            if isPaused {
-                // Pause the game
-                worldNode.isPaused = true
-                gameTimer.invalidate()
-                backgroundMusic.run(SKAction.pause())
-                worldNode.addChild(quitGameButton)
-                
-            } else {
-                // Unpause the game
-                self.view?.isPaused = false
-                quitGameButton.removeFromParent()
-                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
-                backgroundMusic.run(SKAction.play())
-            }
-            
-        }
+       
     }
     
+    //TODO: clean up the logic here
+    //handles game pausing
+    func pauseButtonHandler(){
+        
+        isPaused = !isPaused
+        gamePause = isPaused
+        if isPaused {
+            // Pause the game
+            worldNode.isPaused = true
+            gameTimer.invalidate()
+            backgroundMusic.run(SKAction.pause())
+            worldNode.addChild(quitGameButton)
+            
+        } else {
+            // Unpause the game
+            self.view?.isPaused = false
+            quitGameButton.removeFromParent()
+            gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+            backgroundMusic.run(SKAction.play())
+        }
+        
+    }
     
     
     //
@@ -503,15 +503,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else{
             return
         }
-        
+        //if missile hits robot
         if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & robotCategory) != 0 {
             torpedoDidCollideWithrobot(torpedoNode: firstBody.node as! SKSpriteNode, robotNode: secondBody.node as! SKSpriteNode)
         }
+        //if robot hit player
         if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
                    (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
                     // Play a sound effect or explosion animation
-            
+                    
                     // Decrement player health or trigger a game over
+                    handlePlayerDamage()
                     
                     // Remove the robot from the scene
                     if let robotNode = firstBody.node as? SKSpriteNode {
@@ -522,6 +524,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         robotNode.removeFromParent()
                     }
                 }
+    }
+    
+    func handlePlayerDamage(){
+        if(playerLives > 0){
+            playerLivesList[playerLives-1].removeFromParent()
+            playerLives -= 1
+        }
+        else{
+            print("Gameover")
+        }
     }
     
     func torpedoDidCollideWithrobot (torpedoNode:SKSpriteNode, robotNode:SKSpriteNode) {
