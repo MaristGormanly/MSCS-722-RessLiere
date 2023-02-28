@@ -146,6 +146,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //player lives
     
     var playerLives = 3
+    var playerLivesList: [SKSpriteNode] = []
 
     
     //intialize pause button
@@ -212,24 +213,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //TODO: Diffculty adjust lives
     func initPlayerLives(){
-        var playerLife1 = SKSpriteNode(imageNamed: "spaceship2")
-        var playerLife2 = SKSpriteNode(imageNamed: "spaceship2")
-        var playerLife3 = SKSpriteNode(imageNamed: "spaceship2")
-        playerLife1.zRotation = -1*CGFloat.pi / 2.0
-        playerLife2.zRotation = -1*CGFloat.pi / 2.0
-        playerLife3.zRotation = -1*CGFloat.pi / 2.0
-        
-        playerLife1.setScale(0.1)
-        playerLife2.setScale(0.1)
-        playerLife3.setScale(0.1)
+        var spacing = 0.94
+        for i in 0...(playerLives-1) {
+            playerLivesList.append(SKSpriteNode(imageNamed: "spaceship2"))
+            playerLivesList[i].zRotation = -1*CGFloat.pi / 2.0
+            playerLivesList[i].setScale(0.1)
+            playerLivesList[i].position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * spacing )
+            spacing -= 0.03
+            worldNode.addChild(playerLivesList[i])
+        }
      
-        playerLife1.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.94)
-        playerLife2.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.91)
-        playerLife3.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.88)
-        worldNode.addChild(playerLife1)
-        worldNode.addChild(playerLife2)
-        worldNode.addChild(playerLife3)
-
         
     }
     
