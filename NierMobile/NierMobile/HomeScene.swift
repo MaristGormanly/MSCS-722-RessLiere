@@ -28,9 +28,9 @@ class HomeScene: SKScene {
         guard let location = touch?.location(in: self) else { return }
         let nodesArray = self.nodes(at: location)
         if nodesArray.first?.name == "newGameButton" {
-            let transition = SKTransition.flipHorizontal(withDuration: 0.5)
-            let gameScene = GameScene(size: self.size)
-            self.view?.presentScene(gameScene, transition: transition)
+            let gameScene = GameScene(fileNamed: "GameScene")
+                            gameScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
             
             
         }

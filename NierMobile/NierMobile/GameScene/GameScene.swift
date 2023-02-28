@@ -12,6 +12,16 @@ import GameplayKit
 import CoreMotion
 import AVFoundation
 
+
+//REFERENCE
+//MOHAWK ROBOT
+//https://foozlecc.itch.io/mohawk-robot
+//UFO ROBOT SPRITE https://opengameart.org/content/ufo-enemy-game-character
+// CUTE ROBOT SPRITE https://www.youtube.com/watch?v=w_-Hed4r5PE
+///
+///HELPER FUNCTIONS FROM https://www.kodeco.com/71-spritekit-tutorial-for-beginners shooting projectiles section
+///
+
 func +(left: CGPoint, right: CGPoint) -> CGPoint {
   return CGPoint(x: left.x + right.x, y: left.y + right.y)
 }
@@ -65,6 +75,25 @@ func pointAtDistanceFromPoint(origin: CGPoint,target:CGPoint, distance: CGFloat)
     return CGPoint(x: x3, y: y3)
 }
 
+func pointAlongLine(from start: CGPoint, to end: CGPoint, at distance: CGFloat) -> CGPoint {
+    // Calculate the vector from start to end
+    let vector = CGVector(dx: end.x - start.x, dy: end.y - start.y)
+    
+    // Normalize the vector
+    let unitVector = CGVector(dx: vector.dx / vector.length(), dy: vector.dy / vector.length())
+    
+    // Calculate the new point along the line at the specified distance
+    let newX = start.x + (unitVector.dx * distance)
+    let newY = start.y + (unitVector.dy * distance)
+    
+    return CGPoint(x: newX, y: newY)
+}
+
+extension CGVector {
+    func length() -> CGFloat {
+        return sqrt(dx*dx + dy*dy)
+    }
+}
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -87,11 +116,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameTimer:Timer!
     
     //POSSIBLE targets
-    var possibleAliens = ["alien","alien2","alien3"]
+    var possiblerobots = ["robot","robot2","robot3"]
     
-    //TODO: bitwise defines each alien and projectile
-    let alienCategory:UInt32 = 0x1 << 1
+    //TODO: bitwise defines each robot and projectile
+    let robotCategory:UInt32 = 0x1 << 1
     let photonTorpedoCategory:UInt32 = 0x1 << 0
+    let playerCategory: UInt32 = 0x1 << 2
     
     //motion mangaer
     let motionManger = CMMotionManager()
@@ -108,43 +138,65 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //intialize pause button
     var pauseGameButton:SKSpriteNode!
     var gamePause = false
-    //
-    //
-    //
+    var quitGameButton:SKSpriteNode!
+   
+    
+    //called when scene is presented in view for first time
     override func didMove(to view: SKView) {
         
         addChild(worldNode)
        
-        //start music
-        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
-            backgroundMusic = SKAudioNode(url: musicURL)
-            backgroundMusic.autoplayLooped = true
-            addChild(backgroundMusic)
-        }
+        //play music
         
-        //initlize startfield
-        starfield = SKEmitterNode(fileNamed: "Starfield")
+        playMusic()
+       
+       //add starfield
+        initStarfield()
         
-        //initlize postion for starfield
-        //TODO: add later to detect for device for placing start field
-        starfield.position = CGPoint(x:view.frame.maxX, y: self.frame.height + 100)
-        //skip 10 seconds into animation
-        starfield.advanceSimulationTime(10)
-        //add starfield to screen
-        worldNode.addChild(starfield)
-        //send starfield to back of screen
-        starfield.zPosition = -1
+       //add player
+        initPlayer()
         
+        //init pause screen
+        initPauseScreen()
+       
+        
+        //set physics for scene zero gravity
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+        //sets physics rules for contact to be defined in contact delegate function
+        self.physicsWorld.contactDelegate = self
+        
+        
+        
+       initScore()
+        
+        gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
+        
+        //haddle motion
+        handleMotion()
+       
+    }
+    
+    func initPlayer(){
         //create a player
         player = SKSpriteNode(imageNamed: "spaceship2")
         player.setScale(0.2)
         player.zRotation = -1*CGFloat.pi / 2.0
         
+        //player physics body
+        player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width/2)
+        player.physicsBody?.categoryBitMask = playerCategory
+        player.physicsBody?.contactTestBitMask = robotCategory
+        player.physicsBody?.collisionBitMask = 0
+        player.physicsBody?.affectedByGravity = false
+
+        
         //set player intial postiion
         player.position = CGPoint(x: self.frame.size.width * 0.08, y: self.frame.height / 2)
         //add player to screen
         worldNode.addChild(player)
-        
+    }
+    
+    func initPauseScreen(){
         //set pause button
         
         pauseGameButton = SKSpriteNode(imageNamed: "pause-game")
@@ -156,16 +208,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(pauseGameButton)
         
-       
+        quitGameButton = SKSpriteNode(imageNamed:"quit-game")
+        quitGameButton.zRotation = -1*CGFloat.pi / 2.0
+        quitGameButton.position = CGPoint(x:self.frame.width / 2, y:self.frame.height / 2)
+        quitGameButton.name = "quitGameButton"
         
-        //set physics for scene zero gravity
-        self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
-        //sets physics rules for contact
-        //TODO: contact delegate will be defined
-        self.physicsWorld.contactDelegate = self
+        //makes it the highest z value in the scene
+        let highestZPosition = 5
+        quitGameButton.zPosition = 5
         
         
+    }
+    
+    func playMusic(){
+        //start music
+        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
+        }
+    }
+    
+    func initStarfield(){
+        //initlize startfield
+        starfield = SKEmitterNode(fileNamed: "Starfield")
         
+        //initlize postion for starfield
+        //TODO: add later to detect for device for placing start field
+        starfield.position = CGPoint(x:self.frame.maxX, y: self.frame.height + 100)
+        //skip 10 seconds into animation
+        starfield.advanceSimulationTime(10)
+        //add starfield to screen
+        worldNode.addChild(starfield)
+        //send starfield to back of screen
+        starfield.zPosition = -1
+    }
+    
+    func initScore(){
         //set the score label inital
         scoreLabel = SKLabelNode(text: "Score - 0")
         scoreLabel.zRotation = -1*CGFloat.pi / 2.0
@@ -178,18 +257,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.fontColor = UIColor.white
         score = 0
         worldNode.addChild(scoreLabel)
-        
-        gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
-        
+    }
+    
+    
+    
+    func handleMotion(){
         motionManger.accelerometerUpdateInterval = 0.2
         motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
-               // self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
+                self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
                self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
             }
         }
-       
+        
     }
     
     //when scene changes remove backround music
@@ -202,39 +283,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //
     //
-    @objc func addAlien () {
-        //generates a random element from possible alien array
-        possibleAliens = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possibleAliens) as! [String]
+    @objc func addrobot () {
+        //generates a random element from possible robot array
+        possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
         
-        let alien = SKSpriteNode(imageNamed: possibleAliens[0])
+        let robot = SKSpriteNode(imageNamed: possiblerobots[0])
         
         //generates lowest x and y value
-        let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: 414)
+        let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: Int(self.frame.size.height))
+
         let position = CGFloat(randomPosition.nextInt())
         
-        alien.position = CGPoint(x:position, y:self.frame.size.height + alien.size.height)
-        
-        //sets size of the spawned alien
-        alien.physicsBody = SKPhysicsBody(rectangleOf: alien.size)
+        robot.position = CGPoint(x: self.frame.size.width + robot.size.width, y: position)
+        robot.size = CGSize(width: 100, height: 100)
+        //sets size of the spawned robot
+        robot.physicsBody = SKPhysicsBody(rectangleOf: robot.size)
         //TODO:explore what this means
-        alien.physicsBody?.isDynamic = true
+        robot.physicsBody?.isDynamic = true
         
-        //calculates when alien is hit
-        alien.physicsBody?.categoryBitMask = alienCategory
-        alien.physicsBody?.contactTestBitMask = photonTorpedoCategory
-        alien.physicsBody?.collisionBitMask = 0
+        //calculates when robot is hit
+        robot.physicsBody?.categoryBitMask = robotCategory
+        robot.physicsBody?.contactTestBitMask = photonTorpedoCategory
+        robot.physicsBody?.collisionBitMask = 0
         
-        worldNode.addChild(alien)
+        //calculates when robot hits player
+        robot.physicsBody?.contactTestBitMask = playerCategory
+        robot.physicsBody?.collisionBitMask = 0
+        
+        robot.zRotation = -1*CGFloat.pi / 2.0
+        worldNode.addChild(robot)
         
         let animationDuration:TimeInterval = 6
         
         var actionArray = [SKAction]()
         
         
-        actionArray.append(SKAction.move(to: CGPoint(x: position, y: -alien.size.height), duration: animationDuration))
+        actionArray.append(SKAction.move(to: CGPoint(x: -robot.size.width, y: position), duration: animationDuration))
         actionArray.append(SKAction.removeFromParent())
         
-        alien.run(SKAction.sequence(actionArray))
+        robot.run(SKAction.sequence(actionArray))
         
                                
     }
@@ -257,18 +344,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if touchedNode.name == "pauseGameButton" {
             pauseButtonHandler()
         }
+        else if touchedNode.name == "quitGameButton"{
+            let homeScene = HomeScene(fileNamed: "HomeScene")
+                            homeScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
+            
+        }
         else if gamePause != true{
-            print(gamePause)
+            
             // Position to rotate towards
             let targetPosition = touch.location(in: self)
             //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
-            let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
+            let torpedoTarget = pointAlongLine(from: player.position, to: targetPosition, at: 1000)
             
             //rotate player to where going to shoot
-            let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
-            currentRotation = angle + 180
-            player.zRotation = currentRotation
+//            let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
+//            currentRotation = angle
+//            player.zRotation = currentRotation
+//               // Get the difference vector between the sprite and the touch location
+            let dx = targetPosition.x - player.position.x
+            let dy = targetPosition.y - player.position.y
             
+            // Calculate the angle between the sprite and the touch location
+            let angle = atan2(dy, dx)
+            
+            // Set the sprite's zRotation to the calculated angle
+            player.zRotation =  angle + 180
             
             fireTorpedo(target: torpedoTarget)
         }
@@ -286,10 +387,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 worldNode.isPaused = true
                 gameTimer.invalidate()
                 backgroundMusic.run(SKAction.pause())
+                worldNode.addChild(quitGameButton)
+                
             } else {
                 // Unpause the game
                 self.view?.isPaused = false
-                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addAlien), userInfo: nil, repeats: true)
+                quitGameButton.removeFromParent()
+                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
                 backgroundMusic.run(SKAction.play())
             }
             
@@ -304,15 +408,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func fireTorpedo(target:CGPoint) {
         worldNode.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
         
-        let torpedoNode = SKSpriteNode(imageNamed: "torpedo")
+        let torpedoNode = SKSpriteNode(imageNamed: "torpedo2")
         torpedoNode.position = player.position
-        torpedoNode.position.y += 5
+        //TODO: check degrees of ship
+       
+        
+        let playerFacingAngle = player.zRotation + 60
+        
+        //calculates cordinate to spawn torpedo away from player can be increased by increasing constant in this case 60
+        let torpedoOffset = CGVector(dx: 60 * sin(playerFacingAngle) , dy: -60 * cos(playerFacingAngle))
+        torpedoNode.position = CGPoint(x: player.position.x + torpedoOffset.dx, y: player.position.y + torpedoOffset.dy)
+
+        
         
         torpedoNode.physicsBody = SKPhysicsBody(circleOfRadius: torpedoNode.size.width / 2)
         torpedoNode.physicsBody?.isDynamic = true
         
         torpedoNode.physicsBody?.categoryBitMask = photonTorpedoCategory
-        torpedoNode.physicsBody?.contactTestBitMask = alienCategory
+        torpedoNode.physicsBody?.contactTestBitMask = robotCategory
         torpedoNode.physicsBody?.collisionBitMask = 0
         torpedoNode.physicsBody?.usesPreciseCollisionDetection = true
         
@@ -332,6 +445,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    //called when two physics bodies collid with each other
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody:SKPhysicsBody
         var secondBody:SKPhysicsBody
@@ -344,28 +458,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             secondBody = contact.bodyA
         }
         
-        if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & alienCategory) != 0 {
-            torpedoDidCollideWithAlien(torpedoNode: firstBody.node as! SKSpriteNode, alienNode: secondBody.node as! SKSpriteNode)
+        if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & robotCategory) != 0 {
+            torpedoDidCollideWithrobot(torpedoNode: firstBody.node as! SKSpriteNode, robotNode: secondBody.node as! SKSpriteNode)
         }
-        
+        if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
+                   (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
+                    // Play a sound effect or explosion animation
+            
+                    // Decrement player health or trigger a game over
+                    
+                    // Remove the robot from the scene
+                    if let robotNode = firstBody.node as? SKSpriteNode {
+                        playExplosion(spriteNode: robotNode)
+                        robotNode.removeFromParent()
+                    } else if let robotNode = secondBody.node as? SKSpriteNode {
+                        playExplosion(spriteNode: robotNode)
+                        robotNode.removeFromParent()
+                    }
+                }
     }
     
-    func torpedoDidCollideWithAlien (torpedoNode:SKSpriteNode, alienNode:SKSpriteNode) {
+    func torpedoDidCollideWithrobot (torpedoNode:SKSpriteNode, robotNode:SKSpriteNode) {
     
-        let explosion = SKEmitterNode(fileNamed: "Explosion")!
-        explosion.position = alienNode.position
-        worldNode.addChild(explosion)
-        
-        worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
+        playExplosion(spriteNode: robotNode)
         
         torpedoNode.removeFromParent()
-        alienNode.removeFromParent()
+        robotNode.removeFromParent()
         
         
-        worldNode.run(SKAction.wait(forDuration: 2)) {
-            explosion.removeFromParent()
-        }
-        
+       
         score += 5
         
     }
@@ -391,7 +512,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
        
     }
- 
+    
+    //tale a sprite and creates a explosion on its position
+    func playExplosion(spriteNode:SKSpriteNode){
+        let explosion = SKEmitterNode(fileNamed: "Explosion")!
+        explosion.position = spriteNode.position
+        worldNode.addChild(explosion)
+        
+        worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
+        
+        worldNode.run(SKAction.wait(forDuration: 2)) {
+            explosion.removeFromParent()
+        }
+        
+    }
         
     
     
