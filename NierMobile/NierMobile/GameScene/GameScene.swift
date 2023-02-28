@@ -290,10 +290,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let robot = SKSpriteNode(imageNamed: possiblerobots[0])
         
         //generates lowest x and y value
-        let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: 414)
+        let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: Int(self.frame.size.height))
+
         let position = CGFloat(randomPosition.nextInt())
         
-        robot.position = CGPoint(x:position, y:self.frame.size.height + robot.size.height)
+        robot.position = CGPoint(x: self.frame.size.width + robot.size.width, y: position)
         robot.size = CGSize(width: 100, height: 100)
         //sets size of the spawned robot
         robot.physicsBody = SKPhysicsBody(rectangleOf: robot.size)
@@ -309,6 +310,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         robot.physicsBody?.contactTestBitMask = playerCategory
         robot.physicsBody?.collisionBitMask = 0
         
+        robot.zRotation = -1*CGFloat.pi / 2.0
         worldNode.addChild(robot)
         
         let animationDuration:TimeInterval = 6
@@ -316,7 +318,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var actionArray = [SKAction]()
         
         
-        actionArray.append(SKAction.move(to: CGPoint(x: position, y: -robot.size.height), duration: animationDuration))
+        actionArray.append(SKAction.move(to: CGPoint(x: -robot.size.width, y: position), duration: animationDuration))
         actionArray.append(SKAction.removeFromParent())
         
         robot.run(SKAction.sequence(actionArray))
