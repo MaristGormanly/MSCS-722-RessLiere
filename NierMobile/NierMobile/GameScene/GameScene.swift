@@ -143,6 +143,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //player
     var currentRotation: CGFloat = 0
     
+    //player lives
+    
+    var playerLives = 3
+
+    
     //intialize pause button
     var pauseGameButton:SKSpriteNode!
     var gamePause = false
@@ -167,17 +172,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //init pause screen
         initPauseScreen()
        
-        
         //set physics for scene zero gravity
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         //sets physics rules for contact to be defined in contact delegate function
         self.physicsWorld.contactDelegate = self
         
+        //creates score board
+        initScore()
         
+        initPlayerLives()
         
-       initScore()
-        
-        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
+        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
         
         
         //haddle motion
@@ -203,6 +208,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.position = CGPoint(x: self.frame.size.width * 0.08, y: self.frame.height / 2)
         //add player to screen
         worldNode.addChild(player)
+    }
+    
+    //TODO: Diffculty adjust lives
+    func initPlayerLives(){
+        var playerLife1 = SKSpriteNode(imageNamed: "spaceship2")
+        var playerLife2 = SKSpriteNode(imageNamed: "spaceship2")
+        var playerLife3 = SKSpriteNode(imageNamed: "spaceship2")
+        playerLife1.zRotation = -1*CGFloat.pi / 2.0
+        playerLife2.zRotation = -1*CGFloat.pi / 2.0
+        playerLife3.zRotation = -1*CGFloat.pi / 2.0
+        
+        playerLife1.setScale(0.1)
+        playerLife2.setScale(0.1)
+        playerLife3.setScale(0.1)
+     
+        playerLife1.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.94)
+        playerLife2.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.91)
+        playerLife3.position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * 0.88)
+        worldNode.addChild(playerLife1)
+        worldNode.addChild(playerLife2)
+        worldNode.addChild(playerLife3)
+
+        
     }
     
     func initPauseScreen(){
@@ -292,16 +320,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //
     //
-    @objc func addrobot () {
+    @objc func addRobot () {
         //increase spawning rate over time
         spawnInterval -= timeIntervalDecrement
             if spawnInterval < 0.4 {
                 spawnInterval = 0.4
             }
         gameTimer.invalidate()
-        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
+        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
 
-        print(spawnInterval)
+     
         //generates a random element from possible robot array
         possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
         
@@ -341,7 +369,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         robot.run(SKAction.sequence(actionArray)) // Run the sequence of actions on the node
 
-        
                                
     }
     
@@ -383,10 +410,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let torpedoTarget = pointAlongLine(from: player.position, to: targetPosition, at: 1000)
             
             //rotate player to where going to shoot
-//            let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
-//            currentRotation = angle
-//            player.zRotation = currentRotation
-//               // Get the difference vector between the sprite and the touch location
+
             let dx = targetPosition.x - player.position.x
             let dy = targetPosition.y - player.position.y
             
@@ -418,7 +442,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 // Unpause the game
                 self.view?.isPaused = false
                 quitGameButton.removeFromParent()
-                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
+                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
                 backgroundMusic.run(SKAction.play())
             }
             
