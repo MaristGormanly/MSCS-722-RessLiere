@@ -295,8 +295,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func addrobot () {
         //increase spawning rate over time
         spawnInterval -= timeIntervalDecrement
-            if spawnInterval < 0.1 {
-                spawnInterval = 0.1
+            if spawnInterval < 0.4 {
+                spawnInterval = 0.4
             }
         gameTimer.invalidate()
         gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
@@ -339,8 +339,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         actionArray.append(SKAction.move(to: CGPoint(x: -robot.size.width, y: position), duration: animationDuration))
         actionArray.append(SKAction.removeFromParent())
         
-        robot.run(SKAction.sequence(actionArray))
-        
+        robot.run(SKAction.sequence(actionArray)) // Run the sequence of actions on the node
+
         
                                
     }
@@ -478,9 +478,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA
             secondBody = contact.bodyB
-        }else{
+        }else if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask{
             firstBody = contact.bodyB
             secondBody = contact.bodyA
+        }
+        // occasinally return nil if two object get hit at same time
+        else{
+            return
         }
         
         if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & robotCategory) != 0 {
