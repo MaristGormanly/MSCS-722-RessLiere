@@ -294,10 +294,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let torpedoTarget = pointAtDistanceFromPoint(origin: player.position, target: targetPosition, distance: self.frame.height + 100)
             
             //rotate player to where going to shoot
-            let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
-            currentRotation = angle + 180
-            player.zRotation = currentRotation
+//            let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
+//            currentRotation = angle
+//            player.zRotation = currentRotation
+//               // Get the difference vector between the sprite and the touch location
+            let dx = targetPosition.x - player.position.x
+            let dy = targetPosition.y - player.position.y
             
+            // Calculate the angle between the sprite and the touch location
+            let angle = atan2(dy, dx)
+            
+            // Set the sprite's zRotation to the calculated angle
+            player.zRotation =  angle + 180
             
             fireTorpedo(target: torpedoTarget)
         }
@@ -336,9 +344,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func fireTorpedo(target:CGPoint) {
         worldNode.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
         
-        let torpedoNode = SKSpriteNode(imageNamed: "torpedo")
+        let torpedoNode = SKSpriteNode(imageNamed: "torpedo2")
         torpedoNode.position = player.position
+        //TODO: check degrees of ship
         torpedoNode.position.y += 5
+        torpedoNode.position.x += 5
         
         torpedoNode.physicsBody = SKPhysicsBody(circleOfRadius: torpedoNode.size.width / 2)
         torpedoNode.physicsBody?.isDynamic = true
