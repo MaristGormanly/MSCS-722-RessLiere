@@ -119,6 +119,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var spawnInterval: TimeInterval = 0.75
     let timeIntervalDecrement: TimeInterval = 0.01
     
+    //last torpedo shoot
+    var lastTorpedoFiredTime: TimeInterval = 0
+
+    
     //POSSIBLE targets
     var possiblerobots = ["robot","robot2","robot3"]
     
@@ -337,6 +341,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         robot.run(SKAction.sequence(actionArray))
         
+        
                                
     }
     
@@ -367,6 +372,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if gamePause != true{
             
             // Position to rotate towards
+            let currentTime = NSDate().timeIntervalSince1970
+                let timeSinceLastTorpedo = currentTime - lastTorpedoFiredTime
+                if timeSinceLastTorpedo < 0.25 { // Adjust this value to set the delay between torpedos
+                    return
+                }
+            lastTorpedoFiredTime = currentTime
             let targetPosition = touch.location(in: self)
             //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
             let torpedoTarget = pointAlongLine(from: player.position, to: targetPosition, at: 1000)
