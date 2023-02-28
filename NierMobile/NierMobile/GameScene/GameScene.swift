@@ -409,8 +409,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let torpedoNode = SKSpriteNode(imageNamed: "torpedo2")
         torpedoNode.position = player.position
         //TODO: check degrees of ship
-        torpedoNode.position.y += 5
-        torpedoNode.position.x += 5
+       
+        
+        let playerFacingAngle = player.zRotation + 60
+        
+        //calculates cordinate to spawn torpedo away from player can be increased by increasing constant in this case 60
+        let torpedoOffset = CGVector(dx: 60 * sin(playerFacingAngle) , dy: -60 * cos(playerFacingAngle))
+        torpedoNode.position = CGPoint(x: player.position.x + torpedoOffset.dx, y: player.position.y + torpedoOffset.dy)
+
+        
         
         torpedoNode.physicsBody = SKPhysicsBody(circleOfRadius: torpedoNode.size.width / 2)
         torpedoNode.physicsBody?.isDynamic = true
