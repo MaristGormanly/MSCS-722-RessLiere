@@ -227,7 +227,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.zRotation = -1*CGFloat.pi / 2.0
         
         //player physics body
-        player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width/2)
+        player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width/3)
         player.physicsBody?.categoryBitMask = playerCategory
         player.physicsBody?.contactTestBitMask = robotCategory
         player.physicsBody?.collisionBitMask = 0
@@ -328,7 +328,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let highestScore = UserDefaults.standard.object(forKey: "highestScore") as? Int {
            highScore = highestScore
         } else {
-            print("elsing")
+           
             highScore = 0
         }
 
@@ -372,8 +372,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func addRobot () {
         //increase spawning rate over time
         spawnInterval -= timeIntervalDecrement
-            if spawnInterval < 0.4 {
-                spawnInterval = 0.4
+            if spawnInterval < 0.2 {
+                spawnInterval = 0.2
             }
         gameTimer.invalidate()
         gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
@@ -406,6 +406,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         robot.physicsBody?.collisionBitMask = 0
         
         robot.zRotation = -1*CGFloat.pi / 2.0
+        //robots back of screen
+        robot.zPosition = -5
         worldNode.addChild(robot)
         
         let animationDuration:TimeInterval = 6
@@ -545,41 +547,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //called when two physics bodies collid with each other
     func didBegin(_ contact: SKPhysicsContact) {
-        var firstBody:SKPhysicsBody
-        var secondBody:SKPhysicsBody
-        
-        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-            firstBody = contact.bodyA
-            secondBody = contact.bodyB
-        }else if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask{
-            firstBody = contact.bodyB
-            secondBody = contact.bodyA
-        }
-        // occasinally return nil if two object get hit at same time
-        else{
-            return
-        }
-        //if missile hits robot
-        if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & robotCategory) != 0 {
-            torpedoDidCollideWithrobot(torpedoNode: firstBody.node as! SKSpriteNode, robotNode: secondBody.node as! SKSpriteNode)
-        }
-        //if robot hit player
-        if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
-                   (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
-                    // Play a sound effect or explosion animation
-                    
-                    // Decrement player health or trigger a game over
-                    handlePlayerDamage()
-                    
-                    // Remove the robot from the scene
-                    if let robotNode = firstBody.node as? SKSpriteNode {
-                        playExplosion(spriteNode: robotNode)
-                        robotNode.removeFromParent()
-                    } else if let robotNode = secondBody.node as? SKSpriteNode {
-                        playExplosion(spriteNode: robotNode)
-                        robotNode.removeFromParent()
-                    }
+                var firstBody:SKPhysicsBody
+                var secondBody:SKPhysicsBody
+//        print("BodyA")
+//        print(contact.bodyA)
+//        print("BodyB")
+//        print(contact.bodyB)
+                
+                if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+                    firstBody = contact.bodyA
+                    secondBody = contact.bodyB
+                }else if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask{
+                    firstBody = contact.bodyB
+                    secondBody = contact.bodyA
                 }
+                // occasinally return nil if two object get hit at same time
+                else{
+                    return
+                }
+                //if nill returns
+                guard let torpedoNode = firstBody.node as? SKSpriteNode, let robotNode = secondBody.node as? SKSpriteNode else {
+                    return
+                }
+                torpedoDidCollideWithrobot(torpedoNode: torpedoNode, robotNode: robotNode)
+                //if robot hit player
+                if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
+                           (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
+                            // Play a sound effect or explosion animation
+                            
+                            // Decrement player health or trigger a game over
+                            handlePlayerDamage()
+                            
+                            // Remove the robot from the scene
+                            if let robotNode = firstBody.node as? SKSpriteNode {
+                                playExplosion(spriteNode: robotNode)
+                                robotNode.removeFromParent()
+                            } else if let robotNode = secondBody.node as? SKSpriteNode {
+                                playExplosion(spriteNode: robotNode)
+                                robotNode.removeFromParent()
+                            }
+                        }
     }
     
     func handlePlayerDamage(){
