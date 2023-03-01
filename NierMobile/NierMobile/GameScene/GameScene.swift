@@ -115,13 +115,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    var highScore: Int = 0 {
-        didSet {
-            if let label = highScoreLabel {
-                label.text = "HS: \(highScore)"
-            }
+    var highScore:Int = 0 {
+        didSet{
+            highScoreLabel.text = "HS: \(highScore)"
         }
     }
+    
+    
 
     //game timer
     var gameTimer:Timer!
@@ -175,7 +175,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //called when scene is presented in view for first time
     override func didMove(to view: SKView) {
-        
+        //clears highscore
+       // UserDefaults.standard.removeObject(forKey: "highestScore")
+
         defaults.register(defaults: defaultValues)
 
         addChild(worldNode)
@@ -184,6 +186,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         playMusic()
        
+        
+        initHighScore()
+        
        //add starfield
         initStarfield()
         
@@ -193,7 +198,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //creates score board
         initScore()
         
-        initHighScore()
+        
         
         //init pause screen
         initPauseScreen()
@@ -295,7 +300,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //set the score label inital
         scoreLabel = SKLabelNode(text: "Score - 0")
         scoreLabel.zRotation = -1*CGFloat.pi / 2.0
-        //TODO: add as ratio of screen rather than hard coded
+        
         scoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height / 2)
     
         //http://iosfonts.com/
@@ -307,17 +312,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func initHighScore(){
-        let highScoreLabel = SKLabelNode()
+        //set the score label inital
+        highScoreLabel = SKLabelNode(text: "Score - 0")
+        highScoreLabel.zRotation = -1*CGFloat.pi / 2.0
+        
+        highScoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height / 5)
+    
+        //http://iosfonts.com/
         highScoreLabel.fontName = "Avenir-BlackOblique"
         highScoreLabel.fontSize = 48
         highScoreLabel.fontColor = UIColor.white
-        highScoreLabel.zRotation = -1*CGFloat.pi / 2.0
-        highScoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height / 5)
+        highScore = 0
+        
         
         if let highestScore = UserDefaults.standard.object(forKey: "highestScore") as? Int {
-            highScoreLabel.text = "HS: \(highestScore)"
+           highScore = highestScore
         } else {
-            highScoreLabel.text = "HS: 0"
+            print("elsing")
+            highScore = 0
         }
 
         
