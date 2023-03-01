@@ -565,28 +565,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 else{
                     return
                 }
-                //if nill returns
-                guard let torpedoNode = firstBody.node as? SKSpriteNode, let robotNode = secondBody.node as? SKSpriteNode else {
-                    return
+        if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
+                   (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
+                    // Play a sound effect or explosion animation
+                    
+                    // Decrement player health or trigger a game over
+                        handlePlayerDamage()
+                    
+                    // Remove the robot from the scene
+            // Remove the robot from the scene
+            if firstBody.categoryBitMask == robotCategory {
+                if let robotNode = firstBody.node as? SKSpriteNode {
+                    playExplosion(spriteNode: robotNode)
+                    print("fist body")
+                    print(robotNode)
+                    robotNode.removeFromParent()
                 }
-                torpedoDidCollideWithrobot(torpedoNode: torpedoNode, robotNode: robotNode)
-                //if robot hit player
-                if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
-                           (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
-                            // Play a sound effect or explosion animation
-                            
-                            // Decrement player health or trigger a game over
-                            handlePlayerDamage()
-                            
-                            // Remove the robot from the scene
-                            if let robotNode = firstBody.node as? SKSpriteNode {
-                                playExplosion(spriteNode: robotNode)
-                                robotNode.removeFromParent()
-                            } else if let robotNode = secondBody.node as? SKSpriteNode {
-                                playExplosion(spriteNode: robotNode)
-                                robotNode.removeFromParent()
-                            }
+            }
+            else if secondBody.categoryBitMask == robotCategory {
+                if let robotNode = secondBody.node as? SKSpriteNode {
+                    playExplosion(spriteNode: robotNode)
+                    print(robotNode)
+                   robotNode.removeFromParent()
+                }
+            }
                         }
+        else{
+            //if nill returns
+            guard let torpedoNode = firstBody.node as? SKSpriteNode, let robotNode = secondBody.node as? SKSpriteNode else {
+                return
+            }
+            torpedoDidCollideWithrobot(torpedoNode: torpedoNode, robotNode: robotNode)
+
+        }
     }
     
     func handlePlayerDamage(){
