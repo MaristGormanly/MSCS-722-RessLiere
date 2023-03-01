@@ -23,6 +23,7 @@
 		BA9FA17929A92210001B8E5A /* hacking-dimension.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */; };
 		BA9FA18229ABB936001B8E5A /* HomeScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA18129ABB936001B8E5A /* HomeScene.sks */; };
 		BA9FA18429ABB958001B8E5A /* HomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA18329ABB958001B8E5A /* HomeScene.swift */; };
+		BA9FA18829AF8F10001B8E5A /* game-over.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA18729AF8F10001B8E5A /* game-over.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "hacking-dimension.mp3"; sourceTree = "<group>"; };
 		BA9FA18129ABB936001B8E5A /* HomeScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HomeScene.sks; sourceTree = "<group>"; };
 		BA9FA18329ABB958001B8E5A /* HomeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScene.swift; sourceTree = "<group>"; };
+		BA9FA18729AF8F10001B8E5A /* game-over.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "game-over.mp3"; path = "NierMobile/Sounds/game-over.mp3"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 		BA9FA17D29ABB80A001B8E5A /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				BA9FA18729AF8F10001B8E5A /* game-over.mp3 */,
 				BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */,
 				BA9FA16429A83C71001B8E5A /* torpedo.mp3 */,
 				BA9FA16629A83D52001B8E5A /* explosion.mp3 */,
@@ -179,6 +182,7 @@
 			files = (
 				BA9FA12C29A7B3F4001B8E5A /* Main.storyboard in Resources */,
 				BA9FA17929A92210001B8E5A /* hacking-dimension.mp3 in Resources */,
+				BA9FA18829AF8F10001B8E5A /* game-over.mp3 in Resources */,
 				BA9FA16F29A84634001B8E5A /* Starfield.sks in Resources */,
 				BA9FA17729A91B8B001B8E5A /* spaceship2.png in Resources */,
 				BA9FA12329A7B3F4001B8E5A /* GameScene.sks in Resources */,

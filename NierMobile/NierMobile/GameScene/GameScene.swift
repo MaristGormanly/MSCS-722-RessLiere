@@ -108,12 +108,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var player:SKSpriteNode!
     var starfield:SKEmitterNode!
     var scoreLabel:SKLabelNode!
+    var highScoreLabel:SKLabelNode!
     var score:Int = 0 {
         didSet{
             scoreLabel.text = "Score: \(score)"
         }
     }
+    
+    var highScore:Int = 0 {
+        didSet{
+            highScoreLabel.text = "HS: \(highScore)"
+        }
+    }
+    
+    
+
+    //game timer
     var gameTimer:Timer!
+    var spawnInterval: TimeInterval = 0.75
+    let timeIntervalDecrement: TimeInterval = 0.01
+    
+    //last torpedo shoot
+    var lastTorpedoFiredTime: TimeInterval = 0
+
     
     //POSSIBLE targets
     var possiblerobots = ["robot","robot2","robot3"]
@@ -124,52 +141,79 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let playerCategory: UInt32 = 0x1 << 2
     
     //motion mangaer
-    let motionManger = CMMotionManager()
+    let motionManager = CMMotionManager()
     var xAcceleration:CGFloat = 0
     var yAcceleration:CGFloat = 0
     
     //music
     var backgroundMusic: SKAudioNode!
+    //gameover music
+    var auoPlayer: AVAudioPlayer?
     
     
     //player
     var currentRotation: CGFloat = 0
     
+    //player lives
+    
+    var playerLives = 3
+    var playerLivesList: [SKSpriteNode] = []
+
+    
     //intialize pause button
     var pauseGameButton:SKSpriteNode!
     var gamePause = false
     var quitGameButton:SKSpriteNode!
+    
+    //gameover intializeing
+    var gameOverButton:SKSpriteNode!
+    var gameOver = false
+    
+    let defaults = UserDefaults.standard
+    let defaultValues = ["highestScore": 0]
    
     
     //called when scene is presented in view for first time
     override func didMove(to view: SKView) {
-        
+        //clears highscore
+       // UserDefaults.standard.removeObject(forKey: "highestScore")
+
+        defaults.register(defaults: defaultValues)
+
         addChild(worldNode)
        
         //play music
         
         playMusic()
        
+        
+        initHighScore()
+        
        //add starfield
         initStarfield()
         
        //add player
         initPlayer()
         
+        //creates score board
+        initScore()
+        
+        
+        
         //init pause screen
         initPauseScreen()
        
-        
         //set physics for scene zero gravity
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         //sets physics rules for contact to be defined in contact delegate function
         self.physicsWorld.contactDelegate = self
         
+       
         
+        initPlayerLives()
         
-       initScore()
+        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
         
-        gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
         
         //haddle motion
         handleMotion()
@@ -196,6 +240,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         worldNode.addChild(player)
     }
     
+    //TODO: Diffculty adjust lives
+    func initPlayerLives(){
+        var spacing = 0.94
+        for i in 0...(playerLives-1) {
+            playerLivesList.append(SKSpriteNode(imageNamed: "spaceship2"))
+            playerLivesList[i].zRotation = -1*CGFloat.pi / 2.0
+            playerLivesList[i].setScale(0.1)
+            playerLivesList[i].position = CGPoint(x:self.frame.width * 0.85, y:self.frame.height * spacing )
+            spacing -= 0.03
+            worldNode.addChild(playerLivesList[i])
+        }
+     
+        
+    }
+   
+    
     func initPauseScreen(){
         //set pause button
         
@@ -220,15 +280,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    func playMusic(){
-        //start music
-        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
-            backgroundMusic = SKAudioNode(url: musicURL)
-            backgroundMusic.autoplayLooped = true
-            addChild(backgroundMusic)
-        }
-    }
-    
+  
     func initStarfield(){
         //initlize startfield
         starfield = SKEmitterNode(fileNamed: "Starfield")
@@ -248,8 +300,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //set the score label inital
         scoreLabel = SKLabelNode(text: "Score - 0")
         scoreLabel.zRotation = -1*CGFloat.pi / 2.0
-        //TODO: add as ratio of screen rather than hard coded
-        scoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height * 0.90)
+        
+        scoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height / 2)
     
         //http://iosfonts.com/
         scoreLabel.fontName = "Avenir-BlackOblique"
@@ -259,11 +311,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         worldNode.addChild(scoreLabel)
     }
     
+    func initHighScore(){
+        //set the score label inital
+        highScoreLabel = SKLabelNode(text: "Score - 0")
+        highScoreLabel.zRotation = -1*CGFloat.pi / 2.0
+        
+        highScoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height / 5)
+    
+        //http://iosfonts.com/
+        highScoreLabel.fontName = "Avenir-BlackOblique"
+        highScoreLabel.fontSize = 48
+        highScoreLabel.fontColor = UIColor.white
+        highScore = 0
+        
+        
+        if let highestScore = UserDefaults.standard.object(forKey: "highestScore") as? Int {
+           highScore = highestScore
+        } else {
+            print("elsing")
+            highScore = 0
+        }
+
+        
+        worldNode.addChild(highScoreLabel)
+    }
+    
+    func playMusic(){
+        //start music
+        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
+        }
+    }
+    
     
     
     func handleMotion(){
-        motionManger.accelerometerUpdateInterval = 0.2
-        motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
+        motionManager.accelerometerUpdateInterval = 0.2
+        motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
                 self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
@@ -283,7 +369,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //
     //
-    @objc func addrobot () {
+    @objc func addRobot () {
+        //increase spawning rate over time
+        spawnInterval -= timeIntervalDecrement
+            if spawnInterval < 0.4 {
+                spawnInterval = 0.4
+            }
+        gameTimer.invalidate()
+        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+
+     
         //generates a random element from possible robot array
         possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
         
@@ -321,8 +416,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         actionArray.append(SKAction.move(to: CGPoint(x: -robot.size.width, y: position), duration: animationDuration))
         actionArray.append(SKAction.removeFromParent())
         
-        robot.run(SKAction.sequence(actionArray))
-        
+        robot.run(SKAction.sequence(actionArray)) // Run the sequence of actions on the node
+
                                
     }
     
@@ -353,15 +448,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if gamePause != true{
             
             // Position to rotate towards
+            let currentTime = NSDate().timeIntervalSince1970
+                let timeSinceLastTorpedo = currentTime - lastTorpedoFiredTime
+                if timeSinceLastTorpedo < 0.25 { // Adjust this value to set the delay between torpedos
+                    return
+                }
+            lastTorpedoFiredTime = currentTime
             let targetPosition = touch.location(in: self)
             //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
             let torpedoTarget = pointAlongLine(from: player.position, to: targetPosition, at: 1000)
             
             //rotate player to where going to shoot
-//            let angle = atan2(targetPosition.y - player.position.y, targetPosition.x - player.position.x)
-//            currentRotation = angle
-//            player.zRotation = currentRotation
-//               // Get the difference vector between the sprite and the touch location
+
             let dx = targetPosition.x - player.position.x
             let dy = targetPosition.y - player.position.y
             
@@ -375,31 +473,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         
-        
-        //TODO: clean up the logic here
-        //handles game pausing
-        func pauseButtonHandler(){
-            
-            isPaused = !isPaused
-            gamePause = isPaused
-            if isPaused {
-                // Pause the game
-                worldNode.isPaused = true
-                gameTimer.invalidate()
-                backgroundMusic.run(SKAction.pause())
-                worldNode.addChild(quitGameButton)
-                
-            } else {
-                // Unpause the game
-                self.view?.isPaused = false
-                quitGameButton.removeFromParent()
-                gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addrobot), userInfo: nil, repeats: true)
-                backgroundMusic.run(SKAction.play())
-            }
-            
-        }
+       
     }
     
+    //TODO: clean up the logic here
+    //handles game pausing
+    func pauseButtonHandler(){
+        
+        isPaused = !isPaused
+        gamePause = isPaused
+        if isPaused {
+            // Pause the game
+            worldNode.isPaused = true
+            gameTimer.invalidate()
+            backgroundMusic.run(SKAction.pause())
+            worldNode.addChild(quitGameButton)
+            
+        } else {
+            // Unpause the game
+            self.view?.isPaused = false
+            quitGameButton.removeFromParent()
+            gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+            backgroundMusic.run(SKAction.play())
+        }
+        
+    }
     
     
     //
@@ -453,19 +551,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA
             secondBody = contact.bodyB
-        }else{
+        }else if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask{
             firstBody = contact.bodyB
             secondBody = contact.bodyA
         }
-        
+        // occasinally return nil if two object get hit at same time
+        else{
+            return
+        }
+        //if missile hits robot
         if (firstBody.categoryBitMask & photonTorpedoCategory) != 0 && (secondBody.categoryBitMask & robotCategory) != 0 {
             torpedoDidCollideWithrobot(torpedoNode: firstBody.node as! SKSpriteNode, robotNode: secondBody.node as! SKSpriteNode)
         }
+        //if robot hit player
         if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
                    (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
                     // Play a sound effect or explosion animation
-            
+                    
                     // Decrement player health or trigger a game over
+                    handlePlayerDamage()
                     
                     // Remove the robot from the scene
                     if let robotNode = firstBody.node as? SKSpriteNode {
@@ -478,6 +582,53 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
     }
     
+    func handlePlayerDamage(){
+        if(playerLives > 1){
+            playerLivesList[playerLives-1].removeFromParent()
+            playerLives -= 1
+        }
+        else{
+            
+                // Code to execute after the delay
+               
+                handleGameOver()
+               
+                
+              
+           
+        }
+    }
+    
+    //TODO: worry about pause screen not freezing
+    func handleGameOver(){
+                playExplosion(spriteNode: player)
+                playerLivesList[playerLives-1].removeFromParent()
+                player.removeFromParent()
+                scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
+                backgroundMusic.run(SKAction.pause())
+                self.run(SKAction.playSoundFileNamed("game-over.mp3", waitForCompletion: true))
+                let wait = SKAction.wait(forDuration: 2.0)
+                pauseGameButton.removeFromParent()
+                gameTimer.invalidate()
+                worldNode.addChild(quitGameButton)
+                
+                self.run(wait) {
+                    
+                    self.worldNode.isPaused = true
+                    
+                }
+               
+                
+              
+                
+               
+                
+       
+        
+        
+    }
+    
+    
     func torpedoDidCollideWithrobot (torpedoNode:SKSpriteNode, robotNode:SKSpriteNode) {
     
         playExplosion(spriteNode: robotNode)
@@ -488,6 +639,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
        
         score += 5
+        
+            let hs = UserDefaults.standard.integer(forKey: "highestScore")
+            if hs < score {
+                UserDefaults.standard.set(score, forKey: "highestScore")
+                highScore = score
+            }
+        
+
         
     }
     
@@ -517,6 +676,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func playExplosion(spriteNode:SKSpriteNode){
         let explosion = SKEmitterNode(fileNamed: "Explosion")!
         explosion.position = spriteNode.position
+
         worldNode.addChild(explosion)
         
         worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
