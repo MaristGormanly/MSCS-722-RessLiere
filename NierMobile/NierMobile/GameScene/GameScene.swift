@@ -108,12 +108,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var player:SKSpriteNode!
     var starfield:SKEmitterNode!
     var scoreLabel:SKLabelNode!
+    var highScoreLabel:SKLabelNode!
     var score:Int = 0 {
         didSet{
             scoreLabel.text = "Score: \(score)"
         }
     }
     
+    var highScore: Int = 0 {
+        didSet {
+            if let label = highScoreLabel {
+                label.text = "HS: \(highScore)"
+            }
+        }
+    }
+
     //game timer
     var gameTimer:Timer!
     var spawnInterval: TimeInterval = 0.75
@@ -159,11 +168,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //gameover intializeing
     var gameOverButton:SKSpriteNode!
     var gameOver = false
+    
+    let defaults = UserDefaults.standard
+    let defaultValues = ["highestScore": 0]
    
     
     //called when scene is presented in view for first time
     override func didMove(to view: SKView) {
         
+        defaults.register(defaults: defaultValues)
+
         addChild(worldNode)
        
         //play music
@@ -176,6 +190,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        //add player
         initPlayer()
         
+        //creates score board
+        initScore()
+        
+        initHighScore()
+        
         //init pause screen
         initPauseScreen()
        
@@ -184,8 +203,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //sets physics rules for contact to be defined in contact delegate function
         self.physicsWorld.contactDelegate = self
         
-        //creates score board
-        initScore()
+       
         
         initPlayerLives()
         
@@ -257,15 +275,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    func playMusic(){
-        //start music
-        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
-            backgroundMusic = SKAudioNode(url: musicURL)
-            backgroundMusic.autoplayLooped = true
-            addChild(backgroundMusic)
-        }
-    }
-    
+  
     func initStarfield(){
         //initlize startfield
         starfield = SKEmitterNode(fileNamed: "Starfield")
@@ -294,6 +304,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.fontColor = UIColor.white
         score = 0
         worldNode.addChild(scoreLabel)
+    }
+    
+    func initHighScore(){
+        let highScoreLabel = SKLabelNode()
+        highScoreLabel.fontName = "Avenir-BlackOblique"
+        highScoreLabel.fontSize = 48
+        highScoreLabel.fontColor = UIColor.white
+        highScoreLabel.zRotation = -1*CGFloat.pi / 2.0
+        highScoreLabel.position = CGPoint(x:self.frame.width * 0.85 , y: self.frame.height / 5)
+        
+        if let highestScore = UserDefaults.standard.object(forKey: "highestScore") as? Int {
+            highScoreLabel.text = "HS: \(highestScore)"
+        } else {
+            highScoreLabel.text = "HS: 0"
+        }
+
+        
+        worldNode.addChild(highScoreLabel)
+    }
+    
+    func playMusic(){
+        //start music
+        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
+        }
     }
     
     
@@ -562,6 +599,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 pauseGameButton.removeFromParent()
                 gameTimer.invalidate()
                 worldNode.addChild(quitGameButton)
+                
                 self.run(wait) {
                     
                     self.worldNode.isPaused = true
@@ -589,6 +627,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
        
         score += 5
+        
+            let hs = UserDefaults.standard.integer(forKey: "highestScore")
+            if hs < score {
+                UserDefaults.standard.set(score, forKey: "highestScore")
+                highScore = score
+            }
+        
+
         
     }
     
