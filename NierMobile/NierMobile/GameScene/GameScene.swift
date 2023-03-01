@@ -132,12 +132,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let playerCategory: UInt32 = 0x1 << 2
     
     //motion mangaer
-    let motionManger = CMMotionManager()
+    let motionManager = CMMotionManager()
     var xAcceleration:CGFloat = 0
     var yAcceleration:CGFloat = 0
     
     //music
     var backgroundMusic: SKAudioNode!
+    //gameover music
+    var auoPlayer: AVAudioPlayer?
     
     
     //player
@@ -297,8 +299,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func handleMotion(){
-        motionManger.accelerometerUpdateInterval = 0.2
-        motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
+        motionManager.accelerometerUpdateInterval = 0.2
+        motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
             if let accelerometerData = data {
                 let acceleration = accelerometerData.acceleration
                 self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
@@ -537,25 +539,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerLives -= 1
         }
         else{
-            playerLivesList[playerLives-1].removeFromParent()
-            print("Gameover")
-            handleGameOver()
+            
+                // Code to execute after the delay
+               
+                handleGameOver()
+               
+                
+              
+           
         }
     }
     
     //TODO: worry about pause screen not freezing
     func handleGameOver(){
-        scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
-        pauseGameButton.removeFromParent()
-        isPaused = !isPaused
-        gameOver = isPaused
-        worldNode.isPaused = true
-        gameTimer.invalidate()
-        backgroundMusic.run(SKAction.pause())
-        worldNode.addChild(quitGameButton)
+                playExplosion(spriteNode: player)
+                playerLivesList[playerLives-1].removeFromParent()
+                player.removeFromParent()
+                scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
+                backgroundMusic.run(SKAction.pause())
+                self.run(SKAction.playSoundFileNamed("game-over.mp3", waitForCompletion: true))
+                let wait = SKAction.wait(forDuration: 2.0)
+                pauseGameButton.removeFromParent()
+                gameTimer.invalidate()
+                worldNode.addChild(quitGameButton)
+                self.run(wait) {
+                    
+                    self.worldNode.isPaused = true
+                    
+                }
+               
+                
+              
+                
+               
+                
+       
         
         
     }
+    
     
     func torpedoDidCollideWithrobot (torpedoNode:SKSpriteNode, robotNode:SKSpriteNode) {
     
@@ -596,6 +618,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func playExplosion(spriteNode:SKSpriteNode){
         let explosion = SKEmitterNode(fileNamed: "Explosion")!
         explosion.position = spriteNode.position
+
         worldNode.addChild(explosion)
         
         worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
