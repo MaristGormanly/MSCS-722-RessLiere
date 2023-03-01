@@ -447,8 +447,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             self.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
             
         }
-        else if gamePause != true{
-            
+        else if !gamePause && !gameOver{
+           
             // Position to rotate towards
             let currentTime = NSDate().timeIntervalSince1970
                 let timeSinceLastTorpedo = currentTime - lastTorpedoFiredTime
@@ -629,6 +629,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 pauseGameButton.removeFromParent()
                 gameTimer.invalidate()
                 worldNode.addChild(quitGameButton)
+                gameOver = true
                 
                 self.run(wait) {
                     
