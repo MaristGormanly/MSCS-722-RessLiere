@@ -28,7 +28,7 @@ class HomeScene: SKScene {
         guard let location = touch?.location(in: self) else { return }
         let nodesArray = self.nodes(at: location)
         if nodesArray.first?.name == "newGameButton" {
-            let gameScene = GameScene(fileNamed: "GameScene")
+            let gameScene = GameScene(fileNamed: "LevelOneScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
             

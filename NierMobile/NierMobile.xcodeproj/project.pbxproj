@@ -25,6 +25,10 @@
 		BA9FA18429ABB958001B8E5A /* HomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA18329ABB958001B8E5A /* HomeScene.swift */; };
 		BA9FA18829AF8F10001B8E5A /* game-over.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA18729AF8F10001B8E5A /* game-over.mp3 */; };
 		BA9FA19F29B1220A001B8E5A /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA19E29B1220A001B8E5A /* Utils.swift */; };
+		BA9FA1A129B124EC001B8E5A /* ScoreInitializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA1A029B124EC001B8E5A /* ScoreInitializer.swift */; };
+		BA9FA1A629B126C7001B8E5A /* GameInitializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */; };
+		BA9FA1AA29B12CA7001B8E5A /* LevelOneScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA1A929B12CA6001B8E5A /* LevelOneScene.sks */; };
+		BA9FA1AC29B12CF5001B8E5A /* LevelOneScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA1AB29B12CF5001B8E5A /* LevelOneScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +51,10 @@
 		BA9FA18329ABB958001B8E5A /* HomeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScene.swift; sourceTree = "<group>"; };
 		BA9FA18729AF8F10001B8E5A /* game-over.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "game-over.mp3"; path = "NierMobile/Sounds/game-over.mp3"; sourceTree = SOURCE_ROOT; };
 		BA9FA19E29B1220A001B8E5A /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		BA9FA1A029B124EC001B8E5A /* ScoreInitializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreInitializer.swift; sourceTree = "<group>"; };
+		BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInitializer.swift; sourceTree = "<group>"; };
+		BA9FA1A929B12CA6001B8E5A /* LevelOneScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LevelOneScene.sks; sourceTree = "<group>"; };
+		BA9FA1AB29B12CF5001B8E5A /* LevelOneScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelOneScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +87,7 @@
 		BA9FA11F29A7B3F3001B8E5A /* NierMobile */ = {
 			isa = PBXGroup;
 			children = (
+				BA9FA1A229B125F7001B8E5A /* LevelOne */,
 				BA9FA17D29ABB80A001B8E5A /* Sounds */,
 				BA9FA17E29ABB818001B8E5A /* Effects */,
 				BA9FA12029A7B3F4001B8E5A /* AppDelegate.swift */,
@@ -92,6 +101,10 @@
 				BA9FA18129ABB936001B8E5A /* HomeScene.sks */,
 				BA9FA18329ABB958001B8E5A /* HomeScene.swift */,
 				BA9FA19E29B1220A001B8E5A /* Utils.swift */,
+				BA9FA1A029B124EC001B8E5A /* ScoreInitializer.swift */,
+				BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */,
+				BA9FA1AB29B12CF5001B8E5A /* LevelOneScene.swift */,
+				BA9FA1A929B12CA6001B8E5A /* LevelOneScene.sks */,
 			);
 			path = NierMobile;
 			sourceTree = "<group>";
@@ -123,6 +136,13 @@
 				BA9FA16829A83D53001B8E5A /* Explosion.sks */,
 			);
 			path = Effects;
+			sourceTree = "<group>";
+		};
+		BA9FA1A229B125F7001B8E5A /* LevelOne */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = LevelOne;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,6 +205,7 @@
 			files = (
 				BA9FA12C29A7B3F4001B8E5A /* Main.storyboard in Resources */,
 				BA9FA17929A92210001B8E5A /* hacking-dimension.mp3 in Resources */,
+				BA9FA1AA29B12CA7001B8E5A /* LevelOneScene.sks in Resources */,
 				BA9FA18829AF8F10001B8E5A /* game-over.mp3 in Resources */,
 				BA9FA16F29A84634001B8E5A /* Starfield.sks in Resources */,
 				BA9FA17729A91B8B001B8E5A /* spaceship2.png in Resources */,
@@ -209,7 +230,10 @@
 				BA9FA19F29B1220A001B8E5A /* Utils.swift in Sources */,
 				BA9FA12729A7B3F4001B8E5A /* GameScene.swift in Sources */,
 				BA9FA18429ABB958001B8E5A /* HomeScene.swift in Sources */,
+				BA9FA1A129B124EC001B8E5A /* ScoreInitializer.swift in Sources */,
 				BA9FA12929A7B3F4001B8E5A /* GameViewController.swift in Sources */,
+				BA9FA1A629B126C7001B8E5A /* GameInitializer.swift in Sources */,
+				BA9FA1AC29B12CF5001B8E5A /* LevelOneScene.swift in Sources */,
 				BA9FA12129A7B3F4001B8E5A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
