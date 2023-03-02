@@ -15,10 +15,22 @@ import AVFoundation
 class HomeScene: SKScene {
     
     var newGameButtonNode:SKSpriteNode!
+    var settingButtonNode:SKSpriteNode!
     
     override func didMove(to view: SKView) {
-        newGameButtonNode = self.childNode(withName: "newGameButton") as! SKSpriteNode
+       newGameButtonNode = SKSpriteNode(imageNamed: "start-button")
+        newGameButtonNode.position = CGPoint(x:self.frame.size.width * 0.55, y: self.frame.height / 2)
+        newGameButtonNode.zRotation =  -1*CGFloat.pi / 2.0
+        newGameButtonNode.name =  "newGameButton"
+        addChild(newGameButtonNode)
         
+        settingButtonNode = SKSpriteNode(imageNamed: "setting-button")
+        settingButtonNode.setScale(0.5)
+        settingButtonNode.position = CGPoint(x:self.frame.size.width * 0.18, y: self.frame.height * 0.08)
+        settingButtonNode.zRotation = -1*CGFloat.pi / 2.0
+        settingButtonNode.name = "settingButton"
+        addChild(settingButtonNode)
+
         
         
     }
@@ -31,8 +43,10 @@ class HomeScene: SKScene {
             let gameScene = GameScene(fileNamed: "GameScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
-            
-            
+        }
+        else if nodesArray.first?.name == "settingButton"{
+          
+            UserDefaults.standard.removeObject(forKey: "highestScore")
         }
     }
 }
