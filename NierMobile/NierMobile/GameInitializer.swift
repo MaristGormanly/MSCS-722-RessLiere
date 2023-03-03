@@ -16,6 +16,7 @@ class GameInitializer{
     let playerCategory: UInt32 = 0x1 << 2
     //player
     var player:SKSpriteNode!
+    var playerLives:Int = 3
     var playerLivesList: [SKSpriteNode] = []
     
     var pauseGameButton:SKSpriteNode!
@@ -23,6 +24,7 @@ class GameInitializer{
     
     //pause toggle
     var gamePaused = false
+    var gameOver = false
     
     var backgroundMusic: SKAudioNode!
     
@@ -34,12 +36,12 @@ class GameInitializer{
     
     //last torpedo shoot
     var lastTorpedoFiredTime: TimeInterval = 0
-
-
+    
+    
     
     func getPlayer() -> SKSpriteNode {
-           return player
-       }
+        return player
+    }
     func getGamePaused() -> Bool{
         return gamePaused
     }
@@ -48,7 +50,7 @@ class GameInitializer{
         //create a player
         player = SKSpriteNode(imageNamed: "spaceship2")
         player.setScale(0.2)
-       
+        
         //player physics body
         player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width/3)
         player.physicsBody?.categoryBitMask = playerCategory
@@ -56,23 +58,24 @@ class GameInitializer{
         player.physicsBody?.collisionBitMask = 0
         player.physicsBody?.affectedByGravity = false
         player.zRotation = -1*CGFloat.pi / 2.0
-
+        
         
         //set player intial postiion
         player.position =  CGPoint(x: frame.size.width * 0.08, y: frame.height / 2)
-
+        
         //add player to screen
         worldNode.addChild(player)
     }
     
-   
-    func initPlayerLives(worldNode:SKNode,frame:CGRect, playerLives:Int){
+    
+    func initPlayerLives(worldNode:SKNode,frame:CGRect, pLives:Int){
         var spacing = 0.94
+        playerLives = pLives
         for i in 0...(playerLives-1) {
             playerLivesList.append(SKSpriteNode(imageNamed: "spaceship2"))
             playerLivesList[i].setScale(0.1)
             playerLivesList[i].zRotation = -1*CGFloat.pi / 2.0
-
+            
             playerLivesList[i].position = CGPoint(x:frame.width * 0.85, y:frame.height * spacing)
             spacing -= 0.03
             worldNode.addChild(playerLivesList[i])
@@ -97,7 +100,7 @@ class GameInitializer{
         quitGameButton.name = "quitGameButton"
         
         //makes it the highest z value in the scene
-      
+        
         quitGameButton.zPosition = 5
         
     }
@@ -108,7 +111,7 @@ class GameInitializer{
         if gamePaused {
             // Pause the game
             worldNode.isPaused = true
-           // gameTimer.invalidate()
+            // gameTimer.invalidate()
             backgroundMusic.run(SKAction.pause())
             worldNode.addChild(quitGameButton)
             
@@ -116,7 +119,7 @@ class GameInitializer{
             // Unpause the game
             worldNode.isPaused = false
             quitGameButton.removeFromParent()
-           // gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+            // gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
             backgroundMusic.run(SKAction.play())
         }
         
@@ -141,10 +144,10 @@ class GameInitializer{
         motionManager.accelerometerUpdateInterval = 0.2
         motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
             if let accelerometerData = data {
-               
+                
                 let acceleration = accelerometerData.acceleration
                 self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
-               self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
+                self.yAcceleration = CGFloat(acceleration.y) * 0.75 + self.yAcceleration * 0.25
             }
         }
         
@@ -165,11 +168,11 @@ class GameInitializer{
             player.position = CGPoint(x: frame.width * 0.15, y: player.position.y)
         }
         if player.position.y > frame.height * 0.9 {
-                    player.position = CGPoint(x:player.position.x, y:frame.height * 0.9)
-                }
-                else if player.position.y < frame.height * 0.1{
-                    player.position = CGPoint(x: player.position.x, y: frame.height * 0.1)
-                }
+            player.position = CGPoint(x:player.position.x, y:frame.height * 0.9)
+        }
+        else if player.position.y < frame.height * 0.1{
+            player.position = CGPoint(x: player.position.x, y: frame.height * 0.1)
+        }
     }
     
     
@@ -177,7 +180,7 @@ class GameInitializer{
     func playExplosion(spriteNode:SKSpriteNode,worldNode:SKNode){
         let explosion = SKEmitterNode(fileNamed: "Explosion")!
         explosion.position = spriteNode.position
-
+        
         worldNode.addChild(explosion)
         
         worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
@@ -188,45 +191,20 @@ class GameInitializer{
         
     }
     
-    func handleShoot(targetPosition:CGPoint,worldNode:SKNode){
-        // Position to rotate towards
-        let currentTime = NSDate().timeIntervalSince1970
-            let timeSinceLastTorpedo = currentTime - lastTorpedoFiredTime
-            if timeSinceLastTorpedo < 0.25 { // Adjust this value to set the delay between torpedos
-                return
-            }
-        lastTorpedoFiredTime = currentTime
-        //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
-        let torpedoTarget = pointAlongLine(from: player.position, to: targetPosition, at: 1000)
-        
-        //rotate player to where going to shoot
-
-        let dx = targetPosition.x - player.position.x
-        let dy = targetPosition.y - player.position.y
-        
-        // Calculate the angle between the sprite and the touch location
-        let angle = atan2(dy, dx)
-        
-        // Set the sprite's zRotation to the calculated angle
-        player.zRotation =  angle + 180
-        
-        fireTorpedo(target: torpedoTarget,worldNode: worldNode)
-    }
-    
-    func fireTorpedo(target:CGPoint,worldNode:SKNode) {
+    func fireLaser(target:CGPoint,worldNode:SKNode) {
         worldNode.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
         
         let torpedoNode = SKSpriteNode(imageNamed: "torpedo2")
         torpedoNode.position = player.position
         //TODO: check degrees of ship
-       
+        
         
         let playerFacingAngle = player.zRotation + 60
         
         //calculates cordinate to spawn torpedo away from player can be increased by increasing constant in this case 60
         let torpedoOffset = CGVector(dx: 60 * sin(playerFacingAngle) , dy: -60 * cos(playerFacingAngle))
         torpedoNode.position = CGPoint(x: player.position.x + torpedoOffset.dx, y: player.position.y + torpedoOffset.dy)
-
+        
         
         
         torpedoNode.physicsBody = SKPhysicsBody(circleOfRadius: torpedoNode.size.width / 2)
@@ -240,7 +218,7 @@ class GameInitializer{
         worldNode.addChild(torpedoNode)
         
         let animationDuration:TimeInterval = 0.5
-       
+        
         
         var actionArray = [SKAction]()
         
@@ -248,26 +226,93 @@ class GameInitializer{
         actionArray.append(SKAction.removeFromParent())
         
         torpedoNode.run(SKAction.sequence(actionArray))
+    
+    }
+
+    func handleShoot(targetPosition:CGPoint,worldNode:SKNode){
+        // Position to rotate towards
+        let currentTime = NSDate().timeIntervalSince1970
+        let timeSinceLastTorpedo = currentTime - lastTorpedoFiredTime
+        if timeSinceLastTorpedo < 0.25 { // Adjust this value to set the delay between torpedos
+            return
+        }
+        lastTorpedoFiredTime = currentTime
+        //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
+        let torpedoTarget = pointAlongLine(from: player.position, to: targetPosition, at: 1000)
         
+        //rotate player to where going to shoot
         
+        let dx = targetPosition.x - player.position.x
+        let dy = targetPosition.y - player.position.y
         
+        // Calculate the angle between the sprite and the touch location
+        let angle = atan2(dy, dx)
+        
+        // Set the sprite's zRotation to the calculated angle
+        player.zRotation =  angle + 180
+        
+        fireLaser(target: torpedoTarget,worldNode: worldNode)
     }
     
-    func playMusic(worldNode:SKNode){
-        //start music
-        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
-            backgroundMusic = SKAudioNode(url: musicURL)
-            backgroundMusic.autoplayLooped = true
-            worldNode.addChild(backgroundMusic)
+    func handlePlayerDamage(sceneNode:SKNode, worldNode:SKNode){
+        if(playerLives > 1){
+            playerLivesList[playerLives-1].removeFromParent()
+            playerLives -= 1
+        }
+        else{
+            handleGameOver(sceneNode: sceneNode, worldNode: worldNode)
         }
     }
     
-    func initGame(sceneNode:SKNode,worldNode:SKNode,frame:CGRect,playerLives:Int){
-        initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: frame)
-        initPlayerLives(worldNode: worldNode, frame: frame, playerLives: playerLives)
-        initStarfield(worldNode: worldNode, frame: frame)
-        playMusic(worldNode: worldNode)
-        initPauseScreen(sceneNode: sceneNode, frame: frame)
-        handleMotion()
+    func handleGameOver(sceneNode:SKNode, worldNode:SKNode){
+        playExplosion(spriteNode: player,worldNode: worldNode)
+        playerLivesList[playerLives-1].removeFromParent()
+        player.removeFromParent()
+        // scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
+        backgroundMusic.run(SKAction.pause())
+        sceneNode.run(SKAction.playSoundFileNamed("game-over.mp3", waitForCompletion: true))
+        let wait = SKAction.wait(forDuration: 2.0)
+        pauseGameButton.removeFromParent()
+        //  gameTimer.invalidate()
+        worldNode.addChild(quitGameButton)
+        gameOver = true
+        
+        sceneNode.run(wait) {
+            
+            worldNode.isPaused = true
+            
+        }
     }
-}
+        
+        
+        
+        func laserDidCollideWithRobot(torpedoNode:SKSpriteNode, robotNode:SKSpriteNode,worldNode:SKNode) {
+            
+            playExplosion(spriteNode: robotNode,worldNode: worldNode)
+            torpedoNode.removeFromParent()
+            robotNode.removeFromParent()
+        }
+        
+        func playMusic(worldNode:SKNode){
+            //start music
+            if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
+                backgroundMusic = SKAudioNode(url: musicURL)
+                backgroundMusic.autoplayLooped = true
+                worldNode.addChild(backgroundMusic)
+            }
+        }
+   
+    
+        
+        func initGame(sceneNode:SKNode,worldNode:SKNode,frame:CGRect,playerLives:Int,physicsWorld:SKPhysicsWorld){
+            initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: frame)
+            initPlayerLives(worldNode: worldNode, frame: frame, pLives: playerLives)
+            initStarfield(worldNode: worldNode, frame: frame)
+            playMusic(worldNode: worldNode)
+            initPauseScreen(sceneNode: sceneNode, frame: frame)
+            handleMotion()
+            physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+           
+        }
+    }
+

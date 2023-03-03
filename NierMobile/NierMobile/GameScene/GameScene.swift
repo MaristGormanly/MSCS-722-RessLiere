@@ -399,7 +399,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Set the sprite's zRotation to the calculated angle
             player.zRotation =  angle + 180
             
-            fireTorpedo(target: torpedoTarget)
+            fireLaser(target: torpedoTarget)
         }
         
         
@@ -433,7 +433,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //
     //collision detected on torpedo
     //
-    func fireTorpedo(target:CGPoint) {
+    func fireLaser(target:CGPoint) {
         worldNode.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
         
         let torpedoNode = SKSpriteNode(imageNamed: "torpedo2")
@@ -534,11 +534,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerLives -= 1
         }
         else{
-            
-                // Code to execute after the delay
-               
                 handleGameOver()
-              
            
         }
     }
@@ -581,8 +577,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         torpedoNode.removeFromParent()
         robotNode.removeFromParent()
         
-        
-       
         score += 5
         
             let hs = UserDefaults.standard.integer(forKey: "highestScore")
