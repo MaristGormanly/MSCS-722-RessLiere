@@ -283,7 +283,37 @@ class GameInitializer{
             
         }
     }
+    
+    func handleTouch(touches:Set<UITouch>, worldNode:SKNode,sceneNode:SKNode, view:SKView){
+        guard let touch = touches.first else {
+            return
+        }
+        guard let touchLocation = touches.first?.location(in: sceneNode) else { return }
         
+        // Find the node at the touch location
+        let touchedNode = sceneNode.atPoint(touchLocation)
+        let targetPosition = touch.location(in: sceneNode)
+        
+        // Check if the touched node is the node you're interested in
+        if touchedNode.name == "pauseGameButton" {
+            pauseButtonHandler(worldNode: worldNode, view: view)
+        }
+        else if touchedNode.name == "quitGameButton"{
+            let homeScene = HomeScene(fileNamed: "HomeScene")
+                            homeScene?.scaleMode = .aspectFill
+                            sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
+            
+        }
+        else if !gamePaused && !gameOver{
+            handleShoot(targetPosition:targetPosition,worldNode:worldNode)
+           
+        }
+    }
+        
+    //TODO: handle level complete
+    func handleLevelClear(){
+        //code
+    }
         
         
         func laserDidCollideWithRobot(torpedoNode:SKSpriteNode, robotNode:SKSpriteNode,worldNode:SKNode) {
@@ -301,9 +331,59 @@ class GameInitializer{
                 worldNode.addChild(backgroundMusic)
             }
         }
-   
     
+    func handleCollision(contact: SKPhysicsContact,worldNode:SKNode,sceneNode:SKNode){
+            var firstBody:SKPhysicsBody
+            var secondBody:SKPhysicsBody
+            if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+                firstBody = contact.bodyA
+                secondBody = contact.bodyB
+            }
+            else if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask{
+                firstBody = contact.bodyB
+                secondBody = contact.bodyA
+            }
+            // occasinally return nil if two object get hit at same time
+            else{
+                return
+            }
         
+        
+            if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
+               (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
+                // Play a sound effect or explosion animation
+                
+                // Decrement player health or trigger a game over
+                handlePlayerDamage(sceneNode:sceneNode,worldNode:worldNode)
+                
+                // Remove the robot from the scene
+        // Remove the robot from the scene
+        if firstBody.categoryBitMask == robotCategory {
+            if let robotNode = firstBody.node as? SKSpriteNode {
+                playExplosion(spriteNode: robotNode,worldNode: worldNode)
+                print("fist body")
+                print(robotNode)
+                robotNode.removeFromParent()
+            }
+        }
+        else if secondBody.categoryBitMask == robotCategory {
+            if let robotNode = secondBody.node as? SKSpriteNode {
+                playExplosion(spriteNode: robotNode,worldNode: worldNode)
+                print(robotNode)
+               robotNode.removeFromParent()
+            }
+        }
+                    }
+    else{
+        //if nill returns
+        guard let torpedoNode = firstBody.node as? SKSpriteNode, let robotNode = secondBody.node as? SKSpriteNode else {
+            return
+        }
+        laserDidCollideWithRobot(torpedoNode: torpedoNode, robotNode: robotNode, worldNode: worldNode)
+
+    }
+    }
+   
         func initGame(sceneNode:SKNode,worldNode:SKNode,frame:CGRect,playerLives:Int,physicsWorld:SKPhysicsWorld){
             initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: frame)
             initPlayerLives(worldNode: worldNode, frame: frame, pLives: playerLives)

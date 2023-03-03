@@ -38,6 +38,26 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         //set physics for scene zero gravity
         //set physics
         gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+        
+        // Create the label and set its properties
+               let surviveLabel = SKLabelNode(text: "SURVIE")
+                surviveLabel.fontSize = 40
+                surviveLabel.fontColor = .white
+                surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
+                surviveLabel.zRotation = -1*CGFloat.pi / 2.0
+
+               addChild(surviveLabel)
+               
+               // Make the label blink for 5 seconds using SKAction
+               let blinkAction = SKAction.sequence([SKAction.fadeOut(withDuration: 0.5), SKAction.fadeIn(withDuration: 0.5)])
+               let repeatBlinkAction = SKAction.repeat(blinkAction, count: 10)
+                surviveLabel.run(repeatBlinkAction)
+               
+               // Wait for 5 seconds, then remove the label
+               let waitAction = SKAction.wait(forDuration: 5)
+               let removeAction = SKAction.removeFromParent()
+               let sequenceAction = SKAction.sequence([waitAction, removeAction])
+                surviveLabel.run(sequenceAction)
 
 
        }
@@ -96,57 +116,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-                var firstBody:SKPhysicsBody
-                var secondBody:SKPhysicsBody
-        print("test")
-//        print(contact.bodyA)
-//        print("BodyB")
-//        print(contact.bodyB)
-                
-                if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-                    firstBody = contact.bodyA
-                    secondBody = contact.bodyB
-                }else if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask{
-                    firstBody = contact.bodyB
-                    secondBody = contact.bodyA
-                }
-                // occasinally return nil if two object get hit at same time
-                else{
-                    return
-                }
-        if (firstBody.categoryBitMask == playerCategory && secondBody.categoryBitMask == robotCategory) ||
-                   (firstBody.categoryBitMask == robotCategory && secondBody.categoryBitMask == playerCategory) {
-                    // Play a sound effect or explosion animation
-                    
-                    // Decrement player health or trigger a game over
-                    game.handlePlayerDamage(sceneNode:self,worldNode:worldNode)
-                    
-                    // Remove the robot from the scene
-            // Remove the robot from the scene
-            if firstBody.categoryBitMask == robotCategory {
-                if let robotNode = firstBody.node as? SKSpriteNode {
-                    game.playExplosion(spriteNode: robotNode,worldNode: worldNode)
-                    print("fist body")
-                    print(robotNode)
-                    robotNode.removeFromParent()
-                }
-            }
-            else if secondBody.categoryBitMask == robotCategory {
-                if let robotNode = secondBody.node as? SKSpriteNode {
-                    game.playExplosion(spriteNode: robotNode,worldNode: worldNode)
-                    print(robotNode)
-                   robotNode.removeFromParent()
-                }
-            }
-                        }
-        else{
-            //if nill returns
-            guard let torpedoNode = firstBody.node as? SKSpriteNode, let robotNode = secondBody.node as? SKSpriteNode else {
-                return
-            }
-            game.laserDidCollideWithRobot(torpedoNode: torpedoNode, robotNode: robotNode, worldNode: worldNode)
-
-        }
+        game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
     }
     
     override func didSimulatePhysics() {
@@ -154,31 +124,12 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
+        game.handleTouch(touches: touches, worldNode: worldNode, sceneNode: self, view: view!)
         
-        guard let touchLocation = touches.first?.location(in: self) else { return }
+      
         
-        // Find the node at the touch location
-        let touchedNode = self.atPoint(touchLocation)
-        let targetPosition = touch.location(in: self)
 
-        
-        // Check if the touched node is the node you're interested in
-        if touchedNode.name == "pauseGameButton" {
-            game.pauseButtonHandler(worldNode: worldNode, view: view!)
-        }
-        else if touchedNode.name == "quitGameButton"{
-            let homeScene = HomeScene(fileNamed: "HomeScene")
-                            homeScene?.scaleMode = .aspectFill
-                            self.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
-            
-        }
-        else if !game.getGamePaused(){
-            game.handleShoot(targetPosition:targetPosition,worldNode:worldNode)
-           
-        }
+
         
     }
     
