@@ -66,7 +66,7 @@ class GameInitializer{
     }
     
    
-    func initPlayerLives(worldNode:SKNode,frame:CGRect,view:SKView, playerLives:Int){
+    func initPlayerLives(worldNode:SKNode,frame:CGRect, playerLives:Int){
         var spacing = 0.94
         for i in 0...(playerLives-1) {
             playerLivesList.append(SKSpriteNode(imageNamed: "spaceship2"))
@@ -152,9 +152,10 @@ class GameInitializer{
     
     
     func physicsHandler(frame:CGRect) {
-     
-        player.position.x += xAcceleration * 50
-        player.position.y += yAcceleration * 50
+        if(!gamePaused){
+            player.position.x += xAcceleration * 50
+            player.position.y += yAcceleration * 50
+        }
         
         //stops player from going past walls of screeen
         if player.position.x > frame.width * 0.85 {
@@ -261,8 +262,9 @@ class GameInitializer{
         }
     }
     
-    func initGame(sceneNode:SKNode,worldNode:SKNode,frame:CGRect){
+    func initGame(sceneNode:SKNode,worldNode:SKNode,frame:CGRect,playerLives:Int){
         initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: frame)
+        initPlayerLives(worldNode: worldNode, frame: frame, playerLives: playerLives)
         initStarfield(worldNode: worldNode, frame: frame)
         playMusic(worldNode: worldNode)
         initPauseScreen(sceneNode: sceneNode, frame: frame)

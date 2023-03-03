@@ -24,8 +24,8 @@ class LevelOneScene: SKScene {
             addChild(worldNode)
            
         //TODO: Create initalze game function
-        game.initPlayerLives(worldNode: worldNode, frame: self.frame, view:view, playerLives: 3)
-        game.initGame(sceneNode: self, worldNode: worldNode, frame: self.frame)
+       
+        game.initGame(sceneNode: self, worldNode: worldNode, frame: self.frame,playerLives:3)
        
         player = game.getPlayer()
        
