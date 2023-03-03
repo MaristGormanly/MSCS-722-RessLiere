@@ -25,13 +25,20 @@ class LevelOneScene: SKScene {
 
         gameInitializer.initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: self.frame)
         gameInitializer.initPlayerLives(worldNode: worldNode, frame: self.frame, view:view, playerLives: 3)
+        gameInitializer.initStarfield(worldNode: worldNode, frame: self.frame)
         
         gameInitializer.initPauseScreen(sceneNode: self, frame: self.frame)
         player = gameInitializer.getPlayer()
-            
+        gameInitializer.handleMotion()
+        //set physics
+
         
 
        }
+    
+    override func didSimulatePhysics() {
+        gameInitializer.physicsHandler(frame: self.frame)
+    }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
@@ -43,15 +50,13 @@ class LevelOneScene: SKScene {
 
         let touchedNode = self.atPoint(touchLocation)
         
-        guard let touchLocation = touches.first?.location(in: self) else { return }
+      //  guard let touchLocation = touches.first?.location(in: self) else { return }
 
         if touchedNode.name == "pauseGameButton" {
             gameInitializer.pauseButtonHandler(worldNode: worldNode, view: view!)
             
-            
         }
       
-       
         
     }
  

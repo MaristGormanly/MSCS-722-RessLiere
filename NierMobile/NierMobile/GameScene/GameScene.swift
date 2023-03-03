@@ -538,8 +538,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 // Code to execute after the delay
                
                 handleGameOver()
-               
-                
               
            
         }
