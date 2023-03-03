@@ -65,11 +65,8 @@ class LevelOneScene: SKScene {
         else if !game.getGamePaused(){
             game.handleShoot(targetPosition:targetPosition,worldNode:worldNode)
            
-          
         }
         
-        
-       
     }
     
    

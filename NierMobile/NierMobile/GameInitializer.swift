@@ -10,6 +10,10 @@ import SpriteKit
 import CoreMotion
     
 class GameInitializer{
+    
+    let robotCategory:UInt32 = 0x1 << 1
+    let photonTorpedoCategory:UInt32 = 0x1 << 0
+    let playerCategory: UInt32 = 0x1 << 2
     //player
     var player:SKSpriteNode!
     var playerLivesList: [SKSpriteNode] = []
@@ -205,7 +209,47 @@ class GameInitializer{
         // Set the sprite's zRotation to the calculated angle
         player.zRotation =  angle + 180
         
-       // fireTorpedo(target: torpedoTarget)
+        fireTorpedo(target: torpedoTarget,worldNode: worldNode)
+    }
+    
+    func fireTorpedo(target:CGPoint,worldNode:SKNode) {
+        worldNode.run(SKAction.playSoundFileNamed("torpedo.mp3", waitForCompletion: false))
+        
+        let torpedoNode = SKSpriteNode(imageNamed: "torpedo2")
+        torpedoNode.position = player.position
+        //TODO: check degrees of ship
+       
+        
+        let playerFacingAngle = player.zRotation + 60
+        
+        //calculates cordinate to spawn torpedo away from player can be increased by increasing constant in this case 60
+        let torpedoOffset = CGVector(dx: 60 * sin(playerFacingAngle) , dy: -60 * cos(playerFacingAngle))
+        torpedoNode.position = CGPoint(x: player.position.x + torpedoOffset.dx, y: player.position.y + torpedoOffset.dy)
+
+        
+        
+        torpedoNode.physicsBody = SKPhysicsBody(circleOfRadius: torpedoNode.size.width / 2)
+        torpedoNode.physicsBody?.isDynamic = true
+        
+        torpedoNode.physicsBody?.categoryBitMask = photonTorpedoCategory
+        torpedoNode.physicsBody?.contactTestBitMask = robotCategory
+        torpedoNode.physicsBody?.collisionBitMask = 0
+        torpedoNode.physicsBody?.usesPreciseCollisionDetection = true
+        
+        worldNode.addChild(torpedoNode)
+        
+        let animationDuration:TimeInterval = 0.5
+       
+        
+        var actionArray = [SKAction]()
+        
+        actionArray.append(SKAction.move(to: CGPoint(x: target.x  , y: target.y ), duration: animationDuration))
+        actionArray.append(SKAction.removeFromParent())
+        
+        torpedoNode.run(SKAction.sequence(actionArray))
+        
+        
+        
     }
     
     func playMusic(worldNode:SKNode){
