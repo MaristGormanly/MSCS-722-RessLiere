@@ -51,7 +51,7 @@ class GameInitializer{
 
         
         //set player intial postiion
-        player.position =  CGPoint(x: frame.size.width * 0.2, y: frame.height / 2)
+        player.position =  CGPoint(x: frame.size.width * 0.08, y: frame.height / 2)
 
         //add player to screen
         worldNode.addChild(player)
@@ -93,14 +93,15 @@ class GameInitializer{
         quitGameButton.zPosition = 5
         
     }
+    
+    //TODO: takes a timer a halts if there is a timer
     func pauseButtonHandler(worldNode:SKNode, view:SKView){
-       
         gamePaused = !gamePaused
         if gamePaused {
             // Pause the game
             worldNode.isPaused = true
            // gameTimer.invalidate()
-            //backgroundMusic.run(SKAction.pause())
+            backgroundMusic.run(SKAction.pause())
             worldNode.addChild(quitGameButton)
             
         } else {
@@ -108,7 +109,7 @@ class GameInitializer{
             worldNode.isPaused = false
             quitGameButton.removeFromParent()
            // gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
-           // backgroundMusic.run(SKAction.play())
+            backgroundMusic.run(SKAction.play())
         }
         
     }
@@ -140,6 +141,8 @@ class GameInitializer{
         }
         
     }
+    
+    
     func physicsHandler(frame:CGRect) {
      
         player.position.x += xAcceleration * 50
@@ -158,7 +161,30 @@ class GameInitializer{
                 else if player.position.y < frame.height * 0.1{
                     player.position = CGPoint(x: player.position.x, y: frame.height * 0.1)
                 }
+    }
+    
+    
+    //tale a sprite and creates a explosion on its position
+    func playExplosion(spriteNode:SKSpriteNode,worldNode:SKNode){
+        let explosion = SKEmitterNode(fileNamed: "Explosion")!
+        explosion.position = spriteNode.position
+
+        worldNode.addChild(explosion)
         
-       
+        worldNode.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
+        
+        worldNode.run(SKAction.wait(forDuration: 2)) {
+            explosion.removeFromParent()
+        }
+        
+    }
+    
+    func playMusic(worldNode:SKNode){
+        //start music
+        if let musicURL = Bundle.main.url(forResource: "hacking-dimension", withExtension: "mp3") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            backgroundMusic.autoplayLooped = true
+            worldNode.addChild(backgroundMusic)
+        }
     }
 }
