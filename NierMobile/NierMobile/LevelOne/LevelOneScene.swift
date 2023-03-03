@@ -9,6 +9,7 @@ import SpriteKit
 
 class LevelOneScene: SKScene {
       let game = GameInitializer()
+    //TODO: maybe getter and setter for this
       let robotCategory:UInt32 = 0x1 << 1
       let photonTorpedoCategory:UInt32 = 0x1 << 0
       let playerCategory: UInt32 = 0x1 << 2
@@ -22,14 +23,12 @@ class LevelOneScene: SKScene {
     override func didMove(to view: SKView) {
             addChild(worldNode)
            
-
-        game.initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: self.frame)
+        //TODO: Create initalze game function
         game.initPlayerLives(worldNode: worldNode, frame: self.frame, view:view, playerLives: 3)
-        game.initStarfield(worldNode: worldNode, frame: self.frame)
-        game.playMusic(worldNode: worldNode)
-        game.initPauseScreen(sceneNode: self, frame: self.frame)
+        game.initGame(sceneNode: self, worldNode: worldNode, frame: self.frame)
+       
         player = game.getPlayer()
-        game.handleMotion()
+       
         //set physics
 
         

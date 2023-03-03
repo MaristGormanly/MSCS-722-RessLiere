@@ -260,4 +260,12 @@ class GameInitializer{
             worldNode.addChild(backgroundMusic)
         }
     }
+    
+    func initGame(sceneNode:SKNode,worldNode:SKNode,frame:CGRect){
+        initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: frame)
+        initStarfield(worldNode: worldNode, frame: frame)
+        playMusic(worldNode: worldNode)
+        initPauseScreen(sceneNode: sceneNode, frame: frame)
+        handleMotion()
+    }
 }
