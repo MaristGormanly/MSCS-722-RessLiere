@@ -28,13 +28,17 @@ class GameInitializer{
     var xAcceleration:CGFloat = 0
     var yAcceleration:CGFloat = 0
     
-
+    //last torpedo shoot
+    var lastTorpedoFiredTime: TimeInterval = 0
 
 
     
     func getPlayer() -> SKSpriteNode {
            return player
        }
+    func getGamePaused() -> Bool{
+        return gamePaused
+    }
     
     func initPlayer(playerCategory:UInt32, robotCategory:UInt32,worldNode:SKNode,frame:CGRect){
         //create a player
@@ -177,6 +181,31 @@ class GameInitializer{
             explosion.removeFromParent()
         }
         
+    }
+    
+    func handleShoot(targetPosition:CGPoint,worldNode:SKNode){
+        // Position to rotate towards
+        let currentTime = NSDate().timeIntervalSince1970
+            let timeSinceLastTorpedo = currentTime - lastTorpedoFiredTime
+            if timeSinceLastTorpedo < 0.25 { // Adjust this value to set the delay between torpedos
+                return
+            }
+        lastTorpedoFiredTime = currentTime
+        //TODO: MAKE FURTHER ADJUSTMENTS TO do properly
+        let torpedoTarget = pointAlongLine(from: player.position, to: targetPosition, at: 1000)
+        
+        //rotate player to where going to shoot
+
+        let dx = targetPosition.x - player.position.x
+        let dy = targetPosition.y - player.position.y
+        
+        // Calculate the angle between the sprite and the touch location
+        let angle = atan2(dy, dx)
+        
+        // Set the sprite's zRotation to the calculated angle
+        player.zRotation =  angle + 180
+        
+       // fireTorpedo(target: torpedoTarget)
     }
     
     func playMusic(worldNode:SKNode){

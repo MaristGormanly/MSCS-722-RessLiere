@@ -41,24 +41,40 @@ class LevelOneScene: SKScene {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
         guard let touch = touches.first else {
             return
         }
         
         guard let touchLocation = touches.first?.location(in: self) else { return }
-
-        let touchedNode = self.atPoint(touchLocation)
         
-      //  guard let touchLocation = touches.first?.location(in: self) else { return }
+        // Find the node at the touch location
+        let touchedNode = self.atPoint(touchLocation)
+        let targetPosition = touch.location(in: self)
 
+        
+        // Check if the touched node is the node you're interested in
         if touchedNode.name == "pauseGameButton" {
             game.pauseButtonHandler(worldNode: worldNode, view: view!)
+        }
+        else if touchedNode.name == "quitGameButton"{
+            let homeScene = HomeScene(fileNamed: "HomeScene")
+                            homeScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
             
         }
-      
+        else if !game.getGamePaused(){
+            game.handleShoot(targetPosition:targetPosition,worldNode:worldNode)
+           
+          
+        }
         
+        
+       
     }
+    
+   
+    
+    
  
     
 }
