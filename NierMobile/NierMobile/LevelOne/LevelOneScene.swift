@@ -40,16 +40,19 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
         
         // Create the label and set its properties
-               let surviveLabel = SKLabelNode(text: "SURVIE")
-                surviveLabel.fontSize = 40
+               let surviveLabel = SKLabelNode(text: "SURVIVE")
+                surviveLabel.fontSize = 50
                 surviveLabel.fontColor = .white
                 surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
                 surviveLabel.zRotation = -1*CGFloat.pi / 2.0
-
+                surviveLabel.fontName =  "Helvetica-Bold"
                addChild(surviveLabel)
                
                // Make the label blink for 5 seconds using SKAction
-               let blinkAction = SKAction.sequence([SKAction.fadeOut(withDuration: 0.5), SKAction.fadeIn(withDuration: 0.5)])
+        let colorizeAction = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: 0.5)
+        let uncolorizeAction = SKAction.colorize(withColorBlendFactor: 0.0, duration: 0.5)
+        let blinkAction = SKAction.sequence([colorizeAction, SKAction.fadeOut(withDuration: 0.5), uncolorizeAction, SKAction.fadeIn(withDuration: 0.5)])
+
                let repeatBlinkAction = SKAction.repeat(blinkAction, count: 10)
                 surviveLabel.run(repeatBlinkAction)
                
