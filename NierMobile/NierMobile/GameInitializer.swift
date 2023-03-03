@@ -13,6 +13,12 @@ class GameInitializer {
     var playerA:SKSpriteNode!
     var playerLivesList: [SKSpriteNode] = []
     
+    var pauseGameButton:SKSpriteNode!
+    var quitGameButton:SKSpriteNode!
+    
+    //pause toggle
+    var gamePaused = false
+    
     
     
     func getPlayer() -> SKSpriteNode {
@@ -54,5 +60,46 @@ class GameInitializer {
         }
     }
     
+    func initPauseScreen(sceneNode:SKNode,frame:CGRect){
+        //set pause button
+        
+        pauseGameButton = SKSpriteNode(imageNamed: "pause-game")
+        
+        pauseGameButton.name = "pauseGameButton"
+        pauseGameButton.zRotation = -1*CGFloat.pi / 2.0
+        pauseGameButton.setScale(1)
+        pauseGameButton.position = CGPoint(x:frame.width * 0.85, y:frame.height * 0.08)
+        
+        sceneNode.addChild(pauseGameButton)
+        
+        quitGameButton = SKSpriteNode(imageNamed:"quit-game")
+        quitGameButton.zRotation = -1*CGFloat.pi / 2.0
+        quitGameButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
+        quitGameButton.name = "quitGameButton"
+        
+        //makes it the highest z value in the scene
+      
+        quitGameButton.zPosition = 5
+        
+    }
+    func pauseButtonHandler(worldNode:SKNode, view:SKView){
+       
+        gamePaused = !gamePaused
+        if gamePaused {
+            // Pause the game
+            worldNode.isPaused = true
+           // gameTimer.invalidate()
+            //backgroundMusic.run(SKAction.pause())
+            worldNode.addChild(quitGameButton)
+            
+        } else {
+            // Unpause the game
+            worldNode.isPaused = false
+            quitGameButton.removeFromParent()
+           // gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+           // backgroundMusic.run(SKAction.play())
+        }
+        
+    }
     
 }

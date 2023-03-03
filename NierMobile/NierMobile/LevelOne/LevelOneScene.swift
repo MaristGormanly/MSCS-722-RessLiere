@@ -25,8 +25,9 @@ class LevelOneScene: SKScene {
 
         gameInitializer.initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: self.frame)
         gameInitializer.initPlayerLives(worldNode: worldNode, frame: self.frame, view:view, playerLives: 3)
-
-            player = gameInitializer.getPlayer()
+        
+        gameInitializer.initPauseScreen(sceneNode: self, frame: self.frame)
+        player = gameInitializer.getPlayer()
             
         
 
@@ -38,8 +39,17 @@ class LevelOneScene: SKScene {
             return
         }
         
+        guard let touchLocation = touches.first?.location(in: self) else { return }
+
+        let touchedNode = self.atPoint(touchLocation)
         
-          
+        guard let touchLocation = touches.first?.location(in: self) else { return }
+
+        if touchedNode.name == "pauseGameButton" {
+            gameInitializer.pauseButtonHandler(worldNode: worldNode, view: view!)
+            
+            
+        }
       
        
         
