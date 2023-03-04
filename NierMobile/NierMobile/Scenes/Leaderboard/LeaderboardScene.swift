@@ -36,30 +36,41 @@ class LeaderboardScene: SKScene {
         var highScores = UserDefaults.standard.array(forKey: highScoresKey) as? [Int] ?? []
         
         var yPosition = leadboardLabel.position.x - leadboardLabel.frame.size.width/2 + 30 // start position below leaderboard label
-        
-        for (index, score) in highScores.enumerated() {
-            let scoreLabel = SKLabelNode(text: "Score \(index+1): \(score)")
-            if(index == 0){
-                scoreLabel.position = CGPoint(x:yPosition - scoreLabel.frame.size.height/2 - 30  , y: self.frame.width * 0.86)
-
-                 scoreLabel.text = ("HIGH SCORE \(index+1): \(score)")
-                scoreLabel.zRotation = -1*CGFloat.pi / 2.0
-                scoreLabel.fontName = "Copperplate"
-                scoreLabel.fontSize = 36
-                scoreLabel.fontColor = titleColor
-                addChild(scoreLabel)
+        if(highScores.isEmpty){
+            let scoreLabel = SKLabelNode(text: "NO RECORDED SCORES YET ..")
+            scoreLabel.position = CGPoint(x: self.frame.size.width / 2   , y: self.frame.height * 0.5)
+            scoreLabel.zRotation = -1*CGFloat.pi / 2.0
+            scoreLabel.fontName = "Copperplate"
+            scoreLabel.fontSize = 48
+            scoreLabel.fontColor = titleColor
+            addChild(scoreLabel)
+            
+        }
+        else{
+            for (index, score) in highScores.enumerated() {
+                let scoreLabel = SKLabelNode(text: "Score \(index+1): \(score)")
+                if(index == 0){
+                    scoreLabel.position = CGPoint(x:yPosition - scoreLabel.frame.size.height/2 - 30  , y: self.frame.width * 0.86)
+                    
+                    scoreLabel.text = ("HIGH SCORE \(index+1): \(score)")
+                    scoreLabel.zRotation = -1*CGFloat.pi / 2.0
+                    scoreLabel.fontName = "Copperplate"
+                    scoreLabel.fontSize = 36
+                    scoreLabel.fontColor = titleColor
+                    addChild(scoreLabel)
+                }
+                else{
+                    
+                    scoreLabel.zRotation = -1*CGFloat.pi / 2.0
+                    scoreLabel.position = CGPoint(x:yPosition - scoreLabel.frame.size.height/2 + 30 , y: self.frame.width * 0.86)
+                    scoreLabel.fontName = "Copperplate"
+                    scoreLabel.fontSize = 36
+                    scoreLabel.fontColor = UIColor.white
+                    addChild(scoreLabel)
+                }
+                // Update the Y position for the next label
+                yPosition = scoreLabel.position.x - scoreLabel.frame.size.width/2
             }
-            else{
-                
-                scoreLabel.zRotation = -1*CGFloat.pi / 2.0
-                scoreLabel.position = CGPoint(x:yPosition - scoreLabel.frame.size.height/2 + 30 , y: self.frame.width * 0.86)
-                scoreLabel.fontName = "Copperplate"
-                scoreLabel.fontSize = 36
-                scoreLabel.fontColor = UIColor.white
-                addChild(scoreLabel)
-            }
-            // Update the Y position for the next label
-            yPosition = scoreLabel.position.x - scoreLabel.frame.size.width/2
         }
     
         

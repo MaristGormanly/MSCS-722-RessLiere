@@ -529,10 +529,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func handlePlayerDamage(){
+        if(playerLives == 2){
+            // Make the player's last life blink
+            let blinkAction = SKAction.repeatForever(SKAction.sequence([SKAction.fadeOut(withDuration: 0.5), SKAction.fadeIn(withDuration: 0.5)]))
+            playerLivesList[0].run(blinkAction)
+        }
         if(playerLives > 1){
             playerLivesList[playerLives-1].removeFromParent()
             playerLives -= 1
         }
+        
         else{
                 handleGameOver()
            
