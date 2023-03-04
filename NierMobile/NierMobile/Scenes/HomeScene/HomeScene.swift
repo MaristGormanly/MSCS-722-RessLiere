@@ -80,13 +80,18 @@ class HomeScene: SKScene {
             let gameScene = GameScene(fileNamed: "LevelOneScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
-            
         }
         else if nodesArray.first?.name == "settingButton"{
             print("High scores cleared")
             UserDefaults.standard.removeObject(forKey: "highestScore")
             let highScoresKey = "highScores"
             UserDefaults.standard.removeObject(forKey: highScoresKey)
+
+        }
+        else if nodesArray.first?.name == "leaderboardButton"{
+            let gameScene = GameScene(fileNamed: "LeaderboardScene")
+                            gameScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
 
         }
     }

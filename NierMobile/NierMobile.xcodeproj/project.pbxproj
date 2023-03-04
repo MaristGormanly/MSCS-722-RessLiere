@@ -28,6 +28,8 @@
 		BA9FA1A629B126C7001B8E5A /* GameInitializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */; };
 		BA9FA1AA29B12CA7001B8E5A /* LevelOneScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA1A929B12CA6001B8E5A /* LevelOneScene.sks */; };
 		BA9FA1AC29B12CF5001B8E5A /* LevelOneScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA1AB29B12CF5001B8E5A /* LevelOneScene.swift */; };
+		BAFE783B29B3DCFA00E10024 /* LeaderboardScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BAFE783A29B3DCFA00E10024 /* LeaderboardScene.sks */; };
+		BAFE783D29B3DD0D00E10024 /* LeaderboardScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFE783C29B3DD0D00E10024 /* LeaderboardScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +55,8 @@
 		BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInitializer.swift; sourceTree = "<group>"; };
 		BA9FA1A929B12CA6001B8E5A /* LevelOneScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LevelOneScene.sks; sourceTree = "<group>"; };
 		BA9FA1AB29B12CF5001B8E5A /* LevelOneScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelOneScene.swift; sourceTree = "<group>"; };
+		BAFE783A29B3DCFA00E10024 /* LeaderboardScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LeaderboardScene.sks; sourceTree = "<group>"; };
+		BAFE783C29B3DD0D00E10024 /* LeaderboardScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +174,8 @@
 		BAFE783729B3CD8900E10024 /* Leaderboard */ = {
 			isa = PBXGroup;
 			children = (
+				BAFE783A29B3DCFA00E10024 /* LeaderboardScene.sks */,
+				BAFE783C29B3DD0D00E10024 /* LeaderboardScene.swift */,
 			);
 			path = Leaderboard;
 			sourceTree = "<group>";
@@ -234,6 +240,7 @@
 			files = (
 				BA9FA12C29A7B3F4001B8E5A /* Main.storyboard in Resources */,
 				BA9FA17929A92210001B8E5A /* hacking-dimension.mp3 in Resources */,
+				BAFE783B29B3DCFA00E10024 /* LeaderboardScene.sks in Resources */,
 				BA9FA1AA29B12CA7001B8E5A /* LevelOneScene.sks in Resources */,
 				BA9FA18829AF8F10001B8E5A /* game-over.mp3 in Resources */,
 				BA9FA16F29A84634001B8E5A /* Starfield.sks in Resources */,
@@ -260,6 +267,7 @@
 				BA9FA12729A7B3F4001B8E5A /* GameScene.swift in Sources */,
 				BA9FA18429ABB958001B8E5A /* HomeScene.swift in Sources */,
 				BA9FA12929A7B3F4001B8E5A /* GameViewController.swift in Sources */,
+				BAFE783D29B3DD0D00E10024 /* LeaderboardScene.swift in Sources */,
 				BA9FA1A629B126C7001B8E5A /* GameInitializer.swift in Sources */,
 				BA9FA1AC29B12CF5001B8E5A /* LevelOneScene.swift in Sources */,
 				BA9FA12129A7B3F4001B8E5A /* AppDelegate.swift in Sources */,

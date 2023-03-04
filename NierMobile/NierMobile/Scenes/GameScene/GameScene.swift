@@ -552,6 +552,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 gameTimer.invalidate()
                 worldNode.addChild(quitGameButton)
                 gameOver = true
+                //adds score to list and then only keeps the the top 10 scores
                 var highScores = UserDefaults.standard.array(forKey: highScoresKey) as? [Int] ?? []
                 highScores.append(score)
                 highScores.sort { $0 > $1 }
@@ -590,7 +591,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let highScores = UserDefaults.standard.array(forKey: highScoresKey) as? [Int] ?? []
 
             let highestScore = highScores.sorted().last ?? 0
-        let hs = UserDefaults.standard.integer(forKey: "highestScore")
+            let hs = UserDefaults.standard.integer(forKey: "highestScore")
             if highestScore < score {
                 highScore = score
             }
