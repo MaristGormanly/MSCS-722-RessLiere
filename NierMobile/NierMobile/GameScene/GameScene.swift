@@ -30,7 +30,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //seperate gameNode from scene
     let worldNode = SKNode()
     
-    
+    let highScoresKey = "highScores"
+
     
     // ! is optional meaning value does not have be defined right away
     var player:SKSpriteNode!
@@ -552,7 +553,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 gameTimer.invalidate()
                 worldNode.addChild(quitGameButton)
                 gameOver = true
-                
+                var highScores = UserDefaults.standard.array(forKey: highScoresKey) as? [Int] ?? []
+                highScores.append(score)
+                highScores.sort { $0 > $1 }
+                highScores = Array(highScores.prefix(10))
+                UserDefaults.standard.set(highScores, forKey: highScoresKey)
+
+               
+                for (index, score) in highScores.enumerated() {
+                    print("Score \(index+1): \(score)")
+                }
                 self.run(wait) {
                     
                     self.worldNode.isPaused = true
@@ -584,6 +594,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 UserDefaults.standard.set(score, forKey: "highestScore")
                 highScore = score
             }
+      
+
         
 
         

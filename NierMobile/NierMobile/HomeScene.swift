@@ -58,8 +58,11 @@ class HomeScene: SKScene {
             
         }
         else if nodesArray.first?.name == "settingButton"{
-          
+            print("High scores cleared")
             UserDefaults.standard.removeObject(forKey: "highestScore")
+            let highScoresKey = "highScores"
+            UserDefaults.standard.removeObject(forKey: highScoresKey)
+
         }
     }
 }
