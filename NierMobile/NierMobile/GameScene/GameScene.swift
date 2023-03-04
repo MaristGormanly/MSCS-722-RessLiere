@@ -588,10 +588,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         robotNode.removeFromParent()
         
         score += 5
-        
-            let hs = UserDefaults.standard.integer(forKey: "highestScore")
-            if hs < score {
-                UserDefaults.standard.set(score, forKey: "highestScore")
+            let highScores = UserDefaults.standard.array(forKey: highScoresKey) as? [Int] ?? []
+
+            let highestScore = highScores.sorted().last ?? 0
+        let hs = UserDefaults.standard.integer(forKey: "highestScore")
+            if highestScore < score {
                 highScore = score
             }
       
