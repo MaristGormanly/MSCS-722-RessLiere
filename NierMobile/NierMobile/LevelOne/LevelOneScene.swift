@@ -188,11 +188,6 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         game.handleTouch(touches: touches, worldNode: worldNode, sceneNode: self, view: view!)
         
-      
-        
-
-
-        
     }
     
    

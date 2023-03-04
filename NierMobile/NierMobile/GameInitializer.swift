@@ -5,7 +5,7 @@
 //  Created by Kyle Ress-Liere on 3/2/23.
 //
 
-
+//art https://www.pngkey.com/detail/u2e6a9w7t4w7t4o0_1443321603011-pixel-home-button-png/
 import SpriteKit
 import CoreMotion
     
@@ -22,6 +22,7 @@ class GameInitializer{
     var pauseGameButton:SKSpriteNode!
     var quitGameButton:SKSpriteNode!
     var levelCompletedLabel:SKLabelNode!
+    var returnHomeButton:SKSpriteNode!
     
     //pause toggle
     var gamePaused = false
@@ -86,6 +87,14 @@ class GameInitializer{
         levelCompletedLabel.name = "levelCompleteButton"
         levelCompletedLabel.color = .white
         levelCompletedLabel.colorBlendFactor = 1.0
+        
+        returnHomeButton = SKSpriteNode(imageNamed:"return-home")
+      
+        returnHomeButton.position = CGPoint(x: frame.width * 0.35 , y: frame.height * 0.6)
+        returnHomeButton.setScale(0.75)
+        returnHomeButton.zRotation = -1*CGFloat.pi / 2.0
+        levelCompletedLabel.name = "returnHomeButton"
+       
         
     }
     
@@ -345,7 +354,7 @@ class GameInitializer{
                             homeScene?.scaleMode = .aspectFill
                             sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
         }
-        else if touchedNode.name == "levelCompleteButton"{
+        else if touchedNode.name == "returnHomeButton"{
             let homeScene = HomeScene(fileNamed: "HomeScene")
                             homeScene?.scaleMode = .aspectFill
                             sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
@@ -369,6 +378,7 @@ class GameInitializer{
         pauseGameButton.removeFromParent()
         //  gameTimer.invalidate()
         worldNode.addChild(levelCompletedLabel)
+        worldNode.addChild(returnHomeButton)
         gameOver = true
         worldNode.enumerateChildNodes(withName: "robot") { (node, _) in
              if let robot = node as? SKSpriteNode {
@@ -392,7 +402,6 @@ class GameInitializer{
         
         
         func laserDidCollideWithRobot(torpedoNode:SKSpriteNode, robotNode:SKSpriteNode,worldNode:SKNode) {
-            
             playExplosion(spriteNode: robotNode,worldNode: worldNode)
             torpedoNode.removeFromParent()
             robotNode.removeFromParent()
