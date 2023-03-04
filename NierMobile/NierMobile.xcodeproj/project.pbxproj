@@ -85,21 +85,17 @@
 		BA9FA11F29A7B3F3001B8E5A /* NierMobile */ = {
 			isa = PBXGroup;
 			children = (
-				BA9FA1A229B125F7001B8E5A /* LevelOne */,
+				BAFE783429B3C98800E10024 /* Utils */,
+				BAFE783329B3C91500E10024 /* Scenes */,
 				BA9FA17D29ABB80A001B8E5A /* Sounds */,
 				BA9FA17E29ABB818001B8E5A /* Effects */,
 				BA9FA12029A7B3F4001B8E5A /* AppDelegate.swift */,
-				BA9FA17C29ABB7BB001B8E5A /* GameScene */,
 				BA9FA12429A7B3F4001B8E5A /* Actions.sks */,
 				BA9FA12829A7B3F4001B8E5A /* GameViewController.swift */,
 				BA9FA12A29A7B3F4001B8E5A /* Main.storyboard */,
 				BA9FA12D29A7B3F7001B8E5A /* Assets.xcassets */,
 				BA9FA17629A91B8B001B8E5A /* spaceship2.png */,
 				BA9FA12F29A7B3F7001B8E5A /* LaunchScreen.storyboard */,
-				BA9FA18129ABB936001B8E5A /* HomeScene.sks */,
-				BA9FA18329ABB958001B8E5A /* HomeScene.swift */,
-				BA9FA19E29B1220A001B8E5A /* Utils.swift */,
-				BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */,
 			);
 			path = NierMobile;
 			sourceTree = "<group>";
@@ -140,6 +136,34 @@
 				BA9FA1AB29B12CF5001B8E5A /* LevelOneScene.swift */,
 			);
 			path = LevelOne;
+			sourceTree = "<group>";
+		};
+		BAFE783229B3C8EC00E10024 /* HomeScene */ = {
+			isa = PBXGroup;
+			children = (
+				BA9FA18129ABB936001B8E5A /* HomeScene.sks */,
+				BA9FA18329ABB958001B8E5A /* HomeScene.swift */,
+			);
+			path = HomeScene;
+			sourceTree = "<group>";
+		};
+		BAFE783329B3C91500E10024 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */,
+				BA9FA17C29ABB7BB001B8E5A /* GameScene */,
+				BA9FA1A229B125F7001B8E5A /* LevelOne */,
+				BAFE783229B3C8EC00E10024 /* HomeScene */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		BAFE783429B3C98800E10024 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				BA9FA19E29B1220A001B8E5A /* Utils.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
