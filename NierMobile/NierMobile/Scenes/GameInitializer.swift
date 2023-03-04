@@ -80,24 +80,25 @@ class GameInitializer{
     }
     
     func initLevelComplete(worldNode:SKNode, frame:CGRect){
-         levelCompletedLabel = SKLabelNode(fontNamed: "PressStart2P-Regular")
+        let titleColor = UIColor(red: 0.79, green: 0.85, blue: 0.32, alpha: 1.0)
+        levelCompletedLabel = SKLabelNode(fontNamed: "Copperplate")
         levelCompletedLabel.fontSize = 48
         levelCompletedLabel.text = "LEVEL COMPLETED"
         levelCompletedLabel.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
         levelCompletedLabel.zRotation = -1*CGFloat.pi / 2.0
         levelCompletedLabel.name = "levelCompleteButton"
-        levelCompletedLabel.color = .white
+        levelCompletedLabel.color = titleColor
         levelCompletedLabel.colorBlendFactor = 1.0
         
         returnHomeButton = SKSpriteNode(imageNamed:"return-home")
-        returnHomeButton.position = CGPoint(x: frame.width * 0.35 , y: frame.height * 0.6)
+        returnHomeButton.position = CGPoint(x: frame.width * 0.35 , y: frame.height * 0.56)
         returnHomeButton.setScale(0.75)
         returnHomeButton.zRotation = -1*CGFloat.pi / 2.0
         returnHomeButton.name = "returnHomeButton"
         
         nextLevelButton = SKSpriteNode(imageNamed: "next-level")
        
-        nextLevelButton.position = CGPoint(x: frame.width * 0.35 , y: frame.height * 0.4)
+        nextLevelButton.position = CGPoint(x: frame.width * 0.35 , y: frame.height * 0.44)
         nextLevelButton.setScale(0.5)
         nextLevelButton.zRotation = -1*CGFloat.pi / 2.0
         nextLevelButton.name = "nextLevelButton"
