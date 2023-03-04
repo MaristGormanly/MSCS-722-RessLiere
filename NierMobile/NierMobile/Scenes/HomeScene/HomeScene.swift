@@ -18,8 +18,12 @@ class HomeScene: SKScene {
     var settingButtonNode:SKSpriteNode!
     var storyModeButtonNode:SKSpriteNode!
     var leaderboardButtonNode:SKSpriteNode!
-    
+ 
     override func didMove(to view: SKView) {
+       
+   
+
+
         //set the score label inital
         let titleColor = UIColor(red: 0.79, green: 0.85, blue: 0.32, alpha: 1.0)
 
@@ -60,13 +64,11 @@ class HomeScene: SKScene {
         leaderboardButtonNode.name = "leaderboardButton"
         addChild(leaderboardButtonNode)
         
-        
-        
-
-        
-        
     }
     
+   
+   
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
         guard let location = touch?.location(in: self) else { return }
@@ -77,7 +79,7 @@ class HomeScene: SKScene {
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
         }
         else if nodesArray.first?.name == "storyButton"{
-            let gameScene = GameScene(fileNamed: "LevelOneScene")
+            let gameScene = GameScene(fileNamed: "LevelsScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
         }

@@ -11,8 +11,22 @@ class LeaderboardScene: SKScene {
     var returnHomeButton:SKSpriteNode!
     var leadboardLabel:SKLabelNode!
     let highScoresKey = "highScores"
-
+    var starfield:SKEmitterNode!
     override func didMove(to view: SKView) {
+        
+        //initlize startfield
+        starfield = SKEmitterNode(fileNamed: "Starfield")
+        
+        //initlize postion for starfield
+        //TODO: add later to detect for device for placing start field
+        starfield.position = CGPoint(x:frame.maxX, y: frame.height / 2)
+        //skip 10 seconds into animation
+        starfield.advanceSimulationTime(10)
+        //add starfield to screen
+        addChild(starfield)
+        //send starfield to back of screen
+        starfield.zPosition = -1
+        
         
         let titleColor = UIColor(red: 0.79, green: 0.85, blue: 0.32, alpha: 1.0)
         

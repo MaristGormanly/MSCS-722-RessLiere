@@ -10,9 +10,10 @@ import SpriteKit
 import GameplayKit
 
 class GameViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
@@ -34,6 +35,8 @@ class GameViewController: UIViewController {
             
             view.showsFPS = true
             view.showsNodeCount = true
+            
+            
         }
     }
     //sets what modes are supported in terms of phone direction

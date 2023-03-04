@@ -82,7 +82,7 @@ class GameInitializer{
     func initLevelComplete(worldNode:SKNode, frame:CGRect){
         let titleColor = UIColor(red: 0.79, green: 0.85, blue: 0.32, alpha: 1.0)
         levelCompletedLabel = SKLabelNode(fontNamed: "Copperplate")
-        levelCompletedLabel.fontSize = 48
+        levelCompletedLabel.fontSize = 62
         levelCompletedLabel.text = "LEVEL COMPLETED"
         levelCompletedLabel.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
         levelCompletedLabel.zRotation = -1*CGFloat.pi / 2.0

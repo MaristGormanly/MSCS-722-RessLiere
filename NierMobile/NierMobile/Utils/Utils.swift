@@ -61,6 +61,17 @@ public func pointAlongLine(from start: CGPoint, to end: CGPoint, at distance: CG
     return CGPoint(x: newX, y: newY)
 }
 
+func completeLevel(index: Int) {
+    if var completedLevels = UserDefaults.standard.array(forKey: "completedLevels") as? [Bool] {
+        // Set the corresponding index in completedLevels to true
+        if index < completedLevels.count {
+            completedLevels[index] = true
+            // Save the updated completedLevels array to UserDefaults
+            UserDefaults.standard.set(completedLevels, forKey: "completedLevels")
+        }
+    }
+}
+
 extension CGVector {
     public func length() -> CGFloat {
         return sqrt(dx*dx + dy*dy)
