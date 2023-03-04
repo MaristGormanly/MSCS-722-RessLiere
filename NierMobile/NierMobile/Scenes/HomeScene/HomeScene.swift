@@ -17,6 +17,7 @@ class HomeScene: SKScene {
     var newGameButtonNode:SKSpriteNode!
     var settingButtonNode:SKSpriteNode!
     var storyModeButtonNode:SKSpriteNode!
+    var leaderboardButtonNode:SKSpriteNode!
     
     override func didMove(to view: SKView) {
        newGameButtonNode = SKSpriteNode(imageNamed: "start-button")
@@ -37,6 +38,16 @@ class HomeScene: SKScene {
         storyModeButtonNode.zRotation =  -1*CGFloat.pi / 2.0
         storyModeButtonNode.name =  "storyButton"
         addChild(storyModeButtonNode)
+        
+        leaderboardButtonNode = SKSpriteNode(imageNamed: "leaderboard-button")
+        leaderboardButtonNode.setScale(0.8)
+        leaderboardButtonNode.position = CGPoint(x:self.frame.size.width * 0.18, y: self.frame.height * 0.2)
+        leaderboardButtonNode.zRotation = -1*CGFloat.pi / 2.0
+        leaderboardButtonNode.name = "leaderboardButton"
+        addChild(leaderboardButtonNode)
+        
+        
+        
 
         
         

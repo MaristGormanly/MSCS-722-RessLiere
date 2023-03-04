@@ -514,7 +514,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             else if secondBody.categoryBitMask == robotCategory {
                 if let robotNode = secondBody.node as? SKSpriteNode {
                     playExplosion(spriteNode: robotNode)
-                    print(robotNode)
                    robotNode.removeFromParent()
                 }
             }
