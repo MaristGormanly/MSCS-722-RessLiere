@@ -23,6 +23,7 @@ class GameInitializer{
     var quitGameButton:SKSpriteNode!
     var levelCompletedLabel:SKLabelNode!
     var returnHomeButton:SKSpriteNode!
+    var nextLevelButton: SKSpriteNode!
     
     //pause toggle
     var gamePaused = false
@@ -89,11 +90,19 @@ class GameInitializer{
         levelCompletedLabel.colorBlendFactor = 1.0
         
         returnHomeButton = SKSpriteNode(imageNamed:"return-home")
-      
         returnHomeButton.position = CGPoint(x: frame.width * 0.35 , y: frame.height * 0.6)
         returnHomeButton.setScale(0.75)
         returnHomeButton.zRotation = -1*CGFloat.pi / 2.0
-        levelCompletedLabel.name = "returnHomeButton"
+        returnHomeButton.name = "returnHomeButton"
+        
+        nextLevelButton = SKSpriteNode(imageNamed: "next-level")
+       
+        nextLevelButton.position = CGPoint(x: frame.width * 0.35 , y: frame.height * 0.4)
+        nextLevelButton.setScale(0.5)
+        nextLevelButton.zRotation = -1*CGFloat.pi / 2.0
+        nextLevelButton.name = "nextLevelButton"
+        
+        
        
         
     }
@@ -367,7 +376,7 @@ class GameInitializer{
     }
         
     //TODO: handle level complete
-    func handleGameClear(sceneNode:SKNode, worldNode:SKNode){
+    func handleLevelComplete(sceneNode:SKNode, worldNode:SKNode){
        
         playerLivesList[playerLives-1].removeFromParent()
         player.removeFromParent()
@@ -379,6 +388,7 @@ class GameInitializer{
         //  gameTimer.invalidate()
         worldNode.addChild(levelCompletedLabel)
         worldNode.addChild(returnHomeButton)
+        worldNode.addChild(nextLevelButton)
         gameOver = true
         worldNode.enumerateChildNodes(withName: "robot") { (node, _) in
              if let robot = node as? SKSpriteNode {

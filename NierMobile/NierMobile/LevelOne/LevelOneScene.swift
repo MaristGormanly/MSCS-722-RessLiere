@@ -120,7 +120,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
             node.removeFromParent()
         }
         
-        game.handleGameClear(sceneNode: self, worldNode: worldNode)
+        game.handleLevelComplete(sceneNode: self, worldNode: worldNode)
     }
 
     @objc func addRobot () {
