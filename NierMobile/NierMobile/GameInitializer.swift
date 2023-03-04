@@ -21,10 +21,12 @@ class GameInitializer{
     
     var pauseGameButton:SKSpriteNode!
     var quitGameButton:SKSpriteNode!
+    var levelCompletedLabel:SKLabelNode!
     
     //pause toggle
     var gamePaused = false
     var gameOver = false
+    
     
     var backgroundMusic: SKAudioNode!
     
@@ -73,6 +75,18 @@ class GameInitializer{
         
         //add player to screen
         worldNode.addChild(player)
+    }
+    
+    func initLevelComplete(worldNode:SKNode, frame:CGRect){
+         levelCompletedLabel = SKLabelNode(fontNamed: "PressStart2P-Regular")
+        levelCompletedLabel.fontSize = 48
+        levelCompletedLabel.text = "LEVEL COMPLETED"
+        levelCompletedLabel.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+        levelCompletedLabel.zRotation = -1*CGFloat.pi / 2.0
+        levelCompletedLabel.name = "levelCompleteButton"
+        levelCompletedLabel.color = .white
+        levelCompletedLabel.colorBlendFactor = 1.0
+        
     }
     
     
@@ -323,8 +337,13 @@ class GameInitializer{
             let homeScene = HomeScene(fileNamed: "HomeScene")
                             homeScene?.scaleMode = .aspectFill
                             sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
-            
         }
+        else if touchedNode.name == "levelCompleteButton"{
+            let homeScene = HomeScene(fileNamed: "HomeScene")
+                            homeScene?.scaleMode = .aspectFill
+                            sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
+        }
+        
         else if !gamePaused && !gameOver{
             handleShoot(targetPosition:targetPosition,worldNode:worldNode)
            
@@ -332,8 +351,36 @@ class GameInitializer{
     }
         
     //TODO: handle level complete
-    func handleLevelClear(){
-        //code
+    func handleGameClear(sceneNode:SKNode, worldNode:SKNode){
+       
+        playerLivesList[playerLives-1].removeFromParent()
+        player.removeFromParent()
+        // scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
+        backgroundMusic.run(SKAction.pause())
+        sceneNode.run(SKAction.playSoundFileNamed("game-over.mp3", waitForCompletion: true))
+        let wait = SKAction.wait(forDuration: 2.0)
+        pauseGameButton.removeFromParent()
+        //  gameTimer.invalidate()
+        worldNode.addChild(levelCompletedLabel)
+        gameOver = true
+        worldNode.enumerateChildNodes(withName: "robot") { (node, _) in
+             if let robot = node as? SKSpriteNode {
+                 self.playExplosion(spriteNode: robot, worldNode: worldNode)
+                 robot.removeFromParent()
+             }
+         }
+        //stops all game timers
+        if(!timerList.isEmpty){
+            for timer in timerList {
+                timer.invalidate()
+            }
+        }
+
+        sceneNode.run(wait) {
+            
+            worldNode.isPaused = true
+            
+        }
     }
         
         
@@ -382,9 +429,8 @@ class GameInitializer{
         if firstBody.categoryBitMask == robotCategory {
             if let robotNode = firstBody.node as? SKSpriteNode {
                 playExplosion(spriteNode: robotNode,worldNode: worldNode)
-                print("fist body")
                 print(robotNode)
-                robotNode.removeFromParent()
+                
             }
         }
         else if secondBody.categoryBitMask == robotCategory {
@@ -411,6 +457,7 @@ class GameInitializer{
             initStarfield(worldNode: worldNode, frame: frame)
             playMusic(worldNode: worldNode)
             initPauseScreen(sceneNode: sceneNode, frame: frame)
+            initLevelComplete(worldNode: worldNode, frame: frame)
             handleMotion()
             physicsWorld.gravity = CGVector(dx: 0, dy: 0)
            

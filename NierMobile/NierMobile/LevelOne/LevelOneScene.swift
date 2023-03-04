@@ -21,6 +21,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
       let timeIntervalDecrement: TimeInterval = 0.01
       var gameTimer:Timer!
       var gameTimerIndx:Int!
+      var startingTime = 10// 1 minute
       var robotTimerIndx:Int!
       var timerDuration: TimeInterval = 10
  
@@ -50,8 +51,9 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
         gameTimerIndx = game.addTimer(timer: gameTimer)
         // Create the label and set its properties
-        initObjectiveLabel()
+        
         initLevelCountDown()
+        initObjectiveLabel()
         
        
 
@@ -91,7 +93,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         timerLabel.fontSize = 24
         addChild(timerLabel)
         
-        let startingTime = 60 // 1 minute
+        
         var timeRemaining = startingTime
 
         let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
@@ -101,6 +103,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
             if timeRemaining == 0 {
                 timer.invalidate()
                 // perform other actions here
+                self.timerCompleted()
             }
             self.game.addTimer(timer: timer)
         }
@@ -108,6 +111,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
     
     
     func timerCompleted() {
+        print("complete")
         // Stop spawning robots
         gameTimer.invalidate()
         
@@ -116,10 +120,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
             node.removeFromParent()
         }
         
-        // Show a message or perform other end-of-level actions
-        let messageLabel = SKLabelNode(text: "Level completed!")
-        messageLabel.position = CGPoint(x: frame.midX, y: frame.midY)
-        addChild(messageLabel)
+        game.handleGameClear(sceneNode: self, worldNode: worldNode)
     }
 
     @objc func addRobot () {
@@ -141,7 +142,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: Int(self.frame.size.height))
 
         let position = CGFloat(randomPosition.nextInt())
-        
+        robot.name = "robot"
         robot.position = CGPoint(x: self.frame.size.width + robot.size.width, y: position)
         robot.size = CGSize(width: 100, height: 100)
         //sets size of the spawned robot
