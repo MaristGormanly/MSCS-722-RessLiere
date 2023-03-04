@@ -287,11 +287,18 @@ class GameInitializer{
         if(playerLives > 1){
             playerLivesList[playerLives-1].removeFromParent()
             playerLives -= 1
+            // Check if this is the last life
+            if(playerLives == 1){
+                // Make the player's last life blink
+                let blinkAction = SKAction.repeatForever(SKAction.sequence([SKAction.fadeOut(withDuration: 0.5), SKAction.fadeIn(withDuration: 0.5)]))
+                playerLivesList[0].run(blinkAction)
+            }
         }
         else{
             handleGameOver(sceneNode: sceneNode, worldNode: worldNode)
         }
     }
+
     
     func handleGameOver(sceneNode:SKNode, worldNode:SKNode){
         playExplosion(spriteNode: player,worldNode: worldNode)
