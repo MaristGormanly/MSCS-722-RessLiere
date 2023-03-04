@@ -16,13 +16,23 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
       let playerCategory: UInt32 = 0x1 << 2
       let worldNode = SKNode()
       var spawnInterval: TimeInterval = 0.75
+    
+    
       let timeIntervalDecrement: TimeInterval = 0.01
       var gameTimer:Timer!
-
+      var gameTimerIndx:Int!
+      var robotTimerIndx:Int!
+      var timerDuration: TimeInterval = 10
+ 
       //POSSIBLE targets
       var possiblerobots = ["robot","robot2","robot3"]
     
       var player:SKSpriteNode!
+    
+      
+
+    
+    
 
         
 
@@ -38,32 +48,80 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         //set physics for scene zero gravity
         //set physics
         gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
-        
+        gameTimerIndx = game.addTimer(timer: gameTimer)
         // Create the label and set its properties
-               let surviveLabel = SKLabelNode(text: "SURVIVE")
-                surviveLabel.fontSize = 50
-                surviveLabel.fontColor = .white
-                surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
-                surviveLabel.zRotation = -1*CGFloat.pi / 2.0
-                surviveLabel.fontName =  "Helvetica-Bold"
-               addChild(surviveLabel)
-               
-               // Make the label blink for 5 seconds using SKAction
-        let colorizeAction = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: 0.5)
-        let uncolorizeAction = SKAction.colorize(withColorBlendFactor: 0.0, duration: 0.5)
-        let blinkAction = SKAction.sequence([colorizeAction, SKAction.fadeOut(withDuration: 0.5), uncolorizeAction, SKAction.fadeIn(withDuration: 0.5)])
-
-               let repeatBlinkAction = SKAction.repeat(blinkAction, count: 10)
-                surviveLabel.run(repeatBlinkAction)
-               
-               // Wait for 5 seconds, then remove the label
-               let waitAction = SKAction.wait(forDuration: 5)
-               let removeAction = SKAction.removeFromParent()
-               let sequenceAction = SKAction.sequence([waitAction, removeAction])
-                surviveLabel.run(sequenceAction)
-
+        initObjectiveLabel()
+        initLevelCountDown()
+        
+       
 
        }
+    
+    func initObjectiveLabel(){
+        let surviveLabel = SKLabelNode(text: "SURVIVE")
+         surviveLabel.fontSize = 50
+         surviveLabel.fontColor = .white
+         surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
+         surviveLabel.zRotation = -1*CGFloat.pi / 2.0
+         surviveLabel.fontName =  "Helvetica-Bold"
+        addChild(surviveLabel)
+        
+                // Make the label blink for 5 seconds using SKAction
+         let colorizeAction = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: 0.5)
+         let uncolorizeAction = SKAction.colorize(withColorBlendFactor: 0.0, duration: 0.5)
+         let blinkAction = SKAction.sequence([colorizeAction, SKAction.fadeOut(withDuration: 0.5), uncolorizeAction, SKAction.fadeIn(withDuration: 0.5)])
+
+        let repeatBlinkAction = SKAction.repeat(blinkAction, count: 10)
+         surviveLabel.run(repeatBlinkAction)
+        
+        // Wait for 5 seconds, then remove the label
+        let waitAction = SKAction.wait(forDuration: 5)
+        let removeAction = SKAction.removeFromParent()
+        let sequenceAction = SKAction.sequence([waitAction, removeAction])
+         surviveLabel.run(sequenceAction)
+        
+    }
+    
+    
+    func initLevelCountDown(){
+        let timerLabel = SKLabelNode(text: "\(Int(timerDuration))")
+        timerLabel.position = CGPoint(x: self.frame.width * 0.88, y: self.frame.height / 2)
+        timerLabel.zRotation = -1*CGFloat.pi / 2.0
+        timerLabel.fontName = "Helvetica-Bold"
+        timerLabel.fontSize = 24
+        addChild(timerLabel)
+        
+        let startingTime = 60 // 1 minute
+        var timeRemaining = startingTime
+
+        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            timeRemaining -= 1
+            timerLabel.text = "\(timeRemaining)"
+            
+            if timeRemaining == 0 {
+                timer.invalidate()
+                // perform other actions here
+            }
+            self.game.addTimer(timer: timer)
+        }
+    }
+    
+    
+    func timerCompleted() {
+        // Stop spawning robots
+        gameTimer.invalidate()
+        
+        // Remove all existing robots from the scene
+        worldNode.enumerateChildNodes(withName: "robot") { node, _ in
+            node.removeFromParent()
+        }
+        
+        // Show a message or perform other end-of-level actions
+        let messageLabel = SKLabelNode(text: "Level completed!")
+        messageLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+        addChild(messageLabel)
+    }
+
     @objc func addRobot () {
         //increase spawning rate over time
         spawnInterval -= timeIntervalDecrement

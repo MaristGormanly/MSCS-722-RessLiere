@@ -37,6 +37,8 @@ class GameInitializer{
     //last torpedo shoot
     var lastTorpedoFiredTime: TimeInterval = 0
     
+    var timerList = [Timer]()
+    
     
     
     func getPlayer() -> SKSpriteNode {
@@ -44,6 +46,12 @@ class GameInitializer{
     }
     func getGamePaused() -> Bool{
         return gamePaused
+    }
+    
+    //adds a timer to timer list and returns its index
+    func addTimer(timer: Timer) -> Int {
+        timerList.append(timer)
+        return timerList.count - 1
     }
     
     func initPlayer(playerCategory:UInt32, robotCategory:UInt32,worldNode:SKNode,frame:CGRect){
@@ -113,12 +121,19 @@ class GameInitializer{
             worldNode.isPaused = true
             // gameTimer.invalidate()
             backgroundMusic.run(SKAction.pause())
+            for timer in timerList {
+                timer.invalidate()
+            }
             worldNode.addChild(quitGameButton)
+            
             
         } else {
             // Unpause the game
             worldNode.isPaused = false
             quitGameButton.removeFromParent()
+            for timer in timerList {
+                timer.fire()
+            }
             // gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
             backgroundMusic.run(SKAction.play())
         }
@@ -276,7 +291,13 @@ class GameInitializer{
         //  gameTimer.invalidate()
         worldNode.addChild(quitGameButton)
         gameOver = true
-        
+        //stops all game timers
+        if(!timerList.isEmpty){
+            for timer in timerList {
+                timer.invalidate()
+            }
+        }
+
         sceneNode.run(wait) {
             
             worldNode.isPaused = true
