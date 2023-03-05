@@ -29,6 +29,8 @@ class GameInitializer{
     var gamePaused = false
     var gameOver = false
     
+    var enemiesKilled: Int = 0
+    
     
     var backgroundMusic: SKAudioNode!
     
@@ -50,6 +52,9 @@ class GameInitializer{
     }
     func getGamePaused() -> Bool{
         return gamePaused
+    }
+    func getEnemiesKilled() -> Int{
+        return enemiesKilled
     }
     
     //adds a timer to timer list and returns its index
@@ -122,6 +127,8 @@ class GameInitializer{
             worldNode.addChild(playerLivesList[i])
         }
     }
+    
+    
     
     func initPauseScreen(sceneNode:SKNode,frame:CGRect){
         //set pause button
@@ -414,6 +421,7 @@ class GameInitializer{
         
         func laserDidCollideWithRobot(torpedoNode:SKSpriteNode, robotNode:SKSpriteNode,worldNode:SKNode) {
             playExplosion(spriteNode: robotNode,worldNode: worldNode)
+            enemiesKilled += 1
             torpedoNode.removeFromParent()
             robotNode.removeFromParent()
         }
