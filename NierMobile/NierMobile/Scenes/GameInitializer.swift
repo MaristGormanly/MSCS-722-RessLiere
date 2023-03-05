@@ -476,7 +476,7 @@ class GameInitializer : NSObject{
         if firstBody.categoryBitMask == robotCategory {
             if let robotNode = firstBody.node as? SKSpriteNode {
                 playExplosion(spriteNode: robotNode,worldNode: worldNode)
-                print(robotNode)
+                robotNode.removeFromParent()
                 
             }
         }
