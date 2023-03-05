@@ -168,12 +168,15 @@ class GameInitializer : NSObject{
         
         homeButton = SKSpriteNode(imageNamed:"return-home")
         homeButton.zRotation = -1*CGFloat.pi / 2.0
-        homeButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
-        homeButton.name = "homeButton"
+        homeButton.position = CGPoint(x:frame.width * 0.40 , y:frame.height / 2)
+        homeButton.name = "returnHomeButton"
         
         pausedButton = SKSpriteNode(imageNamed: "paused")
         pausedButton.zRotation = -1*CGFloat.pi / 2.0
-        pausedButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
+        pausedButton.position = CGPoint(x:frame.width * 0.6, y:frame.height / 2)
+        pausedButton.setScale(4.5)
+        
+       
      
         
         //makes it the highest z value in the scene
@@ -194,12 +197,15 @@ class GameInitializer : NSObject{
             backgroundMusic.run(SKAction.pause())
            
             worldNode.addChild(pausedButton)
+            worldNode.addChild(homeButton)
+            
             
             
         } else {
             // Unpause the game
             worldNode.isPaused = false
             pausedButton.removeFromParent()
+            homeButton.removeFromParent()
             for timer in timerList {
                 timer.fire()
             }
