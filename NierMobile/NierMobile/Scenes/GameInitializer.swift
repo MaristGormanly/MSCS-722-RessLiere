@@ -170,7 +170,9 @@ class GameInitializer : NSObject{
         if gamePaused {
             // Pause the game
             worldNode.isPaused = true
-            gameTimer.invalidate()
+            if(gameTimer != nil){
+                gameTimer.invalidate()
+            }
             backgroundMusic.run(SKAction.pause())
            
             worldNode.addChild(quitGameButton)
@@ -564,5 +566,18 @@ class GameInitializer : NSObject{
             addRobot()
            
         }
+    func initTutorial(sceneNode:SKNode,worldNode:SKNode,frame:CGRect,playerLives:Int,physicsWorld:SKPhysicsWorld){
+        wNode = worldNode
+        fSize = frame
+        initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: frame)
+        initPlayerLives(worldNode: worldNode, frame: frame, pLives: playerLives)
+        initStarfield(worldNode: worldNode, frame: frame)
+        playMusic(worldNode: worldNode)
+        initPauseScreen(sceneNode: sceneNode, frame: frame)
+        initLevelComplete(worldNode: worldNode, frame: frame)
+        handleMotion()
+        physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+       
+    }
     }
 

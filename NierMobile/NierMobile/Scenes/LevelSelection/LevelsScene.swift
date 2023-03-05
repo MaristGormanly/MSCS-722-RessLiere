@@ -92,9 +92,9 @@ class LevelsScene: SKScene {
        
     }
     func initLevelZero(){
-        levelZeroButton = SKSpriteNode(imageNamed: "level-one")
+        levelZeroButton = SKSpriteNode(imageNamed: "level-zero")
         levelZeroButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.85)
-        levelZeroButton .setScale(1.4)
+        levelZeroButton .setScale(3)
         levelZeroButton .zRotation = -1*CGFloat.pi / 2.0
         levelZeroButton .name = "levelZeroButton"
         addChild(levelZeroButton)
