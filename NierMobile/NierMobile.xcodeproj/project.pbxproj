@@ -162,9 +162,8 @@
 		BAFE783329B3C91500E10024 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				BAFE784D29B4519600E10024 /* LevelSelection */,
 				BAFE784829B43B5400E10024 /* LevelTwo */,
-				BAFE784029B3F9BB00E10024 /* LevelsScene.sks */,
-				BAFE784429B3FA1D00E10024 /* LevelsScene.swift */,
 				BAFE783729B3CD8900E10024 /* Leaderboard */,
 				BA9FA1A529B126C7001B8E5A /* GameInitializer.swift */,
 				BA9FA17C29ABB7BB001B8E5A /* GameScene */,
@@ -198,6 +197,15 @@
 				BAFE784B29B43C4A00E10024 /* LevelTwoScene.swift */,
 			);
 			path = LevelTwo;
+			sourceTree = "<group>";
+		};
+		BAFE784D29B4519600E10024 /* LevelSelection */ = {
+			isa = PBXGroup;
+			children = (
+				BAFE784429B3FA1D00E10024 /* LevelsScene.swift */,
+				BAFE784029B3F9BB00E10024 /* LevelsScene.sks */,
+			);
+			path = LevelSelection;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -74,10 +74,13 @@ class LevelsScene: SKScene {
         }
         else{
             initLockedLevel(pos:CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.7))
-
         }
-       
-        
+        if completedLevels[1]{
+            initLevelThree()
+        }
+        else{
+            initLockedLevel(pos:CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.55))
+        }
         
        
     }
@@ -99,13 +102,20 @@ class LevelsScene: SKScene {
         levelTwoButton .zRotation = -1*CGFloat.pi / 2.0
         levelTwoButton .name = "levelTwoButton"
         addChild(levelTwoButton)
-        
+    }
+    func initLevelThree(){
+        levelTwoButton = SKSpriteNode(imageNamed: "level-three")
+        levelTwoButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.65)
+        levelTwoButton .setScale(1.4)
+        levelTwoButton .zRotation = -1*CGFloat.pi / 2.0
+        levelTwoButton .name = "levelThreeButton"
+        addChild(levelTwoButton)
     }
     func initLockedLevel(pos:CGPoint){
         levelLock = SKSpriteNode(imageNamed: "locked-level")
         levelLock.position = pos
         levelLock.zRotation = -1*CGFloat.pi / 2.0
-        levelLock.setScale(1.3)
+        levelLock.setScale(1.43)
         levelLock.name = "levelLock"
         addChild(levelLock)
 

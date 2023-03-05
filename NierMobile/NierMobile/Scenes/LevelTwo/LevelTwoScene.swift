@@ -29,7 +29,7 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
     var possiblerobots = ["robot","robot2","robot3"]
   
     var player:SKSpriteNode!
-  
+    var levelGoal:Int = 10
     var enemyDeadCount: Int  = 0
     var counterLabel: SKLabelNode!
 
@@ -58,12 +58,12 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
       
       initObjectiveLabel()
       
-      counterLabel = SKLabelNode(text: "Enemies Left: 50")
+      counterLabel = SKLabelNode(text: "Enemies Left: \(levelGoal) ")
       counterLabel.fontSize = 24
       counterLabel.fontName = "Helvetica-Bold"
       counterLabel.zRotation =  -1*CGFloat.pi / 2.0
       counterLabel.fontColor = .white
-      counterLabel.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
+      counterLabel.position = CGPoint(x: self.frame.width * 0.85 , y: self.frame.height / 2)
       addChild(counterLabel)
 
      }
@@ -151,9 +151,15 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
   func didBegin(_ contact: SKPhysicsContact) {
       game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
       enemyDeadCount = game.getEnemiesKilled()
-      counterLabel.text = "Enemies Left: \(50 - enemyDeadCount)"
-
+      let enemyCount = levelGoal - enemyDeadCount
+      counterLabel.text = "Enemies Left: \(enemyCount)"
+     
       print(enemyDeadCount)
+      if(enemyCount == 0){
+          print("clear")
+          completeLevel(index: 1)
+          game.handleLevelComplete(sceneNode: self, worldNode: worldNode)
+      }
   }
   
   override func didSimulatePhysics() {
@@ -161,7 +167,16 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
   }
   
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+      let touch = touches.first
+      guard let location = touch?.location(in: self) else { return }
+      let nodesArray = self.nodes(at: location)
+      if nodesArray.first?.name == "nextLevelButton" {
+          let gameScene = GameScene(fileNamed: "HomeScreen")
+                          gameScene?.scaleMode = .aspectFill
+                          self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
+      }
       game.handleTouch(touches: touches, worldNode: worldNode, sceneNode: self, view: view!)
+      
       
   }
   

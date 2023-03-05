@@ -122,6 +122,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         }
         
         game.handleLevelComplete(sceneNode: self, worldNode: worldNode)
+
     }
 
     @objc func addRobot () {
@@ -187,6 +188,14 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first
+        guard let location = touch?.location(in: self) else { return }
+        let nodesArray = self.nodes(at: location)
+        if nodesArray.first?.name == "nextLevelButton" {
+            let gameScene = GameScene(fileNamed: "LevelTwoScene")
+                            gameScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
+        }
         game.handleTouch(touches: touches, worldNode: worldNode, sceneNode: self, view: view!)
         
     }
