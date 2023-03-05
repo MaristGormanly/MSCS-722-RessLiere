@@ -101,7 +101,10 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
                 self.timeRemaining -= 1
             
                 self.timerLabel.text = "\(self.timeRemaining)"
-            
+                if self.worldNode.isPaused{
+                    timer.invalidate()
+
+                }
                 if self.timeRemaining == 0 {
                 timer.invalidate()
                 // perform other actions here

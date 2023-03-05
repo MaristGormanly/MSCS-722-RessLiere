@@ -112,7 +112,10 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
                 self.timeRemaining -= 1
             
                 self.timerLabel.text = "\(self.timeRemaining)"
-            
+                if self.worldNode.isPaused{
+                    timer.invalidate()
+
+                }
                 if self.timeRemaining == 0 {
                 timer.invalidate()
                 // perform other actions here
@@ -167,7 +170,9 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
         guard let location = touch?.location(in: self) else { return }
         let nodesArray = self.nodes(at: location)
         if nodesArray.first?.name == "nextLevelButton" {
-            let gameScene = GameScene(fileNamed: "LevelThreeScene")
+            clearAudio(scene: self.children)
+
+            let gameScene = GameScene(fileNamed: "HomeScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
         }

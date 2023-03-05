@@ -1,4 +1,5 @@
 import UIKit
+import SpriteKit
 
 public func +(left: CGPoint, right: CGPoint) -> CGPoint {
     return CGPoint(x: left.x + right.x, y: left.y + right.y)
@@ -71,6 +72,17 @@ func completeLevel(index: Int) {
         }
     }
 }
+
+func clearAudio(scene: [SKNode]){
+    for child in scene {
+        // Check if the child is an SKAudioNode
+        if let audioNode = child as? SKAudioNode {
+            // Remove the audio node from the scene
+            audioNode.removeFromParent()
+        }
+    }
+}
+
 
 extension CGVector {
     public func length() -> CGFloat {

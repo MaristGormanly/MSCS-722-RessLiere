@@ -22,9 +22,11 @@ class GameInitializer : NSObject{
     
     var pauseGameButton:SKSpriteNode!
     var quitGameButton:SKSpriteNode!
+    var gameOverButton:SKSpriteNode!
     var levelCompletedLabel:SKLabelNode!
     var returnHomeButton:SKSpriteNode!
     var nextLevelButton: SKSpriteNode!
+    var homeButton: SKSpriteNode!
     
     //pause toggle
     var gamePaused = false
@@ -158,6 +160,19 @@ class GameInitializer : NSObject{
         quitGameButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
         quitGameButton.name = "quitGameButton"
         
+        gameOverButton = SKSpriteNode(imageNamed:"game-over")
+        gameOverButton.zRotation = -1*CGFloat.pi / 2.0
+        gameOverButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
+        gameOverButton.name = "gameOverButton"
+        
+        
+        homeButton = SKSpriteNode(imageNamed:"return-home")
+        homeButton.zRotation = -1*CGFloat.pi / 2.0
+        homeButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
+        homeButton.name = "homeButton"
+        
+        gamePaused = SKSpriteNode(imageNamed: <#T##String#>)
+        
         //makes it the highest z value in the scene
         
         quitGameButton.zPosition = 5
@@ -175,13 +190,13 @@ class GameInitializer : NSObject{
             }
             backgroundMusic.run(SKAction.pause())
            
-            worldNode.addChild(quitGameButton)
+            worldNode.addChild(worldNode.addChild(pauseGameButton))
             
             
         } else {
             // Unpause the game
             worldNode.isPaused = false
-            quitGameButton.removeFromParent()
+            pauseGameButton.removeFromParent()
             for timer in timerList {
                 timer.fire()
             }
@@ -345,10 +360,10 @@ class GameInitializer : NSObject{
         // scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
         backgroundMusic.run(SKAction.pause())
         sceneNode.run(SKAction.playSoundFileNamed("game-over.mp3", waitForCompletion: true))
-        let wait = SKAction.wait(forDuration: 2.0)
+        let wait = SKAction.wait(forDuration: 0.02)
         pauseGameButton.removeFromParent()
         //  gameTimer.invalidate()
-        worldNode.addChild(quitGameButton)
+        worldNode.addChild(gameOverButton)
         gameOver = true
         //stops all game timers
         if(!timerList.isEmpty){
@@ -380,6 +395,11 @@ class GameInitializer : NSObject{
         }
         else if touchedNode.name == "quitGameButton"{
             let homeScene = HomeScene(fileNamed: "HomeScene")
+                            homeScene?.scaleMode = .aspectFill
+                            sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
+        }
+        else if touchedNode.name == "gameOverButton"{
+            let homeScene = HomeScene(fileNamed: "LevelsScene")
                             homeScene?.scaleMode = .aspectFill
                             sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
         }

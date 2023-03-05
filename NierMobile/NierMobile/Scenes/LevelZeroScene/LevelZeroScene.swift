@@ -14,14 +14,28 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
     let playerCategory: UInt32 = 0x1 << 2
     let worldNode = SKNode()
     var player:SKSpriteNode!
+    var levelGoal:Int = 5
+    var enemyDeadCount: Int  = 0
+    var counterLabel: SKLabelNode!
 
     
     
     override func didMove(to view: SKView) {
         addChild(worldNode)
+        counterLabel = SKLabelNode(text: "Enemies Left: \(levelGoal) ")
+             counterLabel.fontSize = 24
+             counterLabel.fontName = "Helvetica-Bold"
+             counterLabel.zRotation =  -1*CGFloat.pi / 2.0
+             counterLabel.fontColor = .white
+            counterLabel.position = CGPoint(x: self.frame.width * 0.85 , y: self.frame.height / 2)
+
+        //initlie game
         game.initTutorial(sceneNode: self, worldNode: worldNode, frame: self.frame,playerLives:3, physicsWorld:self.physicsWorld)
         player = game.getPlayer()
+        //set physics
         physicsWorld.contactDelegate = self
+        
+        //tutorial instruction 1
         initObjectiveLabel(objectiveText: "Move your character by tilting your device")
         var waitAction = SKAction.wait(forDuration: 10)
         var initLabelAction = SKAction.run {
@@ -30,6 +44,7 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
         var sequenceAction = SKAction.sequence([waitAction, initLabelAction])
         run(sequenceAction)
         
+        //tutorial instruction 2
          waitAction = SKAction.wait(forDuration: 18)
          initLabelAction = SKAction.run {
             self.initObjectiveLabel(objectiveText: "Destroy your enemies")
@@ -37,9 +52,11 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
          sequenceAction = SKAction.sequence([waitAction, initLabelAction])
         run(sequenceAction)
         
+        //tutorial instruction 3
         waitAction = SKAction.wait(forDuration: 22)
         initLabelAction = SKAction.run {
             self.game.addRobot()
+            self.worldNode.addChild(self.counterLabel)
        }
         sequenceAction = SKAction.sequence([waitAction, initLabelAction])
        run(sequenceAction)
@@ -55,6 +72,8 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
          surviveLabel.zRotation = -1*CGFloat.pi / 2.0
          surviveLabel.fontName =  "Helvetica-Bold"
         addChild(surviveLabel)
+        
+        
         
                 // Make the label blink for 5 seconds using SKAction
          let colorizeAction = SKAction.colorize(withColorBlendFactor: 0.0, duration: 0.5)
@@ -73,6 +92,18 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
     }
     func didBegin(_ contact: SKPhysicsContact) {
         game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
+        game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
+        enemyDeadCount = game.getEnemiesKilled()
+        let enemyCount = levelGoal - enemyDeadCount
+        counterLabel.text = "Enemies Left: \(enemyCount)"
+       
+        print(enemyDeadCount)
+        if(enemyCount == 0){
+            print("clear")
+            completeLevel(index: 0)
+            game.handleLevelComplete(sceneNode: self, worldNode: worldNode)
+        }
+        
       
     }
     override func didSimulatePhysics() {
@@ -83,7 +114,8 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
         guard let location = touch?.location(in: self) else { return }
         let nodesArray = self.nodes(at: location)
         if nodesArray.first?.name == "nextLevelButton" {
-            let gameScene = GameScene(fileNamed: "LevelThreeOne")
+            clearAudio(scene: self.children)
+            let gameScene = GameScene(fileNamed: "LevelOneScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
         }
