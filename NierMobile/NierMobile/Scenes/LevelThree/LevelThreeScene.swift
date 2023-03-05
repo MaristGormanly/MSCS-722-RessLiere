@@ -21,9 +21,9 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
       let timeIntervalDecrement: TimeInterval = 0.01
       var gameTimer:Timer!
       var gameTimerIndx:Int!
-    var   timeRemaining:Int =  10// 1 minute
+    var   timeRemaining:Int =  30// 1 minute
       var robotTimerIndx:Int!
-      var timerDuration: TimeInterval = 10
+      var timerDuration: TimeInterval = 20
         var isTimerRunning = false
     var timerLabel:SKLabelNode!
       //POSSIBLE targets
@@ -32,6 +32,10 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
       var player:SKSpriteNode!
     
     var timer: Timer?
+    
+    var levelGoal:Int = 35
+    var enemyDeadCount: Int  = 0
+    var counterLabel: SKLabelNode!
 
     
     
@@ -56,6 +60,13 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
         initLevelCountDown()
         initObjectiveLabel()
         
+        counterLabel = SKLabelNode(text: "Enemies Left: \(levelGoal) ")
+        counterLabel.fontSize = 24
+        counterLabel.fontName = "Helvetica-Bold"
+        counterLabel.zRotation =  -1*CGFloat.pi / 2.0
+        counterLabel.fontColor = .white
+        counterLabel.position = CGPoint(x: self.frame.width * 0.85 , y: self.frame.height * 0.4)
+        addChild(counterLabel)
        
 
        }
@@ -133,6 +144,18 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
         
     func didBegin(_ contact: SKPhysicsContact) {
         game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
+        enemyDeadCount = game.getEnemiesKilled()
+        let enemyCount = levelGoal - enemyDeadCount
+        counterLabel.text = "Enemies Left: \(enemyCount)"
+       
+        print(enemyDeadCount)
+        if(enemyCount == 0){
+            print("clear")
+            completeLevel(index: 1)
+            game.handleLevelComplete(sceneNode: self, worldNode: worldNode)
+            timer?.invalidate()
+        }
+     
     }
     
     override func didSimulatePhysics() {
