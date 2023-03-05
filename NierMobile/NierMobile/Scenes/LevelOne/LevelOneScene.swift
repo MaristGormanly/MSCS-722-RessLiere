@@ -66,7 +66,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
          surviveLabel.fontColor = .white
          surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
          surviveLabel.zRotation = -1*CGFloat.pi / 2.0
-         surviveLabel.fontName =  "Helvetica-Bold"
+         surviveLabel.fontName =  "Avenir-BlackOblique"
         addChild(surviveLabel)
         
                 // Make the label blink for 5 seconds using SKAction
@@ -88,10 +88,10 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
     
     func initLevelCountDown(){
         timerLabel = SKLabelNode(text: "\(Int(timerDuration))")
-        timerLabel.position = CGPoint(x: self.frame.width * 0.88, y: self.frame.height / 2)
+        timerLabel.position = CGPoint(x: self.frame.width * 0.85, y: self.frame.height / 2)
         timerLabel.zRotation = -1*CGFloat.pi / 2.0
-        timerLabel.fontName = "Helvetica-Bold"
-        timerLabel.fontSize = 24
+        timerLabel.fontName = "Avenir-BlackOblique"
+        timerLabel.fontSize = 50
         addChild(timerLabel)
         
         
@@ -146,6 +146,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         let touch = touches.first
         guard let location = touch?.location(in: self) else { return }
         let nodesArray = self.nodes(at: location)
+        clearAudio(scene: self.children)
         if nodesArray.first?.name == "nextLevelButton" {
             let gameScene = GameScene(fileNamed: "LevelTwoScene")
                             gameScene?.scaleMode = .aspectFill

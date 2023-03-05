@@ -60,9 +60,9 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
         initLevelCountDown()
         initObjectiveLabel()
         
-        counterLabel = SKLabelNode(text: "Enemies Left: \(levelGoal) ")
-        counterLabel.fontSize = 24
-        counterLabel.fontName = "Helvetica-Bold"
+        counterLabel = SKLabelNode(text: " Enemies Left: \(levelGoal) ")
+        counterLabel.fontSize = 30
+        counterLabel.fontName = "Avenir-BlackOblique"
         counterLabel.zRotation =  -1*CGFloat.pi / 2.0
         counterLabel.fontColor = .white
         counterLabel.position = CGPoint(x: self.frame.width * 0.85 , y: self.frame.height * 0.4)
@@ -77,7 +77,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
          surviveLabel.fontColor = .white
          surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
          surviveLabel.zRotation = -1*CGFloat.pi / 2.0
-         surviveLabel.fontName =  "Helvetica-Bold"
+         surviveLabel.fontName =  "Avenir-BlackOblique"
         addChild(surviveLabel)
         
                 // Make the label blink for 5 seconds using SKAction
@@ -99,10 +99,10 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
     
     func initLevelCountDown(){
         timerLabel = SKLabelNode(text: "\(Int(timerDuration))")
-        timerLabel.position = CGPoint(x: self.frame.width * 0.88, y: self.frame.height / 2)
+        timerLabel.position = CGPoint(x: self.frame.width * 0.85, y: self.frame.height * 0.65)
         timerLabel.zRotation = -1*CGFloat.pi / 2.0
-        timerLabel.fontName = "Helvetica-Bold"
-        timerLabel.fontSize = 24
+        timerLabel.fontName = "Avenir-BlackOblique"
+        timerLabel.fontSize = 30
         addChild(timerLabel)
         
         
@@ -111,7 +111,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
             timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.timeRemaining -= 1
             
-                self.timerLabel.text = "\(self.timeRemaining)"
+                self.timerLabel.text = "Time remaining \(self.timeRemaining)"
                 if self.worldNode.isPaused{
                     timer.invalidate()
 

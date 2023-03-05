@@ -162,8 +162,9 @@ class GameInitializer : NSObject{
         
         gameOverButton = SKSpriteNode(imageNamed:"game-over")
         gameOverButton.zRotation = -1*CGFloat.pi / 2.0
-        gameOverButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
+        gameOverButton.position = CGPoint(x:frame.width * 0.6, y:frame.height / 2)
         gameOverButton.name = "gameOverButton"
+        gameOverButton.setScale(1.2)
         
         
         homeButton = SKSpriteNode(imageNamed:"return-home")
@@ -375,6 +376,7 @@ class GameInitializer : NSObject{
         if let gameOverButton = worldNode.childNode(withName: "gameOverButton") {
             worldNode.removeFromParent()
         }
+        worldNode.addChild(homeButton)
         worldNode.addChild(gameOverButton)
         gameOver = true
         //stops all game timers
@@ -406,16 +408,19 @@ class GameInitializer : NSObject{
             handlePause(worldNode: worldNode, view: view)
         }
         else if touchedNode.name == "quitGameButton"{
+            clearAudio(scene: sceneNode.children)
             let homeScene = HomeScene(fileNamed: "HomeScene")
                             homeScene?.scaleMode = .aspectFill
                             sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
         }
         else if touchedNode.name == "gameOverButton"{
+            clearAudio(scene:sceneNode.children)
             let homeScene = HomeScene(fileNamed: "LevelsScene")
                             homeScene?.scaleMode = .aspectFill
                             sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
         }
         else if touchedNode.name == "returnHomeButton"{
+            clearAudio(scene: sceneNode.children)
             let homeScene = HomeScene(fileNamed: "HomeScene")
                             homeScene?.scaleMode = .aspectFill
                             sceneNode.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))

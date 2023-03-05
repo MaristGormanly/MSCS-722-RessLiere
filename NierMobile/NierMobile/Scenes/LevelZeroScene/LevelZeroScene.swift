@@ -24,7 +24,7 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
         addChild(worldNode)
         counterLabel = SKLabelNode(text: "Enemies Left: \(levelGoal) ")
              counterLabel.fontSize = 24
-             counterLabel.fontName = "Helvetica-Bold"
+             counterLabel.fontName = "Avenir-BlackOblique"
              counterLabel.zRotation =  -1*CGFloat.pi / 2.0
              counterLabel.fontColor = .white
             counterLabel.position = CGPoint(x: self.frame.width * 0.85 , y: self.frame.height / 2)
@@ -71,7 +71,7 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
          surviveLabel.fontColor = .white
          surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
          surviveLabel.zRotation = -1*CGFloat.pi / 2.0
-         surviveLabel.fontName =  "Helvetica-Bold"
+         surviveLabel.fontName =  "Avenir-BlackObliqued"
         addChild(surviveLabel)
         
         
