@@ -140,6 +140,12 @@ class LevelsScene: SKScene {
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
         }
+        else if nodesArray.first?.name == "levelThreeButton" {
+            let gameScene = GameScene(fileNamed: "LevelThreeScene")
+                            gameScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
+        }
+
         
     }
 }
