@@ -30,6 +30,7 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
             counterLabel.position = CGPoint(x: self.frame.width * 0.85 , y: self.frame.height / 2)
 
         //initlie game
+        
         game.initTutorial(sceneNode: self, worldNode: worldNode, frame: self.frame,playerLives:3, physicsWorld:self.physicsWorld)
         player = game.getPlayer()
         //set physics
@@ -91,7 +92,6 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
         
     }
     func didBegin(_ contact: SKPhysicsContact) {
-        game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
         game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
         enemyDeadCount = game.getEnemiesKilled()
         let enemyCount = levelGoal - enemyDeadCount

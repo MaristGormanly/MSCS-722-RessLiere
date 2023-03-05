@@ -366,6 +366,9 @@ class GameInitializer : NSObject{
         let wait = SKAction.wait(forDuration: 0.02)
         pauseGameButton.removeFromParent()
         //  gameTimer.invalidate()
+        if let gameOverButton = worldNode.childNode(withName: "gameOverButton") {
+            worldNode.removeFromParent()
+        }
         worldNode.addChild(gameOverButton)
         gameOver = true
         //stops all game timers
@@ -600,6 +603,7 @@ class GameInitializer : NSObject{
         initLevelComplete(worldNode: worldNode, frame: frame)
         handleMotion()
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+       
        
     }
     }
