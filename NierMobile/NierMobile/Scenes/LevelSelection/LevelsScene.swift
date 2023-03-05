@@ -14,6 +14,7 @@ class LevelsScene: SKScene {
     var completedLevels = [Bool]()
     var numberOfLevels:Int = 5
     var levelOneButton:SKSpriteNode!
+    var levelZeroButton:SKSpriteNode!
     var levelTwoButton:SKSpriteNode!
     var titleLabel:SKLabelNode!
     var levelLock: SKSpriteNode!
@@ -68,26 +69,41 @@ class LevelsScene: SKScene {
         
         
         
-        initLevelOne()
+        initLevelZero()
         if(completedLevels[0]){
-            initLevelTwo()
+            initLevelOne()
         }
         else{
             initLockedLevel(pos:CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.7))
         }
         if completedLevels[1]{
-            initLevelThree()
+            initLevelTwo()
         }
         else{
             initLockedLevel(pos:CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.55))
         }
+        if completedLevels[2]{
+            initLevelThree()
+        }
+        else{
+            initLockedLevel(pos:CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.40))
+        }
         
        
+    }
+    func initLevelZero(){
+        levelZeroButton = SKSpriteNode(imageNamed: "level-one")
+        levelZeroButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.85)
+        levelZeroButton .setScale(1.4)
+        levelZeroButton .zRotation = -1*CGFloat.pi / 2.0
+        levelZeroButton .name = "levelZeroButton"
+        addChild(levelZeroButton)
+        
     }
     
     func initLevelOne(){
         levelOneButton = SKSpriteNode(imageNamed: "level-one")
-        levelOneButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.85)
+        levelOneButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.7)
         levelOneButton .setScale(1.4)
         levelOneButton .zRotation = -1*CGFloat.pi / 2.0
         levelOneButton .name = "levelOneButton"
@@ -97,7 +113,8 @@ class LevelsScene: SKScene {
     
     func initLevelTwo(){
         levelTwoButton = SKSpriteNode(imageNamed: "level-two")
-        levelTwoButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.7)
+        
+        levelTwoButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.55)
         levelTwoButton .setScale(1.4)
         levelTwoButton .zRotation = -1*CGFloat.pi / 2.0
         levelTwoButton .name = "levelTwoButton"
@@ -105,7 +122,7 @@ class LevelsScene: SKScene {
     }
     func initLevelThree(){
         levelTwoButton = SKSpriteNode(imageNamed: "level-three")
-        levelTwoButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.55)
+        levelTwoButton .position =  CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.40)
         levelTwoButton .setScale(1.4)
         levelTwoButton .zRotation = -1*CGFloat.pi / 2.0
         levelTwoButton .name = "levelThreeButton"
@@ -142,6 +159,11 @@ class LevelsScene: SKScene {
         }
         else if nodesArray.first?.name == "levelThreeButton" {
             let gameScene = GameScene(fileNamed: "LevelThreeScene")
+                            gameScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
+        }
+        else if nodesArray.first?.name == "levelZeroButton" {
+            let gameScene = GameScene(fileNamed: "LevelZeroScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
         }

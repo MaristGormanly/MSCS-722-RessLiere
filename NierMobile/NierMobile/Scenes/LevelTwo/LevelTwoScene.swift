@@ -104,7 +104,7 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
       print(enemyDeadCount)
       if(enemyCount == 0){
           print("clear")
-          completeLevel(index: 1)
+          completeLevel(index: 2)
           game.handleLevelComplete(sceneNode: self, worldNode: worldNode)
       }
   }

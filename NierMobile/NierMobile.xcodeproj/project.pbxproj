@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		BA974AD429B4FEAF00B7EB25 /* LevelThreeScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA974AD329B4FEAF00B7EB25 /* LevelThreeScene.sks */; };
 		BA974AD629B4FF8900B7EB25 /* LevelThreeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA974AD529B4FF8900B7EB25 /* LevelThreeScene.swift */; };
+		BA974AD929B504A200B7EB25 /* LevelZeroScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA974AD829B504A200B7EB25 /* LevelZeroScene.sks */; };
+		BA974ADB29B504D600B7EB25 /* LevelZeroScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA974ADA29B504D600B7EB25 /* LevelZeroScene.swift */; };
 		BA9FA12129A7B3F4001B8E5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA12029A7B3F4001B8E5A /* AppDelegate.swift */; };
 		BA9FA12329A7B3F4001B8E5A /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA12229A7B3F4001B8E5A /* GameScene.sks */; };
 		BA9FA12529A7B3F4001B8E5A /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA12429A7B3F4001B8E5A /* Actions.sks */; };
@@ -42,6 +44,8 @@
 /* Begin PBXFileReference section */
 		BA974AD329B4FEAF00B7EB25 /* LevelThreeScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LevelThreeScene.sks; sourceTree = "<group>"; };
 		BA974AD529B4FF8900B7EB25 /* LevelThreeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelThreeScene.swift; sourceTree = "<group>"; };
+		BA974AD829B504A200B7EB25 /* LevelZeroScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LevelZeroScene.sks; sourceTree = "<group>"; };
+		BA974ADA29B504D600B7EB25 /* LevelZeroScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelZeroScene.swift; sourceTree = "<group>"; };
 		BA9FA11D29A7B3F3001B8E5A /* NierMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NierMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA9FA12029A7B3F4001B8E5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA9FA12229A7B3F4001B8E5A /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -91,6 +95,15 @@
 				BA974AD329B4FEAF00B7EB25 /* LevelThreeScene.sks */,
 			);
 			path = LevelThree;
+			sourceTree = "<group>";
+		};
+		BA974ADC29B504DE00B7EB25 /* LevelZeroScene */ = {
+			isa = PBXGroup;
+			children = (
+				BA974ADA29B504D600B7EB25 /* LevelZeroScene.swift */,
+				BA974AD829B504A200B7EB25 /* LevelZeroScene.sks */,
+			);
+			path = LevelZeroScene;
 			sourceTree = "<group>";
 		};
 		BA9FA11429A7B3F3001B8E5A = {
@@ -178,6 +191,7 @@
 		BAFE783329B3C91500E10024 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				BA974ADC29B504DE00B7EB25 /* LevelZeroScene */,
 				BA974AD729B4FFBF00B7EB25 /* LevelThree */,
 				BAFE784D29B4519600E10024 /* LevelSelection */,
 				BAFE784829B43B5400E10024 /* LevelTwo */,
@@ -290,6 +304,7 @@
 				BA974AD429B4FEAF00B7EB25 /* LevelThreeScene.sks in Resources */,
 				BA9FA1AA29B12CA7001B8E5A /* LevelOneScene.sks in Resources */,
 				BA9FA18829AF8F10001B8E5A /* game-over.mp3 in Resources */,
+				BA974AD929B504A200B7EB25 /* LevelZeroScene.sks in Resources */,
 				BA9FA16F29A84634001B8E5A /* Starfield.sks in Resources */,
 				BA9FA17729A91B8B001B8E5A /* spaceship2.png in Resources */,
 				BAFE784129B3F9BB00E10024 /* LevelsScene.sks in Resources */,
@@ -317,6 +332,7 @@
 				BA9FA12729A7B3F4001B8E5A /* GameScene.swift in Sources */,
 				BA9FA18429ABB958001B8E5A /* HomeScene.swift in Sources */,
 				BA9FA12929A7B3F4001B8E5A /* GameViewController.swift in Sources */,
+				BA974ADB29B504D600B7EB25 /* LevelZeroScene.swift in Sources */,
 				BA974AD629B4FF8900B7EB25 /* LevelThreeScene.swift in Sources */,
 				BAFE783D29B3DD0D00E10024 /* LeaderboardScene.swift in Sources */,
 				BA9FA1A629B126C7001B8E5A /* GameInitializer.swift in Sources */,

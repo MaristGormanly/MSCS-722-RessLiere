@@ -16,7 +16,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
       let playerCategory: UInt32 = 0x1 << 2
       let worldNode = SKNode()
       var spawnInterval: TimeInterval = 0.75
-    
+    var surviveLabel: SKLabelNode!
   
       let timeIntervalDecrement: TimeInterval = 0.01
       var gameTimer:Timer!
@@ -72,7 +72,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
        }
     
     func initObjectiveLabel(){
-        let surviveLabel = SKLabelNode(text: "Destroy the enemy before time runs out")
+         surviveLabel = SKLabelNode(text: "Destroy the enemy before time runs out")
          surviveLabel.fontSize = 50
          surviveLabel.fontColor = .white
          surviveLabel.position = CGPoint(x: size.width/2, y: size.height/2)
@@ -151,7 +151,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
         print(enemyDeadCount)
         if(enemyCount == 0){
             print("clear")
-            completeLevel(index: 1)
+            completeLevel(index: 3)
             game.handleLevelComplete(sceneNode: self, worldNode: worldNode)
             timer?.invalidate()
         }
@@ -167,7 +167,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
         guard let location = touch?.location(in: self) else { return }
         let nodesArray = self.nodes(at: location)
         if nodesArray.first?.name == "nextLevelButton" {
-            let gameScene = GameScene(fileNamed: "LevelTwoScene")
+            let gameScene = GameScene(fileNamed: "LevelThreeScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
         }
@@ -176,11 +176,14 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
                    // Pause the timer
                    timer?.invalidate()
                    isTimerRunning = false
+            
+
                } else {
                    // Start the timer
                    timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                        self.timeRemaining -= 1
                        self.timerLabel.text = "\(self.timeRemaining)"
+                    
                        if self.timeRemaining == 0 {
                            timer.invalidate()
                            self.timerCompleted()
