@@ -49,8 +49,7 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
       player = game.getPlayer()
       //set physics for scene zero gravity
       //set physics
-      gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
-      gameTimerIndx = game.addTimer(timer: gameTimer)
+     
       // Create the label and set its properties
       
       
@@ -94,59 +93,7 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
   }
   
   
-  @objc func addRobot () {
-      //increase spawning rate over time
-      spawnInterval -= timeIntervalDecrement
-          if spawnInterval < 0.2 {
-              spawnInterval = 0.2
-          }
-      gameTimer.invalidate()
-      gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
-
-   
-      //generates a random element from possible robot array
-      possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
-      
-      let robot = SKSpriteNode(imageNamed: possiblerobots[0])
-      
-      //generates lowest x and y value
-      let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: Int(self.frame.size.height))
-
-      let position = CGFloat(randomPosition.nextInt())
-      robot.name = "robot"
-      robot.position = CGPoint(x: self.frame.size.width + robot.size.width, y: position)
-      robot.size = CGSize(width: 100, height: 100)
-      //sets size of the spawned robot
-      robot.physicsBody = SKPhysicsBody(rectangleOf: robot.size)
-      //TODO:explore what this means
-      robot.physicsBody?.isDynamic = true
-      
-      //calculates when robot is hit
-      robot.physicsBody?.categoryBitMask = robotCategory
-      robot.physicsBody?.contactTestBitMask = photonTorpedoCategory
-      robot.physicsBody?.collisionBitMask = 0
-      
-      //calculates when robot hits player
-      robot.physicsBody?.contactTestBitMask = playerCategory
-      robot.physicsBody?.collisionBitMask = 0
-      
-      robot.zRotation = -1*CGFloat.pi / 2.0
-      //robots back of screen
-      robot.zPosition = -5
-      worldNode.addChild(robot)
-      
-      let animationDuration:TimeInterval = 6
-      
-      var actionArray = [SKAction]()
-      
-      
-      actionArray.append(SKAction.move(to: CGPoint(x: -robot.size.width, y: position), duration: animationDuration))
-      actionArray.append(SKAction.removeFromParent())
-      
-      robot.run(SKAction.sequence(actionArray)) // Run the sequence of actions on the node
-
-                             
-  }
+ 
   
   func didBegin(_ contact: SKPhysicsContact) {
       game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)

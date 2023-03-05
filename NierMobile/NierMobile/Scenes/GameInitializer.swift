@@ -8,8 +8,9 @@
 //art https://www.pngkey.com/detail/u2e6a9w7t4w7t4o0_1443321603011-pixel-home-button-png/
 import SpriteKit
 import CoreMotion
+import GameplayKit
     
-class GameInitializer{
+class GameInitializer : NSObject{
     
     let robotCategory:UInt32 = 0x1 << 1
     let photonTorpedoCategory:UInt32 = 0x1 << 0
@@ -28,6 +29,7 @@ class GameInitializer{
     //pause toggle
     var gamePaused = false
     var gameOver = false
+    var timeRemaining:Int = 10
     
     var enemiesKilled: Int = 0
     
@@ -45,7 +47,15 @@ class GameInitializer{
     
     var timerList = [Timer]()
     
+    //addRbot log
+    let timeIntervalDecrement: TimeInterval = 0.01
+    var spawnInterval: TimeInterval = 0.75
+    var gameTimer:Timer!
+    var possiblerobots = ["robot","robot2","robot3"]
     
+    var wNode:SKNode!
+    var fSize:CGRect!
+
     
     func getPlayer() -> SKSpriteNode {
         return player
@@ -56,6 +66,7 @@ class GameInitializer{
     func getEnemiesKilled() -> Int{
         return enemiesKilled
     }
+   
     
     //adds a timer to timer list and returns its index
     func addTimer(timer: Timer) -> Int {
@@ -154,16 +165,14 @@ class GameInitializer{
     }
     
     //TODO: takes a timer a halts if there is a timer
-    func pauseButtonHandler(worldNode:SKNode, view:SKView){
+    func handlePause(worldNode:SKNode, view:SKView){
         gamePaused = !gamePaused
         if gamePaused {
             // Pause the game
             worldNode.isPaused = true
-            // gameTimer.invalidate()
+            gameTimer.invalidate()
             backgroundMusic.run(SKAction.pause())
-            for timer in timerList {
-                timer.invalidate()
-            }
+           
             worldNode.addChild(quitGameButton)
             
             
@@ -174,7 +183,7 @@ class GameInitializer{
             for timer in timerList {
                 timer.fire()
             }
-            // gameTimer = Timer.scheduledTimer(timeInterval: 0.75, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+            addRobot()
             backgroundMusic.run(SKAction.play())
         }
         
@@ -283,6 +292,7 @@ class GameInitializer{
         torpedoNode.run(SKAction.sequence(actionArray))
     
     }
+    
 
     func handleShoot(targetPosition:CGPoint,worldNode:SKNode){
         // Position to rotate towards
@@ -364,7 +374,7 @@ class GameInitializer{
         
         // Check if the touched node is the node you're interested in
         if touchedNode.name == "pauseGameButton" {
-            pauseButtonHandler(worldNode: worldNode, view: view)
+            handlePause(worldNode: worldNode, view: view)
         }
         else if touchedNode.name == "quitGameButton"{
             let homeScene = HomeScene(fileNamed: "HomeScene")
@@ -485,8 +495,64 @@ class GameInitializer{
 
     }
     }
-   
+    @objc func addRobot () {
+          //increase spawning rate over time
+          spawnInterval -= timeIntervalDecrement
+              if spawnInterval < 0.2 {
+                  spawnInterval = 0.2
+              }
+        if(gameTimer != nil){
+            gameTimer.invalidate()
+        }
+          gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+
+       
+          //generates a random element from possible robot array
+          possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
+          
+          let robot = SKSpriteNode(imageNamed: possiblerobots[0])
+          
+          //generates lowest x and y value
+          let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: Int(fSize.size.height))
+
+          let position = CGFloat(randomPosition.nextInt())
+          robot.name = "robot"
+          robot.position = CGPoint(x: fSize.size.width + robot.size.width, y: position)
+          robot.size = CGSize(width: 100, height: 100)
+          //sets size of the spawned robot
+          robot.physicsBody = SKPhysicsBody(rectangleOf: robot.size)
+          //TODO:explore what this means
+          robot.physicsBody?.isDynamic = true
+          
+          //calculates when robot is hit
+          robot.physicsBody?.categoryBitMask = robotCategory
+          robot.physicsBody?.contactTestBitMask = photonTorpedoCategory
+          robot.physicsBody?.collisionBitMask = 0
+          
+          //calculates when robot hits player
+          robot.physicsBody?.contactTestBitMask = playerCategory
+          robot.physicsBody?.collisionBitMask = 0
+          
+          robot.zRotation = -1*CGFloat.pi / 2.0
+          //robots back of screen
+          robot.zPosition = -5
+          wNode.addChild(robot)
+          
+          let animationDuration:TimeInterval = 6
+          
+          var actionArray = [SKAction]()
+          
+          
+          actionArray.append(SKAction.move(to: CGPoint(x: -robot.size.width, y: position), duration: animationDuration))
+          actionArray.append(SKAction.removeFromParent())
+          
+          robot.run(SKAction.sequence(actionArray)) // Run the sequence of actions on the node
+                                 
+      }
+    
         func initGame(sceneNode:SKNode,worldNode:SKNode,frame:CGRect,playerLives:Int,physicsWorld:SKPhysicsWorld){
+            wNode = worldNode
+            fSize = frame
             initPlayer(playerCategory: playerCategory, robotCategory: robotCategory, worldNode: worldNode, frame: frame)
             initPlayerLives(worldNode: worldNode, frame: frame, pLives: playerLives)
             initStarfield(worldNode: worldNode, frame: frame)
@@ -495,6 +561,7 @@ class GameInitializer{
             initLevelComplete(worldNode: worldNode, frame: frame)
             handleMotion()
             physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+            addRobot()
            
         }
     }

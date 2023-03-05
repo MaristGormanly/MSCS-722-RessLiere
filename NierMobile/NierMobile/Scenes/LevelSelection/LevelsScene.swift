@@ -105,7 +105,7 @@ class LevelsScene: SKScene {
     }
     func initLevelThree(){
         levelTwoButton = SKSpriteNode(imageNamed: "level-three")
-        levelTwoButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.65)
+        levelTwoButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.55)
         levelTwoButton .setScale(1.4)
         levelTwoButton .zRotation = -1*CGFloat.pi / 2.0
         levelTwoButton .name = "levelThreeButton"

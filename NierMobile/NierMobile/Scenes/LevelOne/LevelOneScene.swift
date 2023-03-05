@@ -17,20 +17,21 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
       let worldNode = SKNode()
       var spawnInterval: TimeInterval = 0.75
     
-    
+  
       let timeIntervalDecrement: TimeInterval = 0.01
       var gameTimer:Timer!
       var gameTimerIndx:Int!
-      var startingTime = 10// 1 minute
+    var   timeRemaining:Int =  10// 1 minute
       var robotTimerIndx:Int!
       var timerDuration: TimeInterval = 10
- 
+        var isTimerRunning = false
+    var timerLabel:SKLabelNode!
       //POSSIBLE targets
       var possiblerobots = ["robot","robot2","robot3"]
     
       var player:SKSpriteNode!
     
-      
+    var timer: Timer?
 
     
     
@@ -48,8 +49,8 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         player = game.getPlayer()
         //set physics for scene zero gravity
         //set physics
-        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
-        gameTimerIndx = game.addTimer(timer: gameTimer)
+      //  gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
+       // gameTimerIndx = game.addTimer(timer: gameTimer)
         // Create the label and set its properties
         
         initLevelCountDown()
@@ -86,7 +87,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
     
     
     func initLevelCountDown(){
-        let timerLabel = SKLabelNode(text: "\(Int(timerDuration))")
+        timerLabel = SKLabelNode(text: "\(Int(timerDuration))")
         timerLabel.position = CGPoint(x: self.frame.width * 0.88, y: self.frame.height / 2)
         timerLabel.zRotation = -1*CGFloat.pi / 2.0
         timerLabel.fontName = "Helvetica-Bold"
@@ -94,27 +95,31 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
         addChild(timerLabel)
         
         
-        var timeRemaining = startingTime
+       
 
-        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            timeRemaining -= 1
-            timerLabel.text = "\(timeRemaining)"
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                self.timeRemaining -= 1
             
-            if timeRemaining == 0 {
+                self.timerLabel.text = "\(self.timeRemaining)"
+            
+                if self.timeRemaining == 0 {
                 timer.invalidate()
                 // perform other actions here
                 self.timerCompleted()
                 completeLevel(index: 0)
             }
-            self.game.addTimer(timer: timer)
+           
         }
+        isTimerRunning = true
     }
     
     
     func timerCompleted() {
         print("complete")
         // Stop spawning robots
-        gameTimer.invalidate()
+        if(gameTimer != nil){
+            gameTimer.invalidate()
+        }
         
         // Remove all existing robots from the scene
         worldNode.enumerateChildNodes(withName: "robot") { node, _ in
@@ -125,60 +130,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
 
     }
 
-    @objc func addRobot () {
-        //increase spawning rate over time
-        spawnInterval -= timeIntervalDecrement
-            if spawnInterval < 0.2 {
-                spawnInterval = 0.2
-            }
-        gameTimer.invalidate()
-        gameTimer = Timer.scheduledTimer(timeInterval: spawnInterval, target: self, selector: #selector(addRobot), userInfo: nil, repeats: true)
-
-     
-        //generates a random element from possible robot array
-        possiblerobots = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possiblerobots) as! [String]
         
-        let robot = SKSpriteNode(imageNamed: possiblerobots[0])
-        
-        //generates lowest x and y value
-        let randomPosition = GKRandomDistribution(lowestValue: 0, highestValue: Int(self.frame.size.height))
-
-        let position = CGFloat(randomPosition.nextInt())
-        robot.name = "robot"
-        robot.position = CGPoint(x: self.frame.size.width + robot.size.width, y: position)
-        robot.size = CGSize(width: 100, height: 100)
-        //sets size of the spawned robot
-        robot.physicsBody = SKPhysicsBody(rectangleOf: robot.size)
-        //TODO:explore what this means
-        robot.physicsBody?.isDynamic = true
-        
-        //calculates when robot is hit
-        robot.physicsBody?.categoryBitMask = robotCategory
-        robot.physicsBody?.contactTestBitMask = photonTorpedoCategory
-        robot.physicsBody?.collisionBitMask = 0
-        
-        //calculates when robot hits player
-        robot.physicsBody?.contactTestBitMask = playerCategory
-        robot.physicsBody?.collisionBitMask = 0
-        
-        robot.zRotation = -1*CGFloat.pi / 2.0
-        //robots back of screen
-        robot.zPosition = -5
-        worldNode.addChild(robot)
-        
-        let animationDuration:TimeInterval = 6
-        
-        var actionArray = [SKAction]()
-        
-        
-        actionArray.append(SKAction.move(to: CGPoint(x: -robot.size.width, y: position), duration: animationDuration))
-        actionArray.append(SKAction.removeFromParent())
-        
-        robot.run(SKAction.sequence(actionArray)) // Run the sequence of actions on the node
-
-                               
-    }
-    
     func didBegin(_ contact: SKPhysicsContact) {
         game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
     }
@@ -195,6 +147,25 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
             let gameScene = GameScene(fileNamed: "LevelTwoScene")
                             gameScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
+        }
+        if nodesArray.first?.name == "pauseGameButton" {
+            if isTimerRunning {
+                   // Pause the timer
+                   timer?.invalidate()
+                   isTimerRunning = false
+               } else {
+                   // Start the timer
+                   timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                       self.timeRemaining -= 1
+                       self.timerLabel.text = "\(self.timeRemaining)"
+                       if self.timeRemaining == 0 {
+                           timer.invalidate()
+                           self.timerCompleted()
+                           completeLevel(index: 0)
+                       }
+                   }
+                   isTimerRunning = true
+               }
         }
         game.handleTouch(touches: touches, worldNode: worldNode, sceneNode: self, view: view!)
         
