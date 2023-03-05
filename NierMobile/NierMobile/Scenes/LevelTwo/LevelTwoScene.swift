@@ -118,7 +118,7 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
       guard let location = touch?.location(in: self) else { return }
       let nodesArray = self.nodes(at: location)
       if nodesArray.first?.name == "nextLevelButton" {
-          let gameScene = GameScene(fileNamed: "HomeScreen")
+          let gameScene = GameScene(fileNamed: "HomeScene")
                           gameScene?.scaleMode = .aspectFill
                           self.scene?.view?.presentScene(gameScene!, transition: SKTransition.fade(withDuration: 0.5))
       }
