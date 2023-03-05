@@ -104,6 +104,7 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
                 timer.invalidate()
                 // perform other actions here
                 self.timerCompleted()
+                completeLevel(index: 0)
             }
             self.game.addTimer(timer: timer)
         }

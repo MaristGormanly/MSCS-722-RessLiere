@@ -18,7 +18,8 @@ class HomeScene: SKScene {
     var settingButtonNode:SKSpriteNode!
     var storyModeButtonNode:SKSpriteNode!
     var leaderboardButtonNode:SKSpriteNode!
- 
+    var completedLevels = [Bool]()
+
     override func didMove(to view: SKView) {
        
    
@@ -88,6 +89,10 @@ class HomeScene: SKScene {
             UserDefaults.standard.removeObject(forKey: "highestScore")
             let highScoresKey = "highScores"
             UserDefaults.standard.removeObject(forKey: highScoresKey)
+            completedLevels = [Bool](repeating: false, count: 5)
+
+            UserDefaults.standard.removeObject(forKey: "completedLevels")
+                       completedLevels = [Bool](repeating: false, count: 5)
 
         }
         else if nodesArray.first?.name == "leaderboardButton"{

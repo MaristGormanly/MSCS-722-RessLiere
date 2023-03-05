@@ -14,6 +14,9 @@ class LevelsScene: SKScene {
     var completedLevels = [Bool]()
     var numberOfLevels:Int = 5
     var levelOneButton:SKSpriteNode!
+    var levelTwoButton:SKSpriteNode!
+    var titleLabel:SKLabelNode!
+    var levelLock: SKSpriteNode!
 
     override func didMove(to view: SKView) {
         
@@ -26,13 +29,22 @@ class LevelsScene: SKScene {
                completedLevels = [Bool](repeating: false, count: numberOfLevels)
                UserDefaults.standard.set(completedLevels, forKey: "completedLevels")
            }
+        let titleColor = UIColor(red: 0.79, green: 0.85, blue: 0.32, alpha: 1.0)
         
-        levelOneButton = SKSpriteNode(imageNamed: "level-one")
-        levelOneButton .position = CGPoint(x:self.frame.size.width * 0.8, y: self.frame.height * 0.90)
-        levelOneButton .setScale(0.75)
-        levelOneButton .zRotation = -1*CGFloat.pi / 2.0
-        levelOneButton .name = "levelOneButton"
-        addChild(levelOneButton)
+        titleLabel = SKLabelNode(text: "Levels: ")
+        titleLabel.zRotation = -1*CGFloat.pi / 2.0
+        
+        titleLabel.position = CGPoint(x:self.frame.width * 0.80 , y: self.frame.height / 2)
+        
+        titleLabel.fontName = "Copperplate"
+        titleLabel.fontSize = 72
+        titleLabel.fontColor = titleColor
+        addChild(titleLabel)
+        
+        
+        
+        
+      
         
         //initlize startfield
         starfield = SKEmitterNode(fileNamed: "Starfield")
@@ -53,7 +65,50 @@ class LevelsScene: SKScene {
         returnHomeButton.zRotation = -1*CGFloat.pi / 2.0
         returnHomeButton.name = "returnHomeButton"
         addChild(returnHomeButton)
+        
+        
+        
+        initLevelOne()
+        if(completedLevels[0]){
+            initLevelTwo()
+        }
+        else{
+            initLockedLevel(pos:CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.7))
+
+        }
        
+        
+        
+       
+    }
+    
+    func initLevelOne(){
+        levelOneButton = SKSpriteNode(imageNamed: "level-one")
+        levelOneButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.85)
+        levelOneButton .setScale(1.4)
+        levelOneButton .zRotation = -1*CGFloat.pi / 2.0
+        levelOneButton .name = "levelOneButton"
+        addChild(levelOneButton)
+        
+    }
+    
+    func initLevelTwo(){
+        levelTwoButton = SKSpriteNode(imageNamed: "level-two")
+        levelTwoButton .position = CGPoint(x:self.frame.size.width * 0.65, y: self.frame.height * 0.7)
+        levelTwoButton .setScale(1.4)
+        levelTwoButton .zRotation = -1*CGFloat.pi / 2.0
+        levelTwoButton .name = "levelTwoButton"
+        addChild(levelTwoButton)
+        
+    }
+    func initLockedLevel(pos:CGPoint){
+        levelLock = SKSpriteNode(imageNamed: "locked-level")
+        levelLock.position = pos
+        levelLock.zRotation = -1*CGFloat.pi / 2.0
+        levelLock.setScale(1.3)
+        levelLock.name = "levelLock"
+        addChild(levelLock)
+
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
