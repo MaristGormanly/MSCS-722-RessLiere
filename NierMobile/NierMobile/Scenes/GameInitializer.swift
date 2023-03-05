@@ -27,7 +27,7 @@ class GameInitializer : NSObject{
     var returnHomeButton:SKSpriteNode!
     var nextLevelButton: SKSpriteNode!
     var homeButton: SKSpriteNode!
-    
+    var pausedButton: SKSpriteNode!
     //pause toggle
     var gamePaused = false
     var gameOver = false
@@ -171,7 +171,10 @@ class GameInitializer : NSObject{
         homeButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
         homeButton.name = "homeButton"
         
-        gamePaused = SKSpriteNode(imageNamed: <#T##String#>)
+        pausedButton = SKSpriteNode(imageNamed: "paused")
+        pausedButton.zRotation = -1*CGFloat.pi / 2.0
+        pausedButton.position = CGPoint(x:frame.width / 2, y:frame.height / 2)
+     
         
         //makes it the highest z value in the scene
         
@@ -190,13 +193,13 @@ class GameInitializer : NSObject{
             }
             backgroundMusic.run(SKAction.pause())
            
-            worldNode.addChild(worldNode.addChild(pauseGameButton))
+            worldNode.addChild(pausedButton)
             
             
         } else {
             // Unpause the game
             worldNode.isPaused = false
-            pauseGameButton.removeFromParent()
+            pausedButton.removeFromParent()
             for timer in timerList {
                 timer.fire()
             }
@@ -600,4 +603,5 @@ class GameInitializer : NSObject{
        
     }
     }
+
 
