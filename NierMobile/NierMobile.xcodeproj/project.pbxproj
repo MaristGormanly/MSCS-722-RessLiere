@@ -34,6 +34,7 @@
 		BAFE784529B3FA1D00E10024 /* LevelsScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFE784429B3FA1D00E10024 /* LevelsScene.swift */; };
 		BAFE784A29B43B7200E10024 /* LevelTwoScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BAFE784929B43B7200E10024 /* LevelTwoScene.sks */; };
 		BAFE784C29B43C4A00E10024 /* LevelTwoScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFE784B29B43C4A00E10024 /* LevelTwoScene.swift */; };
+		BAFE784F29B4648900E10024 /* level-complete.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAFE784E29B4648900E10024 /* level-complete.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +66,7 @@
 		BAFE784429B3FA1D00E10024 /* LevelsScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelsScene.swift; sourceTree = "<group>"; };
 		BAFE784929B43B7200E10024 /* LevelTwoScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LevelTwoScene.sks; sourceTree = "<group>"; };
 		BAFE784B29B43C4A00E10024 /* LevelTwoScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelTwoScene.swift; sourceTree = "<group>"; };
+		BAFE784E29B4648900E10024 /* level-complete.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "level-complete.mp3"; path = "NierMobile/Sounds/level-complete.mp3"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +126,7 @@
 		BA9FA17D29ABB80A001B8E5A /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				BAFE784E29B4648900E10024 /* level-complete.mp3 */,
 				BA9FA18729AF8F10001B8E5A /* game-over.mp3 */,
 				BA9FA17829A92210001B8E5A /* hacking-dimension.mp3 */,
 				BA9FA16429A83C71001B8E5A /* torpedo.mp3 */,
@@ -266,6 +269,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAFE784F29B4648900E10024 /* level-complete.mp3 in Resources */,
 				BA9FA12C29A7B3F4001B8E5A /* Main.storyboard in Resources */,
 				BA9FA17929A92210001B8E5A /* hacking-dimension.mp3 in Resources */,
 				BAFE783B29B3DCFA00E10024 /* LeaderboardScene.sks in Resources */,

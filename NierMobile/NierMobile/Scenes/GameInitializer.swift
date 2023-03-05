@@ -400,7 +400,7 @@ class GameInitializer : NSObject{
         player.removeFromParent()
         // scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
         backgroundMusic.run(SKAction.pause())
-        sceneNode.run(SKAction.playSoundFileNamed("game-over.mp3", waitForCompletion: true))
+        sceneNode.run(SKAction.playSoundFileNamed("level-complete.mp3", waitForCompletion: true))
         let wait = SKAction.wait(forDuration: 2.0)
         pauseGameButton.removeFromParent()
         //  gameTimer.invalidate()
