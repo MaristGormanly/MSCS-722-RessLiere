@@ -11,6 +11,7 @@
 		BA974AD629B4FF8900B7EB25 /* LevelThreeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA974AD529B4FF8900B7EB25 /* LevelThreeScene.swift */; };
 		BA974AD929B504A200B7EB25 /* LevelZeroScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA974AD829B504A200B7EB25 /* LevelZeroScene.sks */; };
 		BA974ADB29B504D600B7EB25 /* LevelZeroScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA974ADA29B504D600B7EB25 /* LevelZeroScene.swift */; };
+		BA974ADE29B5330200B7EB25 /* ConfirmationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA974ADD29B5330200B7EB25 /* ConfirmationNode.swift */; };
 		BA9FA12129A7B3F4001B8E5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9FA12029A7B3F4001B8E5A /* AppDelegate.swift */; };
 		BA9FA12329A7B3F4001B8E5A /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA12229A7B3F4001B8E5A /* GameScene.sks */; };
 		BA9FA12529A7B3F4001B8E5A /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA9FA12429A7B3F4001B8E5A /* Actions.sks */; };
@@ -46,6 +47,7 @@
 		BA974AD529B4FF8900B7EB25 /* LevelThreeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelThreeScene.swift; sourceTree = "<group>"; };
 		BA974AD829B504A200B7EB25 /* LevelZeroScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LevelZeroScene.sks; sourceTree = "<group>"; };
 		BA974ADA29B504D600B7EB25 /* LevelZeroScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelZeroScene.swift; sourceTree = "<group>"; };
+		BA974ADD29B5330200B7EB25 /* ConfirmationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationNode.swift; sourceTree = "<group>"; };
 		BA9FA11D29A7B3F3001B8E5A /* NierMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NierMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA9FA12029A7B3F4001B8E5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA9FA12229A7B3F4001B8E5A /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				BA9FA19E29B1220A001B8E5A /* Utils.swift */,
+				BA974ADD29B5330200B7EB25 /* ConfirmationNode.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				BA9FA1AC29B12CF5001B8E5A /* LevelOneScene.swift in Sources */,
 				BAFE784C29B43C4A00E10024 /* LevelTwoScene.swift in Sources */,
 				BA9FA12129A7B3F4001B8E5A /* AppDelegate.swift in Sources */,
+				BA974ADE29B5330200B7EB25 /* ConfirmationNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

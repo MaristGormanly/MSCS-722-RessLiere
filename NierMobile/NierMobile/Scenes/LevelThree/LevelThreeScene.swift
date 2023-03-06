@@ -111,7 +111,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
             timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.timeRemaining -= 1
             
-                self.timerLabel.text = "Time remaining \(self.timeRemaining)"
+                self.timerLabel.text = "T: \(self.timeRemaining)"
                 if self.worldNode.isPaused{
                     timer.invalidate()
 
@@ -149,7 +149,7 @@ class LevelThreeScene: SKScene, SKPhysicsContactDelegate {
         game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
         enemyDeadCount = game.getEnemiesKilled()
         let enemyCount = levelGoal - enemyDeadCount
-        counterLabel.text = "Enemies Left: \(enemyCount)"
+        counterLabel.text = "K: \(enemyCount)"
        
         print(enemyDeadCount)
         if(enemyCount == 0){

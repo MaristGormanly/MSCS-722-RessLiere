@@ -22,8 +22,8 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
     
     override func didMove(to view: SKView) {
         addChild(worldNode)
-        counterLabel = SKLabelNode(text: "Enemies Left: \(levelGoal) ")
-             counterLabel.fontSize = 24
+        counterLabel = SKLabelNode(text: "KILL: \(levelGoal) ")
+             counterLabel.fontSize = 50
              counterLabel.fontName = "Avenir-BlackOblique"
              counterLabel.zRotation =  -1*CGFloat.pi / 2.0
              counterLabel.fontColor = .white
@@ -56,12 +56,21 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
         //tutorial instruction 3
         waitAction = SKAction.wait(forDuration: 22)
         initLabelAction = SKAction.run {
-            self.game.addRobot()
+            
             self.worldNode.addChild(self.counterLabel)
+            
        }
         sequenceAction = SKAction.sequence([waitAction, initLabelAction])
        run(sequenceAction)
        
+        waitAction = SKAction.wait(forDuration: 24)
+        initLabelAction = SKAction.run {
+            
+            self.game.addRobot()
+            
+       }
+        sequenceAction = SKAction.sequence([waitAction, initLabelAction])
+       run(sequenceAction)
 
     }
     
@@ -95,7 +104,7 @@ class LevelZeroScene: SKScene, SKPhysicsContactDelegate {
         game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
         enemyDeadCount = game.getEnemiesKilled()
         let enemyCount = levelGoal - enemyDeadCount
-        counterLabel.text = "Enemies Left: \(enemyCount)"
+        counterLabel.text = " \(enemyCount)"
        
         print(enemyDeadCount)
         if(enemyCount == 0){

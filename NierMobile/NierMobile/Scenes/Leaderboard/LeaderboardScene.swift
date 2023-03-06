@@ -76,7 +76,7 @@ class LeaderboardScene: SKScene {
                 else{
                     
                     scoreLabel.zRotation = -1*CGFloat.pi / 2.0
-                    scoreLabel.position = CGPoint(x:yPosition - scoreLabel.frame.size.height/2 + 30 , y: self.frame.width * 0.86)
+                    scoreLabel.position = CGPoint(x:yPosition - scoreLabel.frame.size.height/2 + 32 , y: self.frame.width * 0.86)
                     scoreLabel.fontName = "Copperplate"
                     scoreLabel.fontSize = 36
                     scoreLabel.fontColor = UIColor.white

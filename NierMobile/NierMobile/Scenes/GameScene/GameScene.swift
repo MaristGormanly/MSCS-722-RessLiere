@@ -38,6 +38,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var starfield:SKEmitterNode!
     var scoreLabel:SKLabelNode!
     var highScoreLabel:SKLabelNode!
+    var gameOverButton:SKSpriteNode!
+    var homeButton:SKSpriteNode!
     var score:Int = 0 {
         didSet{
             scoreLabel.text = "Score: \(score)"
@@ -95,7 +97,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var quitGameButton:SKSpriteNode!
     
     //gameover intializeing
-    var gameOverButton:SKSpriteNode!
+ 
     var gameOver = false
     
     let defaults = UserDefaults.standard
@@ -131,6 +133,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //init pause screen
         initPauseScreen()
+        
+        
        
         //set physics for scene zero gravity
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
@@ -207,6 +211,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         quitGameButton.zPosition = 5
         
         
+        
+        gameOverButton = SKSpriteNode(imageNamed:"game-over")
+        gameOverButton.zRotation = -1*CGFloat.pi / 2.0
+        gameOverButton.position = CGPoint(x:frame.width * 0.6, y:frame.height / 2)
+        gameOverButton.name = "gameOverButton"
+        gameOverButton.setScale(1.2)
+        
+        
+        homeButton = SKSpriteNode(imageNamed:"return-home")
+        homeButton.zRotation = -1*CGFloat.pi / 2.0
+        homeButton.position = CGPoint(x:frame.width * 0.40 , y:frame.height / 2)
+        homeButton.name = "returnHomeButton"
+        
+        
     }
     
   
@@ -253,12 +271,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel.fontColor = UIColor.white
         highScore = 0
         
-        
-        if let highestScore = UserDefaults.standard.object(forKey: "highestScore") as? Int {
-           highScore = highestScore
-        } else {
-           
-            highScore = 0
+        var highScores = UserDefaults.standard.array(forKey: highScoresKey) as? [Int] ?? []
+        let highestScore = highScores.sorted(by: >).first ?? 0
+
+        if(highScores != nil){
+            highScore = highestScore
+            highScoreLabel.text = "HS: \(highScore)"
         }
 
         
@@ -371,6 +389,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             pauseButtonHandler()
         }
         else if touchedNode.name == "quitGameButton"{
+            let homeScene = HomeScene(fileNamed: "HomeScene")
+                            homeScene?.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
+            
+        }
+        else if touchedNode.name == "returnHomeButton"{
             let homeScene = HomeScene(fileNamed: "HomeScene")
                             homeScene?.scaleMode = .aspectFill
                             self.scene?.view?.presentScene(homeScene!, transition: SKTransition.fade(withDuration: 0.5))
@@ -550,13 +574,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 playExplosion(spriteNode: player)
                 playerLivesList[playerLives-1].removeFromParent()
                 player.removeFromParent()
-                scoreLabel.position = CGPoint(x: self.frame.width / 3, y:self.frame.height / 2)
+        scoreLabel.position = CGPoint(x: self.frame.width / 4.1, y:self.frame.height / 2)
                 backgroundMusic.run(SKAction.pause())
                 self.run(SKAction.playSoundFileNamed("game-over.mp3", waitForCompletion: true))
                 let wait = SKAction.wait(forDuration: 2.0)
                 pauseGameButton.removeFromParent()
                 gameTimer.invalidate()
-                worldNode.addChild(quitGameButton)
+                addChild(gameOverButton)
+                addChild(homeButton)
                 gameOver = true
                 //adds score to list and then only keeps the the top 10 scores
                 var highScores = UserDefaults.standard.array(forKey: highScoresKey) as? [Int] ?? []

@@ -57,8 +57,8 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
       
       initObjectiveLabel()
       
-      counterLabel = SKLabelNode(text: "Enemies Left: \(levelGoal) ")
-      counterLabel.fontSize = 24
+      counterLabel = SKLabelNode(text: "KILL  \(levelGoal) ")
+      counterLabel.fontSize = 50
       counterLabel.fontName = "Avenir-BlackOblique"
       counterLabel.zRotation =  -1*CGFloat.pi / 2.0
       counterLabel.fontColor = .white
@@ -99,7 +99,7 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
       game.handleCollision(contact: contact, worldNode: worldNode, sceneNode:self)
       enemyDeadCount = game.getEnemiesKilled()
       let enemyCount = levelGoal - enemyDeadCount
-      counterLabel.text = "Enemies Left: \(enemyCount)"
+      counterLabel.text = "\(enemyCount)"
      
       print(enemyDeadCount)
       if(enemyCount == 0){
