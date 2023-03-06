@@ -21,9 +21,9 @@ class LevelOneScene: SKScene, SKPhysicsContactDelegate {
       let timeIntervalDecrement: TimeInterval = 0.01
       var gameTimer:Timer!
       var gameTimerIndx:Int!
-    var   timeRemaining:Int =  10// 1 minute
+    var   timeRemaining:Int =  60// 1 minute
       var robotTimerIndx:Int!
-      var timerDuration: TimeInterval = 10
+      var timerDuration: TimeInterval = 60
         var isTimerRunning = false
     var timerLabel:SKLabelNode!
       //POSSIBLE targets

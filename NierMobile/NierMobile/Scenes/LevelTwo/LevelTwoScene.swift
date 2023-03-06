@@ -29,7 +29,7 @@ class LevelTwoScene:SKScene, SKPhysicsContactDelegate {
     var possiblerobots = ["robot","robot2","robot3"]
   
     var player:SKSpriteNode!
-    var levelGoal:Int = 10
+    var levelGoal:Int = 75
     var enemyDeadCount: Int  = 0
     var counterLabel: SKLabelNode!
 
