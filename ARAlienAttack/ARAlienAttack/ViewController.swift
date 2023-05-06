@@ -25,6 +25,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
           sceneView.scene = scene
     }
     
+    func addContainer() {
+        guard let backboardScene = SCNScene(named: "art.scnassets/scene.scn") else {
+            return
+        }
+        guard let backBoardNode = backboardScene.rootNode.childNode(withName: "container", recursively: true) else {
+            return
+        }
+        addChildNode()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
