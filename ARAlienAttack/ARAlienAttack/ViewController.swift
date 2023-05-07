@@ -45,12 +45,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     /// Add Boxes
     func addChildNode() {
-        addBoxNodes(index: 0, position: SCNVector3(0, -0.138, -0.3))
-        addBoxNodes(index: 1, position: SCNVector3(0.12, -0.138, -0.3))
-        addBoxNodes(index: 2, position: SCNVector3(0.24, -0.138, -0.3))
-        addBoxNodes(index: 3, position: SCNVector3(0.06, -0.038, -0.3))
-        addBoxNodes(index: 4, position: SCNVector3(0.18, -0.038, -0.3))
-        addBoxNodes(index: 5, position: SCNVector3(0.12, 0.062, -0.3))
+        addAlien(index: 0, position: SCNVector3(0, -0.138, -0.3))
+        addAlien(index: 1, position: SCNVector3(0.12, -0.138, -0.3))
+        addAlien(index: 2, position: SCNVector3(0.24, -0.138, -0.3))
+        addAlien(index: 3, position: SCNVector3(0.06, -0.038, -0.3))
+        addAlien(index: 4, position: SCNVector3(0.18, -0.038, -0.3))
+        addAlien(index: 5, position: SCNVector3(0.12, 0.062, -0.3))
         
         planeNode = SCNNode()
         if let planeNode = planeNode {
@@ -62,7 +62,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             self.sceneView.scene.rootNode.addChildNode(planeNode)
         }
     }
-   
+    func addAlien(index: Int, position: SCNVector3) {
+        let node = SCNNode()
+        node.name = "Node\(index)"
+        node.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        node.geometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+        node.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "robot")
+        node.position = position
+        node.physicsBody?.contactTestBitMask = 1
+        self.sceneView.scene.rootNode.addChildNode(node)
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
