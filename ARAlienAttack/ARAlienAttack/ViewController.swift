@@ -15,7 +15,7 @@ class ViewController: UIViewController, ARSCNViewDelegate{
     
     @IBOutlet var sceneView: ARSCNView!
     
-    var distFromCamera: Double = -2
+    var distFromCamera: Double = -1.5
 
     
     override func viewDidLoad() {
@@ -125,9 +125,39 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         // Pause the view's session
         sceneView.session.pause()
     }
+    func fireLaser() {
+        //Handle the shooting
+        guard let frame = sceneView.session.currentFrame else {
+            return
+        }
+        let camMatrix = SCNMatrix4(frame.camera.transform)
+        let direction = SCNVector3Make(-camMatrix.m31 * 5.0, -camMatrix.m32 * 10.0, -camMatrix.m33 * 5.0)
+        let position = SCNVector3Make(camMatrix.m41, camMatrix.m42, camMatrix.m43)
+        
+        // Create a SCNBox for laser
+        let laser = SCNBox(width: 0.02, height: 0.02, length: 0.2, chamferRadius: 0.01)
+        laser.firstMaterial?.diffuse.contents = UIImage(named: "greenTexture")
+        laser.firstMaterial?.emission.contents = UIImage(named: "greenTexture")
+        
+        // Create laser node using laser SCNBox
+        let laserNode = SCNNode(geometry: laser)
+        laserNode.name = "laser"
+        laserNode.position = position
+        laserNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+        laserNode.physicsBody?.categoryBitMask = 3
+        laserNode.physicsBody?.contactTestBitMask = 1
+        sceneView.scene.rootNode.addChildNode(laserNode)
+        laserNode.runAction(SCNAction.sequence([SCNAction.wait(duration: 10.0), SCNAction.removeFromParentNode()]))
+        
+        // Calculate velocity add apply force to laser
+        let velocityInLocalSpace = SCNVector3(0, 0, -0.15)
+        let velocityInWorldSpace = laserNode.presentation.convertVector(velocityInLocalSpace, to: nil)
+        laserNode.physicsBody?.velocity = velocityInWorldSpace
+        laserNode.physicsBody?.applyForce(direction, asImpulse: true)
+    }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-       // addBallNode()
+       fireLaser()
 
     }
     
