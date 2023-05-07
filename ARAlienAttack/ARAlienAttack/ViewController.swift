@@ -37,11 +37,18 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         initialSetup()
 
         view.addSubview(shotsRemainingLabel)
+        view.addSubview(aliensRemainingLabel)
+
         NSLayoutConstraint.activate([
             shotsRemainingLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
-            shotsRemainingLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
+            shotsRemainingLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            aliensRemainingLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            aliensRemainingLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: view.frame.height * 0.08 - aliensRemainingLabel.frame.height / 2)
         ])
-        updateShotsRemainingLabel()
+
+       updateShotsRemainingLabel()
+        updateAliensRemainingLabel()
+
     }
 
     
@@ -71,7 +78,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         playButton.translatesAutoresizingMaskIntoConstraints = false
         
         if let originalImage = UIImage(named: "start-game") { // Replace "start-game" with the name of your image file
-            let newSize = CGSize(width: originalImage.size.width * 0.5, height: originalImage.size.height * 0.5)
+            let newSize = CGSize(width: originalImage.size.width * 0.65, height: originalImage.size.height * 0.65)
             UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
             originalImage.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -89,8 +96,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
         NSLayoutConstraint.activate([
             playButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            playButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            playButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50)
         ])
+
     }
 
 
@@ -140,6 +148,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             self.present(alertController, animated: true, completion: nil)
         }
     }
+
 
     ///////////////////////////////////////////////////////////////////
     //     GAME INIT               /
@@ -284,10 +293,23 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         label.textAlignment = .left
         return label
     }()
+    lazy var aliensRemainingLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }()
+
 
     func updateShotsRemainingLabel() {
         shotsRemainingLabel.text = "Shots Remaining: \(shotsRemaining)"
     }
+    func updateAliensRemainingLabel() {
+        let aliensRemaining = numberOfAliens - aliensDestroyed
+        aliensRemainingLabel.text = "Aliens Remaining: \(aliensRemaining)"
+    }
+
     
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         var alienNode: SCNNode?
@@ -309,6 +331,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
                alienNode.removeFromParentNode() // Remove the alien node from the scene
                laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
                aliensDestroyed += 1
+               playExplosionSound() // Play explosion sound
+
            }
            checkGameOver()
        
