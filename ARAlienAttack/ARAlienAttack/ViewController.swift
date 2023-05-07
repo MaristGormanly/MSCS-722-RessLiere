@@ -15,7 +15,7 @@ class ViewController: UIViewController, ARSCNViewDelegate{
     
     @IBOutlet var sceneView: ARSCNView!
     
-    var distFromCamera: Double = -5
+    var distFromCamera: Double = -2
 
     
     override func viewDidLoad() {
@@ -96,6 +96,13 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         node.position = position
         node.physicsBody?.contactTestBitMask = 1
         self.sceneView.scene.rootNode.addChildNode(node)
+        
+        // Add floating animation
+            let floatUp = SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 1)
+            let floatDown = SCNAction.moveBy(x: 0, y: -0.05, z: 0, duration: 1)
+            let floatSequence = SCNAction.sequence([floatUp, floatDown])
+            let repeatFloating = SCNAction.repeatForever(floatSequence)
+            node.runAction(repeatFloating)
     }
     
     
