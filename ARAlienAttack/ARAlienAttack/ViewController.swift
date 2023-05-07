@@ -10,21 +10,30 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
-
+    var planeNode: SCNNode?
+    var modelRootB: SCNNode?
+    
     @IBOutlet var sceneView: ARSCNView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Set the view's delegate
-          sceneView.delegate = self
-          // Show statistics such as fps and timing information
-          sceneView.showsStatistics = true
-          // Create a new scene
-          let scene = SCNScene(named: "art.scnassets/scene.scn")!
-          // Set the scene to the view
-          sceneView.scene = scene
+        initialSetup()
+      
     }
     
+    func initialSetup() {
+        // Set the view's delegate
+        sceneView.delegate = self
+        // Show statistics such as fps and timing information
+        sceneView.showsStatistics = true
+        // Create a new scene
+        let scene = SCNScene(named: "art.scnassets/scene.scn")!
+        // Set the scene to the view
+        sceneView.scene = scene
+        
+        addContainer()
+        
+    }
     func addContainer() {
         guard let backboardScene = SCNScene(named: "art.scnassets/scene.scn") else {
             return
@@ -34,6 +43,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
         addChildNode()
     }
+    /// Add Boxes
+    func addChildNode() {
+     
+        planeNode = SCNNode()
+        if let planeNode = planeNode {
+            planeNode.name = "Plane"
+            planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+            planeNode.geometry = SCNBox(width: 0.4, height: 0.015, length: 0.3, chamferRadius: 0)
+            planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "planeImage")
+            planeNode.position = SCNVector3(0.125, -0.2, -0.28)
+            self.sceneView.scene.rootNode.addChildNode(planeNode)
+        }
+    }
+   
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
