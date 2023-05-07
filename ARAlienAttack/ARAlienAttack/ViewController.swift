@@ -11,7 +11,7 @@ import ARKit
 import AVFoundation
 
 
-class ViewController: UIViewController, ARSCNViewDelegate{
+class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
     var planeNode: SCNNode?
     var modelRootB: SCNNode?
     
@@ -37,6 +37,8 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         let scene = SCNScene(named: "art.scnassets/scene.scn")!
         // Set the scene to the view
         sceneView.scene = scene
+        sceneView.scene.physicsWorld.contactDelegate = self
+
         
         addContainer()
         
@@ -175,10 +177,28 @@ class ViewController: UIViewController, ARSCNViewDelegate{
 
     }
     //print upon collision
-    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact){
-        print("Failed to find explosion.mp3")
-
+    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
+        let firstNode = contact.nodeA
+        let secondNode = contact.nodeB
+        
+        var alienNode: SCNNode?
+        var laserNode: SCNNode?
+        
+        if firstNode.name == "laser" && secondNode.name?.hasPrefix("Node") == true {
+            alienNode = secondNode
+            laserNode = firstNode
+        } else if secondNode.name == "laser" && firstNode.name?.hasPrefix("Node") == true {
+            alienNode = firstNode
+            laserNode = secondNode
+        }
+        
+        if let alienNode = alienNode {
+            print("Alien hit: \(alienNode.name ?? "Unknown")")
+            alienNode.removeFromParentNode() // Remove the alien node from the scene
+            laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
+        }
     }
+
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        fireLaser()
