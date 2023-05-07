@@ -66,13 +66,36 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let node = SCNNode()
         node.name = "Node\(index)"
         node.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-        node.geometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
-        node.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "robot")
+        let box = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+        
+        // Create material for the front face
+        let frontMaterial = SCNMaterial()
+        frontMaterial.diffuse.contents = UIImage(named: "robot")
+        frontMaterial.diffuse.wrapS = .clampToBorder
+        frontMaterial.diffuse.wrapT = .clampToBorder
+        frontMaterial.diffuse.borderColor = UIColor.black // or NSColor.black on macOS
+        
+        // Create material for the other faces
+        let otherMaterial = SCNMaterial()
+        otherMaterial.diffuse.contents = UIColor.black
+        
+        // Assign materials to the SCNBox
+        box.materials = [
+            frontMaterial,    // front face
+            otherMaterial,    // right face
+            otherMaterial,    // back face
+            otherMaterial,    // left face
+            otherMaterial,    // top face
+            otherMaterial     // bottom face
+        ]
+        
+        node.geometry = box
         node.position = position
         node.physicsBody?.contactTestBitMask = 1
         self.sceneView.scene.rootNode.addChildNode(node)
     }
-    
+
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
