@@ -177,6 +177,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         node.geometry = sphere
         node.position = position
         node.physicsBody?.contactTestBitMask = 1
+        setupAlienPhysics(node: node)
+
         self.sceneView.scene.rootNode.addChildNode(node)
         
         // Add floating animation
@@ -185,6 +187,29 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let floatSequence = SCNAction.sequence([floatUp, floatDown])
         let repeatFloating = SCNAction.repeatForever(floatSequence)
         node.runAction(repeatFloating)
+        
+        node.runAction(randomWanderAnimation())
+
+    }
+    
+    func setupAlienPhysics(node: SCNNode) {
+        node.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: node.geometry!, options: nil))
+        node.physicsBody?.isAffectedByGravity = false
+        node.physicsBody?.categoryBitMask = 1
+        node.physicsBody?.collisionBitMask = 1
+        node.physicsBody?.contactTestBitMask = 1
+    }
+
+    func randomWanderAnimation() -> SCNAction {
+        let xPos = CGFloat.random(in: -0.50...0.50)
+        let yPos = CGFloat.random(in: -0.30...0.30)
+        let moveDuration = TimeInterval.random(in: 1...5)
+        
+        let moveAction = SCNAction.moveBy(x: xPos, y: yPos, z: 0, duration: moveDuration)
+        let reverseMoveAction = SCNAction.moveBy(x: -xPos, y: -yPos, z: 0, duration: moveDuration)
+        let sequence = SCNAction.sequence([moveAction, reverseMoveAction])
+        let repeatSequence = SCNAction.repeatForever(sequence)
+        return repeatSequence
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -248,27 +273,29 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
-        let firstNode = contact.nodeA
-        let secondNode = contact.nodeB
-        
         var alienNode: SCNNode?
         var laserNode: SCNNode?
-        
-        if firstNode.name == "laser" && secondNode.name?.hasPrefix("Node") == true {
-            alienNode = secondNode
-            laserNode = firstNode
-        } else if secondNode.name == "laser" && firstNode.name?.hasPrefix("Node") == true {
-            alienNode = firstNode
-            laserNode = secondNode
-        }
-        
-        if let alienNode = alienNode {
-            print("Alien hit: \(alienNode.name ?? "Unknown")")
-            alienNode.removeFromParentNode() // Remove the alien node from the scene
-            laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
-        }
-        aliensDestroyed += 1
-        checkGameOver()
+        let firstNode = contact.nodeA
+        let secondNode = contact.nodeB
+       
+           
+           if firstNode.physicsBody?.categoryBitMask == 3 && secondNode.physicsBody?.contactTestBitMask == 1 {
+               alienNode = secondNode
+               laserNode = firstNode
+           } else if secondNode.physicsBody?.categoryBitMask == 3 && firstNode.physicsBody?.contactTestBitMask == 1 {
+               alienNode = firstNode
+               laserNode = secondNode
+           }
+           
+           if let alienNode = alienNode {
+               print("Alien hit: \(alienNode.name ?? "Unknown")")
+               alienNode.removeFromParentNode() // Remove the alien node from the scene
+               laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
+               aliensDestroyed += 1
+           }
+           checkGameOver()
+       
+       
     }
     func checkGameOver() {
         if aliensDestroyed == numberOfAliens {
