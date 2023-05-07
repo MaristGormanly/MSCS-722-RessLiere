@@ -54,22 +54,22 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     /// Add Boxes
     func addChildNode() {
-        addAlien(index: 0, position: SCNVector3(0, -0.138, distFromCamera))
-        addAlien(index: 1, position: SCNVector3(0.13, -0.138, distFromCamera))
-        addAlien(index: 2, position: SCNVector3(0.25, -0.138, distFromCamera))
-        addAlien(index: 3, position: SCNVector3(0.05, -0.038, distFromCamera))
-        addAlien(index: 4, position: SCNVector3(0.16, -0.038, distFromCamera))
-        addAlien(index: 5, position: SCNVector3(0.13, 0.062, distFromCamera))
-        
-        planeNode = SCNNode()
-        if let planeNode = planeNode {
-            planeNode.name = "Plane"
-            planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-            planeNode.geometry = SCNBox(width: 0.4, height: 0.015, length: 0.3, chamferRadius: 0)
-            planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "gridDash")
-            planeNode.position = SCNVector3(0.125, -0.2, distFromCamera)
-            self.sceneView.scene.rootNode.addChildNode(planeNode)
-        }
+        let xPos: [Float] = [-0.20, -0.10, 0, 0.10, 0.20, -0.20, -0.10, 0, 0.10, 0.20]
+            let yPos: [Float] = [0.10, 0.10, 0.10, 0.10, 0.10, -0.10, -0.10, -0.10, -0.10, -0.10]
+            
+            for i in 0..<10 {
+                let position = SCNVector3(xPos[i], yPos[i], Float(distFromCamera))
+                addAlien(index: i, position: position)
+            }
+//        planeNode = SCNNode()
+//        if let planeNode = planeNode {
+//            planeNode.name = "Plane"
+//            planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+//            planeNode.geometry = SCNBox(width: 0.4, height: 0.015, length: 0.3, chamferRadius: 0)
+//            planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "gridDash")
+//            planeNode.position = SCNVector3(0.125, -0.2, distFromCamera)
+//            self.sceneView.scene.rootNode.addChildNode(planeNode)
+//        }
     }
     func addAlien(index: Int, position: SCNVector3) {
         let node = SCNNode()
