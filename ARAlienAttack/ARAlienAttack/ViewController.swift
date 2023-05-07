@@ -101,6 +101,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         node.geometry = sphere
         node.position = position
         node.physicsBody?.contactTestBitMask = 1
+        node.physicsBody?.collisionBitMask = 2 // Add collision bit mask so aliens can collide with each other
+
         self.sceneView.scene.rootNode.addChildNode(node)
         
         // Add floating animation
@@ -109,6 +111,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let floatSequence = SCNAction.sequence([floatUp, floatDown])
         let repeatFloating = SCNAction.repeatForever(floatSequence)
         node.runAction(repeatFloating)
+        // Set a random velocity for the aliens
+           let randomVelocityX = CGFloat.random(in: -1.0...1.0)
+           let randomVelocityY = CGFloat.random(in: -1.0...1.0)
+           let randomVelocityZ = CGFloat.random(in: -1.0...1.0)
+           node.physicsBody?.velocity = SCNVector3(randomVelocityX, randomVelocityY, randomVelocityZ)
     }
 
     
