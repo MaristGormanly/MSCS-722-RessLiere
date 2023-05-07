@@ -9,11 +9,14 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate{
     var planeNode: SCNNode?
     var modelRootB: SCNNode?
     
     @IBOutlet var sceneView: ARSCNView!
+    
+    var distFromCamera: Double = -5
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,12 +48,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     /// Add Boxes
     func addChildNode() {
-        addAlien(index: 0, position: SCNVector3(0, -0.138, -0.3))
-        addAlien(index: 1, position: SCNVector3(0.12, -0.138, -0.3))
-        addAlien(index: 2, position: SCNVector3(0.24, -0.138, -0.3))
-        addAlien(index: 3, position: SCNVector3(0.06, -0.038, -0.3))
-        addAlien(index: 4, position: SCNVector3(0.18, -0.038, -0.3))
-        addAlien(index: 5, position: SCNVector3(0.12, 0.062, -0.3))
+        addAlien(index: 0, position: SCNVector3(0, -0.138, distFromCamera))
+        addAlien(index: 1, position: SCNVector3(0.13, -0.138, distFromCamera))
+        addAlien(index: 2, position: SCNVector3(0.25, -0.138, distFromCamera))
+        addAlien(index: 3, position: SCNVector3(0.05, -0.038, distFromCamera))
+        addAlien(index: 4, position: SCNVector3(0.16, -0.038, distFromCamera))
+        addAlien(index: 5, position: SCNVector3(0.13, 0.062, distFromCamera))
         
         planeNode = SCNNode()
         if let planeNode = planeNode {
@@ -58,7 +61,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
             planeNode.geometry = SCNBox(width: 0.4, height: 0.015, length: 0.3, chamferRadius: 0)
             planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "gridDash")
-            planeNode.position = SCNVector3(0.125, -0.2, -0.28)
+            planeNode.position = SCNVector3(0.125, -0.2, distFromCamera)
             self.sceneView.scene.rootNode.addChildNode(planeNode)
         }
     }
@@ -94,6 +97,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         node.physicsBody?.contactTestBitMask = 1
         self.sceneView.scene.rootNode.addChildNode(node)
     }
+    
+    
 
 
     override func viewWillAppear(_ animated: Bool) {
@@ -114,7 +119,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        sceneView.scene.physicsWorld.contactDelegate = self
+       // addBallNode()
 
     }
     
