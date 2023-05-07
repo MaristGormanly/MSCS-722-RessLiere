@@ -125,6 +125,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             print("Failed to play explosion sound: \(error.localizedDescription)")
         }
     }
+    func playLaserSound() {
+        guard let url = Bundle.main.url(forResource: "torpedo", withExtension: "mp3") else {
+            print("Failed to find explosion.mp3")
+            return
+        }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Failed to play explosion sound: \(error.localizedDescription)")
+        }
+    }
     
 
 
@@ -173,7 +186,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let velocityInWorldSpace = laserNode.presentation.convertVector(velocityInLocalSpace, to: nil)
         laserNode.physicsBody?.velocity = velocityInWorldSpace
         laserNode.physicsBody?.applyForce(direction, asImpulse: true)
-        playExplosionSound()
+        playLaserSound()
 
     }
     //print upon collision
