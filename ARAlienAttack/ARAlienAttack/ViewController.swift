@@ -165,14 +165,24 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         spawnAliens()
     }
     func spawnAliens() {
+        let minDistance: Float = 0.03
+        var spawnedPositions: [SCNVector3] = []
+        
         for i in 0..<numberOfAliens {
-               let xPos = Float.random(in: -0.50...0.50) // Random x position between -0.20 and 0.20
-               let yPos = Float.random(in: -0.30...0.30) // Random y position between -0.10 and 0.10
-               
-               let position = SCNVector3(xPos, yPos, Float(distFromCamera))
-               addAlien(index: i, position: position)
-           }
+            var position: SCNVector3
+            
+            repeat {
+                let xPos = Float.random(in: -0.50...0.50) // Random x position between -0.20 and 0.20
+                let yPos = Float.random(in: -0.30...0.30) // Random y position between -0.10 and 0.10
+                
+                position = SCNVector3(xPos, yPos, Float(distFromCamera))
+            } while !spawnedPositions.isEmpty && spawnedPositions.contains(where: { distanceBetween($0, position) < minDistance })
+            
+            spawnedPositions.append(position)
+            addAlien(index: i, position: position)
+        }
     }
+
     func addAlien(index: Int, position: SCNVector3) {
         let node = SCNNode()
         node.name = "Node\(index)"
@@ -402,10 +412,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             print("Failed to play explosion sound: \(error.localizedDescription)")
         }
     }
+    func distanceBetween(_ pos1: SCNVector3, _ pos2: SCNVector3) -> Float {
+        let xDist = pos1.x - pos2.x
+        let yDist = pos1.y - pos2.y
+        let zDist = pos1.z - pos2.z
+        
+        return sqrt(xDist * xDist + yDist * yDist + zDist * zDist)
+    }
 
     ///////////////////////////////////////////////////////////////
     //OVERIDE and setup functions //
     ///////////////////////////////////////////////////////////////
+    ///
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        fireLaser()
 
