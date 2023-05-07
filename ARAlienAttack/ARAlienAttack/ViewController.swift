@@ -242,19 +242,47 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         node.physicsBody?.categoryBitMask = 1
         node.physicsBody?.collisionBitMask = 1
         node.physicsBody?.contactTestBitMask = 1
+        // Set a lower restitution value for less bounciness
+        node.physicsBody?.restitution = 0.00000000000001
     }
 
     func randomWanderAnimation() -> SCNAction {
-        let xPos = CGFloat.random(in: -0.50...0.50)
-        let yPos = CGFloat.random(in: -0.30...0.30)
         let moveDuration = TimeInterval.random(in: 1...5)
         
-        let moveAction = SCNAction.moveBy(x: xPos, y: yPos, z: 0, duration: moveDuration)
-        let reverseMoveAction = SCNAction.moveBy(x: -xPos, y: -yPos, z: 0, duration: moveDuration)
+        let moveAction: SCNAction
+        if let camera = self.sceneView.pointOfView {
+            // Calculate a random position within the camera's field of view
+            let position = SCNVector3(
+                x: Float.random(in: -0.5...0.5),
+                y: Float.random(in: -0.5...0.5),
+                z: Float(distFromCamera)
+            )
+            
+            // Check if the position is within the camera's frustum
+            let projectedPosition = sceneView.projectPoint(position)
+            let viewport = sceneView.bounds
+            let isInFrustum = viewport.contains(CGPoint(x: CGFloat(projectedPosition.x), y: CGFloat(projectedPosition.y)))
+            if isInFrustum {
+                // Apply move action only if the position is within the camera's view
+                moveAction = SCNAction.move(to: position, duration: moveDuration)
+            } else {
+                // If the position is outside of the camera's view, create a new move action
+                moveAction = randomWanderAnimation()
+            }
+        } else {
+            // If the camera is not available, create a move action to a random position
+            let xPos = CGFloat.random(in: -0.70...0.70)
+            let yPos = CGFloat.random(in: -0.70...0.70)
+            let position = SCNVector3(xPos, yPos, 0)
+            moveAction = SCNAction.move(to: position, duration: moveDuration)
+        }
+        
+        let reverseMoveAction = moveAction.reversed()
         let sequence = SCNAction.sequence([moveAction, reverseMoveAction])
         let repeatSequence = SCNAction.repeatForever(sequence)
         return repeatSequence
     }
+
 
     ///////////////////////////////////////////////////////////////////
     //     END GAME INIT               /
