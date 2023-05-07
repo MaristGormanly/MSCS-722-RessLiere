@@ -38,6 +38,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
         view.addSubview(shotsRemainingLabel)
         view.addSubview(aliensRemainingLabel)
+        shotsRemainingLabel.font = UIFont(name: "Copperplate", size: 18)
+        aliensRemainingLabel.font = UIFont(name: "Copperplate", size: 18)
 
         NSLayoutConstraint.activate([
             shotsRemainingLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
