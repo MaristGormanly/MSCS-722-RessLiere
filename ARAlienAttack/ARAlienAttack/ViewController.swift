@@ -91,6 +91,41 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         ])
         updateShotsRemainingLabel()
     }
+    
+    func returnToMainMenu() {
+        aliensDestroyed = 0
+        shotsRemaining = numberOfAliens
+        updateShotsRemainingLabel()
+
+        // Remove all existing alien nodes
+        sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
+            if node.name?.hasPrefix("Node") == true {
+                node.removeFromParentNode()
+            }
+        }
+        
+        // Remove shotsRemainingLabel
+        shotsRemainingLabel.removeFromSuperview()
+
+        // Show main menu
+        setupMenuScreen()
+    }
+
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Restart", style: .default) { _ in
+            self.restartGame()
+        }
+        let mainMenuAction = UIAlertAction(title: "Main Menu", style: .default) { _ in
+            self.returnToMainMenu()
+        }
+        alertController.addAction(restartAction)
+        alertController.addAction(mainMenuAction)
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////
     //     GAME INIT               /
     //////////////////////////////////////////////////////////////////
@@ -197,6 +232,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         laserNode.physicsBody?.velocity = velocityInWorldSpace
         laserNode.physicsBody?.applyForce(direction, asImpulse: true)
         playLaserSound()
+        checkGameOver()
+
     }
     lazy var shotsRemainingLabel: UILabel = {
         let label = UILabel()
@@ -238,19 +275,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             showAlert(title: "Success!", message: "All robots have been destroyed!")
         } else if shotsRemaining == 0 && aliensDestroyed < numberOfAliens {
             showAlert(title: "Game Over", message: "You couldn't destroy all the robots.")
+            
         }
     }
 
-    func showAlert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let restartAction = UIAlertAction(title: "Restart", style: .default) { _ in
-            self.restartGame()
-        }
-        alertController.addAction(restartAction)
-        DispatchQueue.main.async {
-            self.present(alertController, animated: true, completion: nil)
-        }
-    }
     func restartGame() {
         aliensDestroyed = 0
         shotsRemaining = numberOfAliens
