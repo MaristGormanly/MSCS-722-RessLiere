@@ -126,12 +126,12 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         sceneView.session.pause()
     }
     func fireLaser() {
-        //Handle the shooting
+        // Handle the shooting
         guard let frame = sceneView.session.currentFrame else {
             return
         }
         let camMatrix = SCNMatrix4(frame.camera.transform)
-        let direction = SCNVector3Make(-camMatrix.m31 * 5.0, -camMatrix.m32 * 10.0, -camMatrix.m33 * 5.0)
+        let direction = SCNVector3Make(-camMatrix.m31 * 5.0, -camMatrix.m32 * 5.0, -camMatrix.m33 * 5.0) // Reduced Y component force
         let position = SCNVector3Make(camMatrix.m41, camMatrix.m42, camMatrix.m43)
         
         // Create a SCNBox for laser
@@ -155,6 +155,7 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         laserNode.physicsBody?.velocity = velocityInWorldSpace
         laserNode.physicsBody?.applyForce(direction, asImpulse: true)
     }
+
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        fireLaser()
