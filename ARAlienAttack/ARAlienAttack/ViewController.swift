@@ -174,7 +174,11 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         playExplosionSound()
 
     }
+    //print upon collision
+    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact){
+        print("Failed to find explosion.mp3")
 
+    }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        fireLaser()
