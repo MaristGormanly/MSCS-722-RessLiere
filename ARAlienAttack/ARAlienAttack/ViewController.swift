@@ -74,9 +74,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     func addAlien(index: Int, position: SCNVector3) {
         let node = SCNNode()
         node.name = "Node\(index)"
-        node.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        node.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil) // Change to .dynamic
         let sphere = SCNSphere(radius: 0.05) // Adjust the radius as needed
-        
+            
         // Create material for the front face
         let frontMaterial = SCNMaterial()
         frontMaterial.diffuse.contents = UIImage(named: "robot")
@@ -87,7 +87,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         // Create material for the other faces
         let otherMaterial = SCNMaterial()
         otherMaterial.diffuse.contents = UIColor.black
-        
+            
         // Assign materials to the SCNSphere
         sphere.materials = [
             frontMaterial,    // front face
@@ -97,25 +97,26 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             otherMaterial,    // top face
             otherMaterial     // bottom face
         ]
-        
+            
         node.geometry = sphere
         node.position = position
         node.physicsBody?.contactTestBitMask = 1
         node.physicsBody?.collisionBitMask = 2 // Add collision bit mask so aliens can collide with each other
 
         self.sceneView.scene.rootNode.addChildNode(node)
-        
+            
         // Add floating animation
         let floatUp = SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 1)
         let floatDown = SCNAction.moveBy(x: 0, y: -0.05, z: 0, duration: 1)
         let floatSequence = SCNAction.sequence([floatUp, floatDown])
         let repeatFloating = SCNAction.repeatForever(floatSequence)
         node.runAction(repeatFloating)
+        
         // Set a random velocity for the aliens
-           let randomVelocityX = CGFloat.random(in: -1.0...1.0)
-           let randomVelocityY = CGFloat.random(in: -1.0...1.0)
-           let randomVelocityZ = CGFloat.random(in: -1.0...1.0)
-           node.physicsBody?.velocity = SCNVector3(randomVelocityX, randomVelocityY, randomVelocityZ)
+        let randomVelocityX = CGFloat.random(in: -1.0...1.0)
+        let randomVelocityY = CGFloat.random(in: -1.0...1.0)
+        let randomVelocityZ = CGFloat.random(in: -1.0...1.0)
+        node.physicsBody?.velocity = SCNVector3(randomVelocityX, randomVelocityY, randomVelocityZ)
     }
 
     
