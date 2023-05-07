@@ -122,6 +122,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         shotsRemaining = numberOfAliens
         updateShotsRemainingLabel()
 
+        // Reset aliens remaining and hide the label
+        updateAliensRemainingLabel()
+        aliensRemainingLabel.removeFromSuperview()
+
         // Remove all existing alien nodes
         sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
             if node.name?.hasPrefix("Node") == true {
@@ -135,6 +139,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         // Show main menu
         setupMenuScreen()
     }
+
 
     func showAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
