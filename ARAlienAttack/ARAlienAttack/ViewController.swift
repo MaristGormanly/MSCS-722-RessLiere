@@ -23,11 +23,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     let numberOfAliens = 10
     var shotsRemaining: Int = 0
     var aliensDestroyed = 0
-    var minXPos: Float = -0.5
-    var maxXPos: Float = 0.5
-    var minYPos: Float = -0.3
-    var maxYPos: Float = 0.3
-
 
 
 
@@ -182,7 +177,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let node = SCNNode()
         node.name = "Node\(index)"
         node.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-        let sphere = SCNSphere(radius: 0.08) // Adjust the radius as needed
+        let sphere = SCNSphere(radius: 0.1) // Adjust the radius as needed
         
         // Create material for the front face
         let frontMaterial = SCNMaterial()
@@ -220,12 +215,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let floatSequence = SCNAction.sequence([floatUp, floatDown])
         let repeatFloating = SCNAction.repeatForever(floatSequence)
         node.runAction(repeatFloating)
-        let animation = randomWanderAnimation(for: node, minXPos: -10, maxXPos: 10, minYPos: -5, maxYPos: 5)
-
-        node.runAction(animation)
-
-
-
+        
+        node.runAction(randomWanderAnimation())
 
     }
     
@@ -235,34 +226,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         node.physicsBody?.categoryBitMask = 1
         node.physicsBody?.collisionBitMask = 1
         node.physicsBody?.contactTestBitMask = 1
-        //make less bouncy
-        node.physicsBody?.restitution = 0.005
-
     }
 
-    func randomWanderAnimation(for node: SCNNode, minXPos: CGFloat, maxXPos: CGFloat, minYPos: CGFloat, maxYPos: CGFloat) -> SCNAction {
-        let xPos = CGFloat.random(in: CGFloat(minXPos)...CGFloat(maxXPos))
-        let yPos = CGFloat.random(in: CGFloat(minYPos)...CGFloat(maxYPos))
+    func randomWanderAnimation() -> SCNAction {
+        let xPos = CGFloat.random(in: -0.50...0.50)
+        let yPos = CGFloat.random(in: -0.30...0.30)
         let moveDuration = TimeInterval.random(in: 1...5)
-
-        let currentX = CGFloat(node.position.x)
-        let currentY = CGFloat(node.position.y)
-
-        let newX = currentX + xPos
-        let newY = currentY + yPos
-
-        let clampedX = max(min(newX, CGFloat(maxXPos)), CGFloat(minXPos))
-        let clampedY = max(min(newY, CGFloat(maxYPos)), CGFloat(minYPos))
-
-        let moveAction = SCNAction.move(to: SCNVector3(Float(clampedX), Float(clampedY), node.position.z), duration: moveDuration)
-        let reverseMoveAction = SCNAction.move(to: SCNVector3(Float(currentX), Float(currentY), node.position.z), duration: moveDuration)
+        
+        let moveAction = SCNAction.moveBy(x: xPos, y: yPos, z: 0, duration: moveDuration)
+        let reverseMoveAction = SCNAction.moveBy(x: -xPos, y: -yPos, z: 0, duration: moveDuration)
         let sequence = SCNAction.sequence([moveAction, reverseMoveAction])
         let repeatSequence = SCNAction.repeatForever(sequence)
         return repeatSequence
     }
-
-
-
 
     ///////////////////////////////////////////////////////////////////
     //     END GAME INIT               /
@@ -378,7 +354,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
     func restartGame() {
         aliensDestroyed = 0
-        shotsRemaining = numberOfAliens * 2
+        shotsRemaining = numberOfAliens
         updateShotsRemainingLabel()
         
         // Remove all existing alien nodes
