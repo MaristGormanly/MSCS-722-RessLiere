@@ -69,7 +69,7 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         let node = SCNNode()
         node.name = "Node\(index)"
         node.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-        let box = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+        let sphere = SCNSphere(radius: 0.05) // Adjust the radius as needed
         
         // Create material for the front face
         let frontMaterial = SCNMaterial()
@@ -77,13 +77,13 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         frontMaterial.diffuse.wrapS = .clampToBorder
         frontMaterial.diffuse.wrapT = .clampToBorder
         frontMaterial.diffuse.borderColor = UIColor.black // or NSColor.black on macOS
-        
+
         // Create material for the other faces
         let otherMaterial = SCNMaterial()
         otherMaterial.diffuse.contents = UIColor.black
         
-        // Assign materials to the SCNBox
-        box.materials = [
+        // Assign materials to the SCNSphere
+        sphere.materials = [
             frontMaterial,    // front face
             otherMaterial,    // right face
             otherMaterial,    // back face
@@ -92,18 +92,19 @@ class ViewController: UIViewController, ARSCNViewDelegate{
             otherMaterial     // bottom face
         ]
         
-        node.geometry = box
+        node.geometry = sphere
         node.position = position
         node.physicsBody?.contactTestBitMask = 1
         self.sceneView.scene.rootNode.addChildNode(node)
         
         // Add floating animation
-            let floatUp = SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 1)
-            let floatDown = SCNAction.moveBy(x: 0, y: -0.05, z: 0, duration: 1)
-            let floatSequence = SCNAction.sequence([floatUp, floatDown])
-            let repeatFloating = SCNAction.repeatForever(floatSequence)
-            node.runAction(repeatFloating)
+        let floatUp = SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 1)
+        let floatDown = SCNAction.moveBy(x: 0, y: -0.05, z: 0, duration: 1)
+        let floatSequence = SCNAction.sequence([floatUp, floatDown])
+        let repeatFloating = SCNAction.repeatForever(floatSequence)
+        node.runAction(repeatFloating)
     }
+
     
     
 
