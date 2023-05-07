@@ -113,17 +113,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
 
-    // MARK: - ARSCNViewDelegate
-    
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        sceneView.scene.physicsWorld.contactDelegate = self
+
     }
-*/
     
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) { }
+
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
         
