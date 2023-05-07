@@ -45,13 +45,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     /// Add Boxes
     func addChildNode() {
-     
+        addBoxNodes(index: 0, position: SCNVector3(0, -0.138, -0.3))
+        addBoxNodes(index: 1, position: SCNVector3(0.12, -0.138, -0.3))
+        addBoxNodes(index: 2, position: SCNVector3(0.24, -0.138, -0.3))
+        addBoxNodes(index: 3, position: SCNVector3(0.06, -0.038, -0.3))
+        addBoxNodes(index: 4, position: SCNVector3(0.18, -0.038, -0.3))
+        addBoxNodes(index: 5, position: SCNVector3(0.12, 0.062, -0.3))
+        
         planeNode = SCNNode()
         if let planeNode = planeNode {
             planeNode.name = "Plane"
             planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
             planeNode.geometry = SCNBox(width: 0.4, height: 0.015, length: 0.3, chamferRadius: 0)
-            planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "planeImage")
+            planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "gridDash")
             planeNode.position = SCNVector3(0.125, -0.2, -0.28)
             self.sceneView.scene.rootNode.addChildNode(planeNode)
         }
