@@ -27,6 +27,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupMenuScreen()
+
         shotsRemaining = numberOfAliens
         initialSetup()
 
@@ -63,6 +65,35 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         }
         addChildNode()
     }
+    func setupMenuScreen() {
+        let playButton = UIButton(type: .system)
+        playButton.translatesAutoresizingMaskIntoConstraints = false
+        playButton.setTitle("Play Now", for: .normal)
+        playButton.titleLabel?.font = UIFont.systemFont(ofSize: 24)
+        playButton.addTarget(self, action: #selector(playButtonTapped), for: .touchUpInside)
+        view.addSubview(playButton)
+
+        NSLayoutConstraint.activate([
+            playButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            playButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    @objc func playButtonTapped(_ sender: UIButton) {
+        sender.removeFromSuperview() // Remove the button from the view
+        initialSetup() // Set up the game
+
+        view.addSubview(shotsRemainingLabel)
+        NSLayoutConstraint.activate([
+            shotsRemainingLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
+            shotsRemainingLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
+        ])
+        updateShotsRemainingLabel()
+    }
+
+    
+    ///
+    ///GAME LOGIC
+    ///
     /// Add Boxes
     func addChildNode() {
         for i in 0..<numberOfAliens {
