@@ -54,13 +54,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     /// Add Boxes
     func addChildNode() {
-        let xPos: [Float] = [-0.20, -0.10, 0, 0.10, 0.20, -0.20, -0.10, 0, 0.10, 0.20]
-            let yPos: [Float] = [0.10, 0.10, 0.10, 0.10, 0.10, -0.10, -0.10, -0.10, -0.10, -0.10]
-            
-            for i in 0..<10 {
-                let position = SCNVector3(xPos[i], yPos[i], Float(distFromCamera))
-                addAlien(index: i, position: position)
-            }
+        for i in 0..<10 {
+               let xPos = Float.random(in: -0.20...0.20) // Random x position between -0.20 and 0.20
+               let yPos = Float.random(in: -0.10...0.10) // Random y position between -0.10 and 0.10
+               
+               let position = SCNVector3(xPos, yPos, Float(distFromCamera))
+               addAlien(index: i, position: position)
+           }
 //        planeNode = SCNNode()
 //        if let planeNode = planeNode {
 //            planeNode.name = "Plane"
