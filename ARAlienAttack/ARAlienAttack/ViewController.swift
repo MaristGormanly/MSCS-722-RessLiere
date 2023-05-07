@@ -24,7 +24,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     var shotsRemaining: Int = 0
 
 
-    
+    ///////////////////////////////////////////////////////////////////
+    //     SETUP FUNCTIONS          /
+    //////////////////////////////////////////////////////////////////
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMenuScreen()
@@ -52,19 +54,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         sceneView.scene = scene
         sceneView.scene.physicsWorld.contactDelegate = self
 
-        
-        addContainer()
-        
     }
-    func addContainer() {
-        guard let backboardScene = SCNScene(named: "art.scnassets/scene.scn") else {
-            return
-        }
-        guard let backBoardNode = backboardScene.rootNode.childNode(withName: "container", recursively: true) else {
-            return
-        }
-        addChildNode()
-    }
+    ///////////////////////////////////////////////////////////////////
+    //     END SETUP             /
+    //////////////////////////////////////////////////////////////////
+   
+    
+    ///////////////////////////////////////////////////////////////
+    //MAIN MENU AND GAME STARTUP//
+    ///////////////////////////////////////////////////////////////
+    
     func setupMenuScreen() {
         let playButton = UIButton(type: .system)
         playButton.translatesAutoresizingMaskIntoConstraints = false
@@ -80,7 +79,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     @objc func playButtonTapped(_ sender: UIButton) {
         sender.removeFromSuperview() // Remove the button from the view
-        initialSetup() // Set up the game
+            //starts adding game elements
+        startGame()
 
         view.addSubview(shotsRemainingLabel)
         NSLayoutConstraint.activate([
@@ -89,13 +89,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         ])
         updateShotsRemainingLabel()
     }
-
-    
-    ///
-    ///GAME LOGIC
-    ///
-    /// Add Boxes
-    func addChildNode() {
+    ///////////////////////////////////////////////////////////////////
+    //     GAME INIT               /
+    //////////////////////////////////////////////////////////////////
+    func startGame() {
+        guard let backboardScene = SCNScene(named: "art.scnassets/scene.scn") else {
+            return
+        }
+        guard let backBoardNode = backboardScene.rootNode.childNode(withName: "container", recursively: true) else {
+            return
+        }
+        spawnAliens()
+    }
+    func spawnAliens() {
         for i in 0..<numberOfAliens {
                let xPos = Float.random(in: -0.50...0.50) // Random x position between -0.20 and 0.20
                let yPos = Float.random(in: -0.30...0.30) // Random y position between -0.10 and 0.10
@@ -103,15 +109,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
                let position = SCNVector3(xPos, yPos, Float(distFromCamera))
                addAlien(index: i, position: position)
            }
-//        planeNode = SCNNode()
-//        if let planeNode = planeNode {
-//            planeNode.name = "Plane"
-//            planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-//            planeNode.geometry = SCNBox(width: 0.4, height: 0.015, length: 0.3, chamferRadius: 0)
-//            planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "gridDash")
-//            planeNode.position = SCNVector3(0.125, -0.2, distFromCamera)
-//            self.sceneView.scene.rootNode.addChildNode(planeNode)
-//        }
     }
     func addAlien(index: Int, position: SCNVector3) {
         let node = SCNNode()
@@ -153,52 +150,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         node.runAction(repeatFloating)
     }
 
+    ///////////////////////////////////////////////////////////////////
+    //     END GAME INIT               /
+    //////////////////////////////////////////////////////////////////
     
-    func playExplosionSound() {
-        guard let url = Bundle.main.url(forResource: "explosion", withExtension: "mp3") else {
-            print("Failed to find explosion.mp3")
-            return
-        }
-
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.play()
-        } catch {
-            print("Failed to play explosion sound: \(error.localizedDescription)")
-        }
-    }
-    func playLaserSound() {
-        guard let url = Bundle.main.url(forResource: "torpedo", withExtension: "mp3") else {
-            print("Failed to find explosion.mp3")
-            return
-        }
-
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.play()
-        } catch {
-            print("Failed to play explosion sound: \(error.localizedDescription)")
-        }
-    }
     
-
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Create a session configuration
-        let configuration = ARWorldTrackingConfiguration()
-
-        // Run the view's session
-        sceneView.session.run(configuration)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        // Pause the view's session
-        sceneView.session.pause()
-    }
+    ///////////////////////////////////////////////////////////////////
+    //     GAME LOGIC            /
+    //////////////////////////////////////////////////////////////////
     func fireLaser() {
         if shotsRemaining <= 0 {
                return
@@ -248,9 +207,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     func updateShotsRemainingLabel() {
         shotsRemainingLabel.text = "Shots Remaining: \(shotsRemaining)"
     }
- 
-
-    //print upon collision
+    
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         let firstNode = contact.nodeA
         let secondNode = contact.nodeB
@@ -272,11 +229,65 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
         }
     }
+    
+ 
+    ///////////////////////////////////////////////////////////////////
+    //     endGAME LOGIC            /
+    //////////////////////////////////////////////////////////////////
+  
+  
+    /////////////////////////////////////////////////////////////////
+    //AUDIO HANDLERS          ////
+    ///////////////////////////////////////////////////////////////
+    func playExplosionSound() {
+        guard let url = Bundle.main.url(forResource: "explosion", withExtension: "mp3") else {
+            print("Failed to find explosion.mp3")
+            return
+        }
 
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Failed to play explosion sound: \(error.localizedDescription)")
+        }
+    }
+    func playLaserSound() {
+        guard let url = Bundle.main.url(forResource: "torpedo", withExtension: "mp3") else {
+            print("Failed to find explosion.mp3")
+            return
+        }
 
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Failed to play explosion sound: \(error.localizedDescription)")
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////
+    //OVERIDE and setup functions //
+    ///////////////////////////////////////////////////////////////
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        fireLaser()
 
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Create a session configuration
+        let configuration = ARWorldTrackingConfiguration()
+
+        // Run the view's session
+        sceneView.session.run(configuration)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Pause the view's session
+        sceneView.session.pause()
     }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) { }
