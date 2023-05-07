@@ -13,6 +13,10 @@
 		BAC360892A06C17C0012E2F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAC360872A06C17C0012E2F5 /* Main.storyboard */; };
 		BAC3608B2A06C17F0012E2F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAC3608A2A06C17F0012E2F5 /* Assets.xcassets */; };
 		BAC3608E2A06C17F0012E2F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAC3608C2A06C17F0012E2F5 /* LaunchScreen.storyboard */; };
+		BAC360992A0768A30012E2F5 /* game-over.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAC360952A0768A30012E2F5 /* game-over.mp3 */; };
+		BAC3609A2A0768A30012E2F5 /* explosion.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAC360962A0768A30012E2F5 /* explosion.mp3 */; };
+		BAC3609B2A0768A30012E2F5 /* torpedo.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAC360972A0768A30012E2F5 /* torpedo.mp3 */; };
+		BAC3609C2A0768A30012E2F5 /* hacking-dimension.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BAC360982A0768A30012E2F5 /* hacking-dimension.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +27,10 @@
 		BAC360882A06C17C0012E2F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BAC3608A2A06C17F0012E2F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BAC3608D2A06C17F0012E2F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BAC360952A0768A30012E2F5 /* game-over.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "game-over.mp3"; sourceTree = "<group>"; };
+		BAC360962A0768A30012E2F5 /* explosion.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = explosion.mp3; sourceTree = "<group>"; };
+		BAC360972A0768A30012E2F5 /* torpedo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = torpedo.mp3; sourceTree = "<group>"; };
+		BAC360982A0768A30012E2F5 /* hacking-dimension.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "hacking-dimension.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +63,7 @@
 		BAC360802A06C17B0012E2F5 /* ARAlienAttack */ = {
 			isa = PBXGroup;
 			children = (
+				BAC360942A0768640012E2F5 /* Sounds */,
 				BAC360812A06C17B0012E2F5 /* AppDelegate.swift */,
 				BAC360832A06C17B0012E2F5 /* art.scnassets */,
 				BAC360852A06C17B0012E2F5 /* ViewController.swift */,
@@ -63,6 +72,17 @@
 				BAC3608C2A06C17F0012E2F5 /* LaunchScreen.storyboard */,
 			);
 			path = ARAlienAttack;
+			sourceTree = "<group>";
+		};
+		BAC360942A0768640012E2F5 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				BAC360962A0768A30012E2F5 /* explosion.mp3 */,
+				BAC360952A0768A30012E2F5 /* game-over.mp3 */,
+				BAC360982A0768A30012E2F5 /* hacking-dimension.mp3 */,
+				BAC360972A0768A30012E2F5 /* torpedo.mp3 */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -123,7 +143,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAC3609B2A0768A30012E2F5 /* torpedo.mp3 in Resources */,
+				BAC3609A2A0768A30012E2F5 /* explosion.mp3 in Resources */,
 				BAC360842A06C17B0012E2F5 /* art.scnassets in Resources */,
+				BAC3609C2A0768A30012E2F5 /* hacking-dimension.mp3 in Resources */,
+				BAC360992A0768A30012E2F5 /* game-over.mp3 in Resources */,
 				BAC3608E2A06C17F0012E2F5 /* LaunchScreen.storyboard in Resources */,
 				BAC3608B2A06C17F0012E2F5 /* Assets.xcassets in Resources */,
 				BAC360892A06C17C0012E2F5 /* Main.storyboard in Resources */,

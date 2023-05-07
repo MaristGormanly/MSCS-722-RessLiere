@@ -8,12 +8,16 @@
 import UIKit
 import SceneKit
 import ARKit
+import AVFoundation
+
 
 class ViewController: UIViewController, ARSCNViewDelegate{
     var planeNode: SCNNode?
     var modelRootB: SCNNode?
     
     @IBOutlet var sceneView: ARSCNView!
+    var audioPlayer: AVAudioPlayer?
+
     
     var distFromCamera: Double = -1.5
 
@@ -106,6 +110,19 @@ class ViewController: UIViewController, ARSCNViewDelegate{
     }
 
     
+    func playExplosionSound() {
+        guard let url = Bundle.main.url(forResource: "explosion", withExtension: "mp3") else {
+            print("Failed to find explosion.mp3")
+            return
+        }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Failed to play explosion sound: \(error.localizedDescription)")
+        }
+    }
     
 
 
@@ -135,7 +152,7 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         let position = SCNVector3Make(camMatrix.m41, camMatrix.m42, camMatrix.m43)
         
         // Create a SCNBox for laser
-        let laser = SCNBox(width: 0.02, height: 0.02, length: 0.2, chamferRadius: 0.01)
+        let laser = SCNBox(width: 0.05, height: 0.05, length: 0.2, chamferRadius: 0.05)
         laser.firstMaterial?.diffuse.contents = UIImage(named: "greenTexture")
         laser.firstMaterial?.emission.contents = UIImage(named: "greenTexture")
         
@@ -154,6 +171,8 @@ class ViewController: UIViewController, ARSCNViewDelegate{
         let velocityInWorldSpace = laserNode.presentation.convertVector(velocityInLocalSpace, to: nil)
         laserNode.physicsBody?.velocity = velocityInWorldSpace
         laserNode.physicsBody?.applyForce(direction, asImpulse: true)
+        playExplosionSound()
+
     }
 
 
