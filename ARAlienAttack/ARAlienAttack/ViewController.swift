@@ -67,10 +67,23 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     ///////////////////////////////////////////////////////////////
     
     func setupMenuScreen() {
-        let playButton = UIButton(type: .system)
+        let playButton = UIButton(type: .custom)
         playButton.translatesAutoresizingMaskIntoConstraints = false
-        playButton.setTitle("Play Now", for: .normal)
-        playButton.titleLabel?.font = UIFont.systemFont(ofSize: 24)
+        
+        if let originalImage = UIImage(named: "start-game") { // Replace "start-game" with the name of your image file
+            let newSize = CGSize(width: originalImage.size.width * 0.5, height: originalImage.size.height * 0.5)
+            UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+            originalImage.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
+            let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            if let resizedImage = resizedImage {
+                playButton.setImage(resizedImage, for: .normal)
+            } else {
+                playButton.setImage(originalImage, for: .normal)
+            }
+        }
+        
         playButton.addTarget(self, action: #selector(playButtonTapped), for: .touchUpInside)
         view.addSubview(playButton)
 
@@ -79,6 +92,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             playButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
+
+
     @objc func playButtonTapped(_ sender: UIButton) {
         sender.removeFromSuperview() // Remove the button from the view
             //starts adding game elements
@@ -180,6 +195,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         setupAlienPhysics(node: node)
 
         self.sceneView.scene.rootNode.addChildNode(node)
+        
+
         
         // Add floating animation
         let floatUp = SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 1)
