@@ -20,19 +20,30 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
     
     var distFromCamera: Double = -1.5
+    let numberOfAliens = 10
+    var shotsRemaining: Int = 0
+
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        shotsRemaining = numberOfAliens
         initialSetup()
-      
+
+        view.addSubview(shotsRemainingLabel)
+        NSLayoutConstraint.activate([
+            shotsRemainingLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
+            shotsRemainingLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
+        ])
+        updateShotsRemainingLabel()
     }
+
     
     func initialSetup() {
         // Set the view's delegate
         sceneView.delegate = self
         // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+        sceneView.showsStatistics = false
         // Create a new scene
         let scene = SCNScene(named: "art.scnassets/scene.scn")!
         // Set the scene to the view
@@ -54,7 +65,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     /// Add Boxes
     func addChildNode() {
-        for i in 0..<10 {
+        for i in 0..<numberOfAliens {
                let xPos = Float.random(in: -0.50...0.50) // Random x position between -0.20 and 0.20
                let yPos = Float.random(in: -0.30...0.30) // Random y position between -0.10 and 0.10
                
@@ -158,6 +169,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         sceneView.session.pause()
     }
     func fireLaser() {
+        if shotsRemaining <= 0 {
+               return
+           }
+           
+           shotsRemaining -= 1
+           updateShotsRemainingLabel()
+           
         // Handle the shooting
         guard let frame = sceneView.session.currentFrame else {
             return
@@ -187,8 +205,20 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         laserNode.physicsBody?.velocity = velocityInWorldSpace
         laserNode.physicsBody?.applyForce(direction, asImpulse: true)
         playLaserSound()
-
     }
+    lazy var shotsRemainingLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.textAlignment = .left
+        return label
+    }()
+
+    func updateShotsRemainingLabel() {
+        shotsRemainingLabel.text = "Shots Remaining: \(shotsRemaining)"
+    }
+ 
+
     //print upon collision
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         let firstNode = contact.nodeA
