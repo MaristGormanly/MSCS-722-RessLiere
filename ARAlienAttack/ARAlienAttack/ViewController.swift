@@ -106,6 +106,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             modelRootB.physicsBody?.applyForce(adjustedDirection, asImpulse: true)
         }
     }
+<<<<<<< HEAD
 
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
         if contact.nodeA.name == "Node0" || contact.nodeB.name == "Node0" {
@@ -113,6 +114,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         }
         // Add any other collision handling code here
     }
+=======
+    
+
+>>>>>>> parent of 6a74366... fixed sounds so firing is using laser
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -127,6 +132,64 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         sceneView.session.pause()
     }
+<<<<<<< HEAD
 }
+=======
+    func fireLaser() {
+        // Handle the shooting
+        guard let frame = sceneView.session.currentFrame else {
+            return
+        }
+        let camMatrix = SCNMatrix4(frame.camera.transform)
+        let direction = SCNVector3Make(-camMatrix.m31 * 5.0, -camMatrix.m32 * 5.0, -camMatrix.m33 * 5.0) // Reduced Y component force
+        let position = SCNVector3Make(camMatrix.m41, camMatrix.m42, camMatrix.m43)
+        
+        // Create a SCNBox for laser
+        let laser = SCNBox(width: 0.05, height: 0.05, length: 0.2, chamferRadius: 0.05)
+        laser.firstMaterial?.diffuse.contents = UIImage(named: "greenTexture")
+        laser.firstMaterial?.emission.contents = UIImage(named: "greenTexture")
+        
+        // Create laser node using laser SCNBox
+        let laserNode = SCNNode(geometry: laser)
+        laserNode.name = "laser"
+        laserNode.position = position
+        laserNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+        laserNode.physicsBody?.categoryBitMask = 3
+        laserNode.physicsBody?.contactTestBitMask = 1
+        sceneView.scene.rootNode.addChildNode(laserNode)
+        laserNode.runAction(SCNAction.sequence([SCNAction.wait(duration: 10.0), SCNAction.removeFromParentNode()]))
+        
+        // Calculate velocity add apply force to laser
+        let velocityInLocalSpace = SCNVector3(0, 0, -0.15)
+        let velocityInWorldSpace = laserNode.presentation.convertVector(velocityInLocalSpace, to: nil)
+        laserNode.physicsBody?.velocity = velocityInWorldSpace
+        laserNode.physicsBody?.applyForce(direction, asImpulse: true)
+        playExplosionSound()
+
+    }
+    //print upon collision
+    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
+        let firstNode = contact.nodeA
+        let secondNode = contact.nodeB
+        
+        var alienNode: SCNNode?
+        var laserNode: SCNNode?
+        
+        if firstNode.name == "laser" && secondNode.name?.hasPrefix("Node") == true {
+            alienNode = secondNode
+            laserNode = firstNode
+        } else if secondNode.name == "laser" && firstNode.name?.hasPrefix("Node") == true {
+            alienNode = firstNode
+            laserNode = secondNode
+        }
+        
+        if let alienNode = alienNode {
+            print("Alien hit: \(alienNode.name ?? "Unknown")")
+            alienNode.removeFromParentNode() // Remove the alien node from the scene
+            laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
+        }
+    }
+
+>>>>>>> parent of 6a74366... fixed sounds so firing is using laser
 
 
