@@ -1,13 +1,15 @@
+//
+//  ViewController.swift
+//  ARAlienAttack
+//
+//  Created by Kyle Ress-Liere on 5/6/23.
+//
+
 import UIKit
 import SceneKit
 import ARKit
 import AVFoundation
 
-extension SCNVector3 {
-    func multipliedBy(scalar: Float) -> SCNVector3 {
-        return SCNVector3(x * scalar, y * scalar, z * scalar)
-    }
-}
 
 class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
     var planeNode: SCNNode?
@@ -53,19 +55,28 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     /// Add Boxes
     func addChildNode() {
         for i in 0..<10 {
-               let xPos = Float.random(in: -0.20...0.20) // Random x position between -0.20 and 0.20
-               let yPos = Float.random(in: -0.10...0.10) // Random y position between -0.10 and 0.10
+               let xPos = Float.random(in: -0.50...0.50) // Random x position between -0.20 and 0.20
+               let yPos = Float.random(in: -0.30...0.30) // Random y position between -0.10 and 0.10
                
                let position = SCNVector3(xPos, yPos, Float(distFromCamera))
                addAlien(index: i, position: position)
            }
+//        planeNode = SCNNode()
+//        if let planeNode = planeNode {
+//            planeNode.name = "Plane"
+//            planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+//            planeNode.geometry = SCNBox(width: 0.4, height: 0.015, length: 0.3, chamferRadius: 0)
+//            planeNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "gridDash")
+//            planeNode.position = SCNVector3(0.125, -0.2, distFromCamera)
+//            self.sceneView.scene.rootNode.addChildNode(planeNode)
+//        }
     }
     func addAlien(index: Int, position: SCNVector3) {
         let node = SCNNode()
         node.name = "Node\(index)"
-        node.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil) // Change to .dynamic
-        let sphere = SCNSphere(radius: 0.05) // Adjust the radius as needed
-            
+        node.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        let sphere = SCNSphere(radius: 0.065) // Adjust the radius as needed
+        
         // Create material for the front face
         let frontMaterial = SCNMaterial()
         frontMaterial.diffuse.contents = UIImage(named: "robot")
@@ -76,7 +87,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         // Create material for the other faces
         let otherMaterial = SCNMaterial()
         otherMaterial.diffuse.contents = UIColor.black
-            
+        
         // Assign materials to the SCNSphere
         sphere.materials = [
             frontMaterial,    // front face
@@ -86,55 +97,66 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             otherMaterial,    // top face
             otherMaterial     // bottom face
         ]
-            
+        
         node.geometry = sphere
         node.position = position
         node.physicsBody?.contactTestBitMask = 1
-        node.physicsBody?.collisionBitMask = 2 // Add collision bit mask so aliens can collide witheach other
-        sceneView.scene.rootNode.addChildNode(node)
-        }
-    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        guard let pointOfView = sceneView.pointOfView else { return }
-        let transform = pointOfView.transform
-        let orientation = SCNVector3(-transform.m31, -transform.m32, -transform.m33)
-        let location = SCNVector3(transform.m41, transform.m42, transform.m43)
-        let currentPositionOfCamera = orientation + location
+        self.sceneView.scene.rootNode.addChildNode(node)
         
-        if let modelRootB = modelRootB {
-            let direction = currentPositionOfCamera - modelRootB.position
-            let adjustedDirection = direction.multipliedBy(scalar: 0.01)
-            modelRootB.physicsBody?.applyForce(adjustedDirection, asImpulse: true)
-        }
+        // Add floating animation
+        let floatUp = SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 1)
+        let floatDown = SCNAction.moveBy(x: 0, y: -0.05, z: 0, duration: 1)
+        let floatSequence = SCNAction.sequence([floatUp, floatDown])
+        let repeatFloating = SCNAction.repeatForever(floatSequence)
+        node.runAction(repeatFloating)
     }
-<<<<<<< HEAD
 
-    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        if contact.nodeA.name == "Node0" || contact.nodeB.name == "Node0" {
-            print("Node0 collided")
+    
+    func playExplosionSound() {
+        guard let url = Bundle.main.url(forResource: "explosion", withExtension: "mp3") else {
+            print("Failed to find explosion.mp3")
+            return
         }
-        // Add any other collision handling code here
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Failed to play explosion sound: \(error.localizedDescription)")
+        }
     }
-=======
+    func playLaserSound() {
+        guard let url = Bundle.main.url(forResource: "torpedo", withExtension: "mp3") else {
+            print("Failed to find explosion.mp3")
+            return
+        }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Failed to play explosion sound: \(error.localizedDescription)")
+        }
+    }
     
 
->>>>>>> parent of 6a74366... fixed sounds so firing is using laser
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-        
+
+        // Run the view's session
         sceneView.session.run(configuration)
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        // Pause the view's session
         sceneView.session.pause()
     }
-<<<<<<< HEAD
-}
-=======
     func fireLaser() {
         // Handle the shooting
         guard let frame = sceneView.session.currentFrame else {
@@ -164,7 +186,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let velocityInWorldSpace = laserNode.presentation.convertVector(velocityInLocalSpace, to: nil)
         laserNode.physicsBody?.velocity = velocityInWorldSpace
         laserNode.physicsBody?.applyForce(direction, asImpulse: true)
-        playExplosionSound()
+        playLaserSound()
 
     }
     //print upon collision
@@ -190,6 +212,26 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         }
     }
 
->>>>>>> parent of 6a74366... fixed sounds so firing is using laser
 
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+       fireLaser()
 
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) { }
+
+    func session(_ session: ARSession, didFailWithError error: Error) {
+        // Present an error message to the user
+        
+    }
+    
+    func sessionWasInterrupted(_ session: ARSession) {
+        // Inform the user that the session has been interrupted, for example, by presenting an overlay
+        
+    }
+    
+    func sessionInterruptionEnded(_ session: ARSession) {
+        // Reset tracking and/or remove existing anchors if consistent tracking is required
+        
+    }
+}
