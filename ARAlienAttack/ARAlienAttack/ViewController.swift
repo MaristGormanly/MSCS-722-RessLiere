@@ -21,7 +21,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     
     var distFromCamera: Double = -1.5
     let numberOfAliens = 10
-    var shotsRemaining: Int = 0
+    var shotsRemaining: Int = 9999
     var aliensDestroyed = 0
 
 
@@ -167,6 +167,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         guard let backBoardNode = backboardScene.rootNode.childNode(withName: "container", recursively: true) else {
             return
         }
+        shotsRemaining = numberOfAliens * 2
         spawnAliens()
     }
     func spawnAliens() {
@@ -378,7 +379,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
                 node.removeFromParentNode()
             }
         }
-        
+        updateAliensRemainingLabel()
         spawnAliens()
     }
 
