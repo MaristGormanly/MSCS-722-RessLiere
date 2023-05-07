@@ -22,6 +22,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     var distFromCamera: Double = -1.5
     let numberOfAliens = 10
     var shotsRemaining: Int = 0
+    var aliensDestroyed = 0
+
 
 
     ///////////////////////////////////////////////////////////////////
@@ -228,8 +230,42 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             alienNode.removeFromParentNode() // Remove the alien node from the scene
             laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
         }
+        aliensDestroyed += 1
+        checkGameOver()
     }
-    
+    func checkGameOver() {
+        if aliensDestroyed == numberOfAliens {
+            showAlert(title: "Success!", message: "All robots have been destroyed!")
+        } else if shotsRemaining == 0 && aliensDestroyed < numberOfAliens {
+            showAlert(title: "Game Over", message: "You couldn't destroy all the robots.")
+        }
+    }
+
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Restart", style: .default) { _ in
+            self.restartGame()
+        }
+        alertController.addAction(restartAction)
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    func restartGame() {
+        aliensDestroyed = 0
+        shotsRemaining = numberOfAliens
+        updateShotsRemainingLabel()
+        
+        // Remove all existing alien nodes
+        sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
+            if node.name?.hasPrefix("Node") == true {
+                node.removeFromParentNode()
+            }
+        }
+        
+        spawnAliens()
+    }
+
  
     ///////////////////////////////////////////////////////////////////
     //     endGAME LOGIC            /
