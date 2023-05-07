@@ -177,7 +177,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let node = SCNNode()
         node.name = "Node\(index)"
         node.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-        let sphere = SCNSphere(radius: 0.065) // Adjust the radius as needed
+        let sphere = SCNSphere(radius: 0.1) // Adjust the radius as needed
         
         // Create material for the front face
         let frontMaterial = SCNMaterial()
@@ -308,8 +308,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         shotsRemainingLabel.text = "Shots Remaining: \(shotsRemaining)"
     }
     func updateAliensRemainingLabel() {
-        let aliensRemaining = numberOfAliens - aliensDestroyed
-        aliensRemainingLabel.text = "Aliens Remaining: \(aliensRemaining)"
+        DispatchQueue.main.async {
+            let aliensRemaining = self.numberOfAliens - self.aliensDestroyed
+            self.aliensRemainingLabel.text = "Aliens Remaining: \(aliensRemaining)"
+        }
     }
 
     
@@ -334,6 +336,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
                laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
                aliensDestroyed += 1
                playExplosionSound() // Play explosion sound
+               updateAliensRemainingLabel()
 
            }
            checkGameOver()
