@@ -168,6 +168,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             return
         }
         shotsRemaining = numberOfAliens * 2
+        
         spawnAliens()
     }
     func spawnAliens() {
