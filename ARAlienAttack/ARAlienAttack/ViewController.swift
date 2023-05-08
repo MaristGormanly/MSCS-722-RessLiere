@@ -17,6 +17,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     
     @IBOutlet var sceneView: ARSCNView!
     var audioPlayer: AVAudioPlayer?
+    var alreadyCollided = false
 
     
     var distFromCamera: Double = -1.5
@@ -168,7 +169,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             return
         }
         shotsRemaining = numberOfAliens * 2
-        
+        updateShotsRemainingLabel()
+
         spawnAliens()
     }
     func spawnAliens() {
@@ -254,16 +256,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         if let camera = self.sceneView.pointOfView {
             // Calculate a random position within the camera's field of view
             let position = SCNVector3(
-                x: Float.random(in: -0.5...0.5),
-                y: Float.random(in: -0.5...0.5),
+                x: Float.random(in: -0.8...0.8),
+                y: Float.random(in: -0.8...0.8),
                 z: Float(distFromCamera)
             )
             
             // Check if the position is within the camera's frustum
             let projectedPosition = sceneView.projectPoint(position)
             let viewport = sceneView.bounds
-            let isInFrustum = viewport.contains(CGPoint(x: CGFloat(projectedPosition.x), y: CGFloat(projectedPosition.y)))
-            if isInFrustum {
+            let isInView = viewport.contains(CGPoint(x: CGFloat(projectedPosition.x), y: CGFloat(projectedPosition.y)))
+            if isInView {
                 // Apply move action only if the position is within the camera's view
                 moveAction = SCNAction.move(to: position, duration: moveDuration)
             } else {
@@ -385,9 +387,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
            }
            checkGameOver()
-       
-       
+    
     }
+    
     func checkGameOver() {
         if aliensDestroyed == numberOfAliens {
             showAlert(title: "Success!", message: "All robots have been destroyed!")
