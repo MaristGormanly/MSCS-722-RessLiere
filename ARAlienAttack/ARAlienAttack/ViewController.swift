@@ -169,6 +169,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         }
         shotsRemaining = numberOfAliens * 2
         
+        // Add aliensRemainingLabel to the sceneView
+        self.sceneView.addSubview(aliensRemainingLabel)
+        
         spawnAliens()
     }
     func spawnAliens() {
@@ -353,9 +356,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         shotsRemainingLabel.text = "Shots Remaining: \(shotsRemaining)"
     }
     func updateAliensRemainingLabel() {
+        let text = "ALIENS REMAINING: \(numberOfAliens - aliensDestroyed)"
         DispatchQueue.main.async {
-            let aliensRemaining = self.numberOfAliens - self.aliensDestroyed
-            self.aliensRemainingLabel.text = "Aliens Remaining: \(aliensRemaining)"
+            self.aliensRemainingLabel.text = text
         }
     }
 
