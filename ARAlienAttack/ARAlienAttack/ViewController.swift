@@ -17,7 +17,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     
     @IBOutlet var sceneView: ARSCNView!
     var audioPlayer: AVAudioPlayer?
-    var alreadyCollided = false
 
     
     var distFromCamera: Double = -1.5
@@ -169,8 +168,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             return
         }
         shotsRemaining = numberOfAliens * 2
-        updateShotsRemainingLabel()
-
+        
         spawnAliens()
     }
     func spawnAliens() {
@@ -362,33 +360,35 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
 
     
+    var destroyedAliens = Set<SCNNode>()
+
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         var alienNode: SCNNode?
         var laserNode: SCNNode?
         let firstNode = contact.nodeA
         let secondNode = contact.nodeB
-       
-           
-           if firstNode.physicsBody?.categoryBitMask == 3 && secondNode.physicsBody?.contactTestBitMask == 1 {
-               alienNode = secondNode
-               laserNode = firstNode
-           } else if secondNode.physicsBody?.categoryBitMask == 3 && firstNode.physicsBody?.contactTestBitMask == 1 {
-               alienNode = firstNode
-               laserNode = secondNode
-           }
-           
-           if let alienNode = alienNode {
-               print("Alien hit: \(alienNode.name ?? "Unknown")")
-               alienNode.removeFromParentNode() // Remove the alien node from the scene
-               laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
-               aliensDestroyed += 1
-               playExplosionSound() // Play explosion sound
-               updateAliensRemainingLabel()
 
-           }
-           checkGameOver()
-    
+        if firstNode.physicsBody?.categoryBitMask == 3 && secondNode.physicsBody?.contactTestBitMask == 1 {
+            alienNode = secondNode
+            laserNode = firstNode
+        } else if secondNode.physicsBody?.categoryBitMask == 3 && firstNode.physicsBody?.contactTestBitMask == 1 {
+            alienNode = firstNode
+            laserNode = secondNode
+        }
+
+        if let alienNode = alienNode, !destroyedAliens.contains(alienNode) {
+            print("Alien hit: \(alienNode.name ?? "Unknown")")
+            destroyedAliens.insert(alienNode)
+            alienNode.removeFromParentNode() // Remove the alien node from the scene
+            laserNode?.removeFromParentNode() // Remove the laser node from the scene (optional)
+            aliensDestroyed += 1
+            playExplosionSound() // Play explosion sound
+            updateAliensRemainingLabel()
+        }
+
+        checkGameOver()
     }
+
     
     func checkGameOver() {
         if aliensDestroyed == numberOfAliens {
