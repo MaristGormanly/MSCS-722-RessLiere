@@ -124,7 +124,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
         // Reset aliens remaining and hide the label
         updateAliensRemainingLabel()
-        aliensRemainingLabel.removeFromSuperview()
 
         // Remove all existing alien nodes
         sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
